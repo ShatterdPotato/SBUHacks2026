@@ -15,7 +15,7 @@ test('health reports the selected provider and policy without exposing credentia
     const response = await handleApi(new Request('https://cadence.test/api/health'), { ...env, OPENAI_API_KEY: 'other-secret' });
     const data = await response.json();
     assert.equal(data.provider, 'gemini');
-    assert.equal(data.model, 'gemini-3.1-flash-lite');
+    assert.equal(data.model, 'gemini-3.5-flash-lite');
     assert.equal(data.cloudAvailable, true);
     assert.equal(data.demoDataOnly, true);
     assert.equal(data.mediaCloudAvailable, false);
@@ -31,7 +31,7 @@ test('Gemini questions use header auth, structured JSON, shared instructions, an
         assert.equal(options.headers.Authorization, undefined);
         const sent = JSON.parse(options.body);
         assert.equal(sent.store, false);
-        assert.equal(sent.model, 'gemini-3.1-flash-lite');
+        assert.equal(sent.model, 'gemini-3.5-flash-lite');
         assert.equal(sent.response_format.mime_type, 'application/json');
         assert.equal(sent.response_format.schema.additionalProperties, false);
         assert.match(sent.system_instruction, /untrusted data/);

@@ -1,0 +1,114 @@
+[
+  {
+    "id": "RT01",
+    "bug": "E036",
+    "action": "Open help and inspect dialog heading reference",
+    "observed": "aria-labelledby=how-it-works-title; name=Your interview, rehearsed.",
+    "status": "PASS"
+  },
+  {
+    "id": "RT02",
+    "bug": "E095",
+    "action": "Build with whitespace-only role",
+    "observed": "Studio displays General interview \u00b7 Internship",
+    "status": "PASS"
+  },
+  {
+    "id": "RT03",
+    "bug": "E110",
+    "action": "Submit five spaced CJK tokens and inspect report/export",
+    "observed": "Editor=5 words, report=5 words, JSON metrics.words=5",
+    "status": "PASS"
+  },
+  {
+    "id": "RT04",
+    "bug": "E109",
+    "action": "Enter emoji-only transcript",
+    "observed": "Editor now says 0 words, consistent with rubric",
+    "status": "PASS"
+  },
+  {
+    "id": "RT05",
+    "bug": "Cosmetic labels",
+    "action": "Inspect one-word editor/report",
+    "observed": "Both use 1 word",
+    "status": "PASS"
+  },
+  {
+    "id": "RT06",
+    "bug": "E095 export",
+    "action": "Download report after whitespace-role session",
+    "observed": "Exported role=General interview",
+    "status": "PASS"
+  },
+  {
+    "id": "RT07",
+    "bug": "Cosmetic labels",
+    "action": "Upload one-character TXT",
+    "observed": "Read successfully \u00b7 1 character",
+    "status": "PASS"
+  },
+  {
+    "id": "RT08",
+    "bug": "Target role priority",
+    "action": "Use Software Engineering Intern with ML-heavy resume",
+    "observed": "Broad role Software engineering while PyTorch experience tags remain",
+    "status": "PASS"
+  },
+  {
+    "id": "RT09",
+    "bug": "Source consent",
+    "action": "Switch from resume to Describe interview",
+    "observed": "Cloud consent reset=false",
+    "status": "PASS"
+  },
+  {
+    "id": "RT10",
+    "bug": "E112",
+    "action": "Inspect prompt-only profile after switching source",
+    "observed": "Only Circuits tag; no hidden ML resume tags",
+    "status": "PASS"
+  },
+  {
+    "id": "RT11",
+    "bug": "Binary TXT validation",
+    "action": "Upload binary.txt after valid.txt",
+    "observed": "Actionable binary-character error; valid.txt and 4212 chars retained",
+    "status": "PASS"
+  },
+  {
+    "id": "RT12",
+    "bug": "AI failure diagnosis",
+    "action": "Build with explicit dummy-key local opt-in",
+    "observed": "Actionable provider-settings (400) banner; says resume was read successfully; upload valid.txt retained",
+    "status": "PASS"
+  },
+  {
+    "id": "RT13",
+    "bug": "AI failure recovery",
+    "action": "Click Use curated questions",
+    "observed": "Curated Practice mode studio opens for Software Engineering Intern, 01/03",
+    "status": "PASS"
+  },
+  {
+    "id": "RT14",
+    "bug": "Fallback state retention",
+    "action": "Finish curated session then start fresh",
+    "observed": "valid.txt still present with 4212 read characters",
+    "status": "PASS"
+  },
+  {
+    "id": "RT15",
+    "bug": "Context target-role priority",
+    "action": "Empty Role; context Software engineering internship; upload valid ML-heavy TXT in resume mode; enable generic profile",
+    "observed": "NOT EXECUTED: prior IAB browser 2 unavailable; fresh browser inventory empty; fresh IAB tab creation unavailable. Expected broad role Software engineering. Parent may complete in its active browser.",
+    "status": "BLOCKED"
+  },
+  {
+    "id": "RT16",
+    "bug": "Idempotent source selection",
+    "action": "Enable generic cloud consent on a selected source, then click the same already-selected source tab",
+    "observed": "NOT EXECUTED for same unavailable browser surface. Expected consent to remain checked. Parent may complete in its active browser.",
+    "status": "BLOCKED"
+  }
+]

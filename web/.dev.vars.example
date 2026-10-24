@@ -1,7 +1,8 @@
 # Copy to .dev.vars for local development. Never commit the actual key.
 AI_PROVIDER=gemini
 GEMINI_API_KEY=
-GEMINI_MODEL=gemini-3.1-flash-lite
+GEMINI_MODEL=gemini-3.5-flash-lite
+GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite
 # Unpaid: fictional text only. Do not enable paid policy without arranging
 # appropriate billing and data handling with Google. This flag does not enable billing.
 GEMINI_DATA_POLICY=unpaid

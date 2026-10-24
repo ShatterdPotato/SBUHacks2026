@@ -59,8 +59,12 @@ export function retrieveQuestions(setup) {
         : pool;
     return chosen.slice(0, setup.count).map(({ relevance, tags, ...q }) => q);
 }
+export function transcriptWords(answer) {
+    return typeof answer === 'string' ? answer.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) ?? [] : [];
+}
+export function wordCount(answer) { return transcriptWords(answer).length; }
 export function deliveryMetrics(answer, duration, recorded) {
-    const words = answer.match(/\b[\w'-]+\b/g) ?? [];
+    const words = transcriptWords(answer);
     const fillers = (answer.match(/\b(um+|uh+|erm|you know|sort of|kind of)\b/gi) ?? []).length;
     const measured = recorded === true && Number.isFinite(duration) && duration >= 5 && words.length >= 15;
     const wpm = measured ? Math.round(words.length / duration * 60) : null;

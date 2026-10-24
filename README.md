@@ -31,7 +31,7 @@ in browser code or Git. For Sites production, configure the same secret in the
 Site runtime and deploy. API usage is independent of Codex or ChatGPT usage.
 OpenAI remains an optional adapter using `AI_PROVIDER=openai` and `OPENAI_API_KEY`.
 
-Gemini defaults to `gemini-3.1-flash-lite` and `GEMINI_DATA_POLICY=unpaid`. Free Gemini
+Gemini defaults to `gemini-3.5-flash-lite` and `GEMINI_DATA_POLICY=unpaid`. Free Gemini
 practice accepts personal PDF/TXT resumes in the browser. Personal mode keeps
 resume text and interview answers on the device; optional AI questions use only
 reviewed, fixed generic skill tags and a broad role. Personal answer feedback is a
@@ -90,3 +90,9 @@ pnpm build
 
 Start every AI session with [TEAM_CONTEXT.md](TEAM_CONTEXT.md). See
 [architecture](docs/ARCHITECTURE.md) and the [demo checklist](docs/DEMO.md).
+
+Latest checkpoint: [resume/browser audit](docs/qa/RESUME_BROWSER_AUDIT_2026-10-24.md),
+125 manual scenarios, 44 automated tests passing, live PDF questions verified.
+See [HANDOFF.md](docs/HANDOFF.md) for exact deployment and remaining verification.
+Transient provider failures receive one bounded retry; GEMINI_FALLBACK_MODEL can
+select gemini-3.1-flash-lite for that attempt. Free quotas still apply.

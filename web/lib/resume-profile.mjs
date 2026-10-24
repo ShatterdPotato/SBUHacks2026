@@ -24,14 +24,23 @@ const TOPICS = [
 export const SKILL_NAMES = Object.freeze(TOPICS.map(([name]) => name));
 export const ROLE_FAMILIES = Object.freeze(['AI/ML engineering', 'Software engineering', 'Data science', 'Electrical engineering', 'Product management', 'General interview']);
 
-export function genericProfile(source) {
+export function genericProfile(source, targetRole = '') {
     const value = typeof source === 'string' ? source : '';
-    const roleFamily = /\b(machine learning|ai[ /-]*ml|pytorch|tensorflow|nlp)\b/i.test(value) ? ROLE_FAMILIES[0]
-        : /\b(data science|data scientist|data analyst)\b/i.test(value) ? ROLE_FAMILIES[2]
-        : /\b(electrical|circuits?|embedded)\b/i.test(value) ? ROLE_FAMILIES[3]
-        : /\b(product manager|product management|user research)\b/i.test(value) ? ROLE_FAMILIES[4]
-        : /\b(software|developer|python|javascript)\b/i.test(value) ? ROLE_FAMILIES[1] : ROLE_FAMILIES[5];
+    // The requested job takes precedence over a candidate's previous field.
+    const roleText = typeof targetRole === 'string' && targetRole.trim() ? targetRole.trim() : value;
+    const roleFamily = /\b(machine learning|ai[ /-]*ml|ai|ml|pytorch|tensorflow|nlp)\b/i.test(roleText) ? ROLE_FAMILIES[0]
+        : /\b(data science|data scientist|data analyst)\b/i.test(roleText) ? ROLE_FAMILIES[2]
+        : /\b(electrical|circuits?|embedded)\b/i.test(roleText) ? ROLE_FAMILIES[3]
+        : /\b(product manager|product management|user research)\b/i.test(roleText) ? ROLE_FAMILIES[4]
+        : /\b(software|developer|python|javascript)\b/i.test(roleText) ? ROLE_FAMILIES[1] : ROLE_FAMILIES[5];
     return { roleFamily, skills: TOPICS.filter(([, pattern]) => pattern.test(value)).map(([name]) => name) };
+}
+
+export function profileForInterview({ role = '', context = '', resume = '', source = 'prompt' }) {
+    const activeResume = source === 'resume' ? resume : '';
+    const contextRole = genericProfile(context).roleFamily;
+    const roleHint = role.trim() || (contextRole !== 'General interview' ? contextRole : '');
+    return genericProfile([role, context, activeResume].join('\n'), roleHint);
 }
 
 export function validateGenericProfile(profile) {

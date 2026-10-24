@@ -28,7 +28,7 @@ the strongest and weakest recorded answers. This is voluntary personal coaching.
 - `docs/ARCHITECTURE.md`: API/media contracts. `docs/DEMO.md`: verification.
 - `GET /api/health`; `POST /api/questions`, `/api/analyze`, `/api/transcribe`.
 - `AI_PROVIDER=gemini` uses server-only `GEMINI_API_KEY`; model defaults to
-  `gemini-3.1-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
+  `gemini-3.5-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
   labeled practice rubric mode. Chat subscriptions do not supply API credentials.
 - `web/lib/pdf-resume.ts`: PDF.js text extraction in a bundled browser worker.
 - `web/lib/resume-profile.mjs`: fixed skill labels, broad roles, generic request validation.
@@ -86,3 +86,10 @@ Report actual verification results and remaining setup in the handoff.
 accepted (4,198 characters); hosted personal generic-AI questions and browser-rubric
 report verified. Fictional PDF generated AI questions; final fictional answer check
 was interrupted. Physical media and paid media adapters remain separately unverified.
+
+Latest browser-audit checkpoint: 44 tests, type check, and production build PASS.
+Primary Gemini 3.5 Flash-Lite, configured retry fallback 3.1 Flash-Lite, unpaid
+policy preserved. Latest deployed source add43d0445ad419509d717ca4316eac4b32f0741.
+Personal and fictional PDF live question generation passed. Final fictional
+answer feedback remains to be checked. See docs/HANDOFF.md and
+docs/qa/RESUME_BROWSER_AUDIT_2026-10-24.md for 125 manual scenarios, fixes, and limits.

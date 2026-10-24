@@ -127,7 +127,7 @@ export async function handleApi(request, env = {}, fetcher = fetch) {
     }
     catch (e) {
         if (e instanceof InputError)
-            return json({ error: e.message }, e.status);
+            return json({ error: e.message, code: e.code }, e.status);
         return json({ error: 'Request failed. Your current recording remains in this browser.' }, 500);
     }
 }
