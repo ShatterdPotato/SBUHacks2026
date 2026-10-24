@@ -2,6 +2,11 @@
 
 Date: October 24, 2026. Production: https://cadence-interview-studio-aiden.daintyridge32.chatgpt.site
 
+Continuation update: the interrupted fictional answer/feedback/report/export
+check below has since **passed** in a fresh session. See
+[continuation evidence](CONTINUATION_VERIFICATION_2026-10-24.md) and its synthetic
+JSON export. Historical audit observations below are retained as recorded.
+
 ## Result and evidence
 
 The updated production site accepted the supplied fictional PDF (4,198 characters)
@@ -82,8 +87,9 @@ remains inconclusive.
 
 ## Remaining verification
 
-Complete one fictional answer through live AI feedback and export on this
-deployment. Test physical recording/replay/retake/download/device cleanup with
+The fictional answer through live AI feedback/report/export is now complete;
+see the continuation evidence linked above. Test physical
+recording/replay/retake/download/device cleanup with
 explicit permission. No physical camera/microphone, paid media adapters, complete
 Firefox compatibility, or full screen-reader audit was verified here. Public
 launch/domain/indexing, durable accounts/history, adaptive follow-ups, and exact

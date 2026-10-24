@@ -88,5 +88,9 @@ from the same origin, copied from the installed package by `run-cadence.mjs`.
 
 Latest audit: 44 tests, type check, and production build passed. Hosted personal
 and fictional PDF question generation passed on deployed source add43d044.
-Final fictional answer feedback/export remains pending. See
+The interrupted fictional answer feedback/report/export check was completed in
+the continuation: live AI feedback and exact evidence, unscored skipped answers,
+and the actual downloaded JSON passed validation. All 44 tests, TypeScript, and
+production build were rerun successfully. See
+[continuation evidence](qa/CONTINUATION_VERIFICATION_2026-10-24.md) and
 [the detailed manual audit](qa/RESUME_BROWSER_AUDIT_2026-10-24.md).

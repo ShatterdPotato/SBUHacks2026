@@ -90,6 +90,10 @@ was interrupted. Physical media and paid media adapters remain separately unveri
 Latest browser-audit checkpoint: 44 tests, type check, and production build PASS.
 Primary Gemini 3.5 Flash-Lite, configured retry fallback 3.1 Flash-Lite, unpaid
 policy preserved. Latest deployed source add43d0445ad419509d717ca4316eac4b32f0741.
-Personal and fictional PDF live question generation passed. Final fictional
-answer feedback remains to be checked. See docs/HANDOFF.md and
+Personal and fictional PDF live question generation passed. The continuation
+completed fictional answer feedback, report, and JSON export, and reran all 44
+tests, type check, and build successfully. See docs/HANDOFF.md and
 docs/qa/RESUME_BROWSER_AUDIT_2026-10-24.md for 125 manual scenarios, fixes, and limits.
+Current continuation evidence: docs/qa/CONTINUATION_VERIFICATION_2026-10-24.md.
+No application redeployment was required. Physical media and full Firefox /
+screen-reader checks remain unverified; focused responsive/help checks passed.

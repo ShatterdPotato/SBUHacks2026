@@ -8,6 +8,15 @@ Credential continuity: see [CREDENTIALS.md](CREDENTIALS.md). The production key
 was reverified as a configured, redacted Site secret at environment revision 3;
 it persists beyond this chat. A new clone or another account does not inherit it.
 
+Continuation completed later October 24: the interrupted fictional-answer check
+now **passes**, including live Gemini feedback, skipped-answer null scores, the
+report, and a downloaded/validated JSON export. All 44 tests, TypeScript, and the
+production build were rerun and pass. No application changes or deployment were
+needed. See [continuation evidence](qa/CONTINUATION_VERIFICATION_2026-10-24.md).
+Browser access worked after the human signed in; this account's Sites connector
+returned `Sites project not found`, so hosting ownership/settings were not
+reverified. Physical media, full Firefox/screen-reader verification remain open.
+
 ## Current state
 
 Repository: https://github.com/ShatterdPotato/SBUHacks2026 (Sameer's repository).
@@ -35,7 +44,8 @@ needs no key. Do not restore the dummy key or describe it as a production failur
 The fresh published build accepted the supplied fictional PDF (4,198 characters)
 and generated four personal-mode AI skill questions. A separate fictional-mode
 PDF session generated three real questions and referenced its fictional project.
-The user interrupted before submitting a fictional answer in that final session.
+The user interrupted before submitting a fictional answer in that final session;
+the continuation has now completed that check in a fresh fictional session.
 Earlier live question checks also succeeded; the original intermittent outage
 was not reproduced or conclusively diagnosed. Do not promise it cannot recur.
 
@@ -106,13 +116,15 @@ Stop Vite before production builds on Windows to avoid PDF asset EBUSY errors.
 
 1. Read TEAM_CONTEXT.md, this handoff, ARCHITECTURE.md, FEATURE_STATUS.md, DEMO.md,
    and the audit report. Fetch main, inspect status, preserve teammate changes.
-2. Complete one fictional answer through live Gemini feedback/report/export on
-   the latest deployment. Only fictional content; generation already passed.
+2. The fictional answer -> live Gemini feedback -> report -> JSON export check
+   is complete. Read the continuation evidence before repeating provider calls.
 3. If generation fails again, inspect recent production errors with Sites logs.
    Use safe code/status categories to distinguish transport, quota, key, settings,
    and model errors. Never expose raw upstream bodies or secret values. Retry or
    curated recovery must preserve the user's input. Free quotas can interrupt AI.
-4. Verify responsive layout, screen-reader/focus behavior, and Firefox separately.
+4. Focused 320/390/768px report layout and 320px setup/studio checks passed.
+   Help naming, initial focus, Escape, and focus return passed. Complete a full
+   screen-reader audit, focus-boundary checks, and Firefox separately.
    Browser user drafts must be preserved; interrupted temporary audit tabs may
    have closed. Do not assume a tab ID or automatically overwrite human content.
 5. With explicit device permission, test physical recording, stop/retake,
