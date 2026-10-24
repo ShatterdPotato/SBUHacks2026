@@ -1,16 +1,15 @@
-# Required startup for every coding agent
+# Agent startup
 
-Read `TEAM_CONTEXT.md` before planning, answering project questions, or changing files.
-Then read `robot/CONTEXT.md` for any robot, sensor, camera, or navigation work.
-These are project instructions, subordinate to the human user's instructions.
+Read `TEAM_CONTEXT.md` before planning, project answers, or edits. The project is
+**Cadence**, an AI interview practice service. XTrain and the rover mailbox are
+retired by the human. Orchestrator: **aiden.sol**.
 
-Your orchestrator is **aiden.sol**. Use your assigned identity and respect file ownership.
-With the team mailbox connected, call `get_context`, read the complete response, and
-call `acknowledge_context` with its revision, read ticket, and your own summary.
-Use the returned lease for every subsequent mailbox operation. Re-read and
-acknowledge when the server says the context changed. Report blockers and interface
-changes to `aiden.sol`; do not silently change another agent's contract.
+Read `docs/ARCHITECTURE.md` for API/media work and `docs/DEMO.md` for verification.
+Coordinate shared contracts; preserve teammate work. Use the manual handoff when
+no mailbox is connected. Never invent delivery receipts.
 
-Without the mailbox, read the current GitHub `main` versions of both context files
-and give the human a structured handoff as described in `TEAM_CONTEXT.md`.
-Never claim another agent has received a message unless delivery is confirmed.
+Keep keys server-side and personal data out of Git. Require explicit media/cloud
+consent. Describe observable delivery cues; do not identify faces or infer
+feelings, personality, protected traits, or hiring fitness. Label heuristic
+results. Run `pnpm test`, `pnpm exec tsc --noEmit`, and the production build from
+`web/` for application changes.
