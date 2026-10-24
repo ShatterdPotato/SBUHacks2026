@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setupInput, retrieveQuestions, rubricAnalysis, deliveryMetrics, reportFor } from '../lib/interview.mjs';
 import { handleApi } from '../lib/service.mjs';
-const req = (path, body, headers = {}) => new Request(`https://cadence.test/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
+const req = (path, body, headers = {}) => new Request(`https://cadence.test/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify({ providerConsent: 'openai', ...body }) });
 const question = { prompt: 'Describe your project and its result.', focus: ['project', 'built', 'result'] };
 const answer = 'I built a project to process requests. First I measured the old service. Then I tested a cache because repeat requests were slow. The result was a 30 percent reduction in response time. I learned to measure before optimizing.';
 const mockOutput = value => Response.json({ status: 'completed', output: [{ content: [{ type: 'output_text', text: JSON.stringify(value) }] }] });
@@ -103,6 +103,7 @@ test('consented transcription forwards audio and returns actual provider text', 
     const form = new FormData();
     form.set('file', new Blob(['audio'], { type: 'audio/webm' }), 'answer.webm');
     form.set('cloudConsent', 'true');
+    form.set('providerConsent', 'openai');
     let endpoint;
     const fetcher = async (url, options) => { endpoint = url; assert.equal(options.body.get('file').name, 'answer.webm'); return Response.json({ text: 'A real test transcript.' }); };
     const response = await handleApi(new Request('https://cadence.test/api/transcribe', { method: 'POST', body: form }), { OPENAI_API_KEY: 'test' }, fetcher);

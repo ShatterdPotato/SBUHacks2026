@@ -17,7 +17,23 @@
 
 ## Live AI demo
 
-1. Set `OPENAI_API_KEY` in ignored `web/.dev.vars` or Sites runtime secrets;
+### Free Gemini fictional demo
+
+1. Set `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-3.1-flash-lite`,
+   and `GEMINI_DATA_POLICY=unpaid` in ignored `.dev.vars` or Sites secrets. Redeploy.
+2. Describe a fictional software intern with a pretend block-sorting project.
+   Choose three questions; consent to Google processing and check made-up data.
+3. Generate real AI questions, choose text answers, and submit a fictional answer.
+   Confirm provisional feedback and exact transcript evidence. Skip another answer
+   and verify it remains unscored. Finish and inspect the report.
+4. Confirm audio transcription and camera-cloud controls are unavailable. PDF
+   uploads must fail clearly. Disabling cloud consent still enables curated/local
+   practice. Do not test free Gemini with actual resumes, personal data, or media.
+5. Check quotas/errors without pretending failures are successful AI feedback.
+
+### Media-capable provider
+
+1. Set `AI_PROVIDER=openai` and `OPENAI_API_KEY` in ignored `web/.dev.vars` or Sites runtime secrets;
    restart/redeploy. Verify cloud personalization is available.
 2. Opt into cloud processing, upload a non-sensitive PDF/TXT resume or prompt,
    and confirm questions reference actual experience. Declining cloud processing
@@ -31,9 +47,21 @@
 ## Regression checks
 
 `pnpm test` covers retrieval for all sizes/types, validation, consent, missing
-evidence, clip ranking, mocked provider schemas/errors, and audio transcription.
+evidence, clip ranking, both provider schemas/errors, Gemini data-policy blocking,
+header authentication, and mocked audio transcription/inline media adapters.
 `pnpm exec tsc --noEmit` checks types; `pnpm build` checks production bundling.
 Browser QA should include narrow/mobile layout, uploads, help dialog, text flow,
 report details, and console errors. Native camera/microphone and paid provider
 calls must be recorded separately from mocked verification. Do not report them
 as verified merely because browser navigation or unit tests passed.
+
+## Verification recorded 2026-10-24
+
+- All 23 tests, `pnpm exec tsc --noEmit`, and the production build passed.
+- Real `gemini-3.1-flash-lite` requests returned HTTP 200 for three generated
+  questions and scored feedback using fictional, nonpersonal text.
+- Local browser QA completed a text session/report with AI disabled, confirmed
+  skipped answers stayed unscored, and found no console warnings/errors.
+- Hosted consent UI required the fictional-data checkbox before generation.
+- Paid media adapters are mocked only. Physical camera/microphone capture and
+  live cloud transcription/camera analysis were not tested in this change.
