@@ -35,6 +35,7 @@ try {
     $coordRecord | ConvertTo-Json | Set-Content -LiteralPath $coordRuntimePath -Encoding utf8
     for ($coordAttempt=0; $coordAttempt -lt 100; $coordAttempt++) {
         $coordLog = Get-Content -LiteralPath (Join-Path $coordState 'tunnel.stderr.log') -Raw -ErrorAction SilentlyContinue
+        if ($null -eq $coordLog) { Start-Sleep -Milliseconds 250; continue }
         $coordMatch = [regex]::Match([string]$coordLog, 'https://[a-z0-9-]+\.trycloudflare\.com')
         if ($coordMatch.Success) { $coordRecord.public_url = $coordMatch.Value; break }
         if ($coordTunnelProcess.HasExited) { throw 'Tunnel exited; inspect .coordination/tunnel.stderr.log.' }
