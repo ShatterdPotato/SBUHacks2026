@@ -1,0 +1,149 @@
+{
+  "product": "Cadence",
+  "role": "Machine Learning Intern",
+  "createdAt": "2026-10-24T21:52:27.112Z",
+  "mode": "live",
+  "report": {
+    "scores": {
+      "confidence": null,
+      "content": 90,
+      "comprehension": 95
+    },
+    "overall": 93,
+    "best": null,
+    "worst": null,
+    "ranked": [
+      {
+        "index": 0,
+        "score": 93
+      }
+    ]
+  },
+  "answers": [
+    {
+      "question": {
+        "prompt": "Can you walk me through how you handled data splitting for the support ticket classifier at Northstar Demo Labs to prevent data leakage from near-duplicate examples?",
+        "category": "Technical",
+        "focus": [
+          "Data leakage",
+          "Train-test split",
+          "Error analysis"
+        ],
+        "id": "ai-1",
+        "source": "generated"
+      },
+      "transcript": "In this fictional Northstar Demo Labs project, I first normalized ticket text and grouped exact duplicates and near-duplicate templates before any split. I kept all tickets from one customer and duplicate cluster in the same partition. I used a time-based split for training, validation, and a final untouched test period, fitting the TF-IDF vocabulary only on training data. I audited cross-split similarity and manually reviewed suspicious matches. The initial random split gave 92 percent macro F1; after removing leakage the held-out score was 81 percent. I reported the lower result because it better reflected new tickets, then used class-level error analysis on validation data to improve rare categories. I would monitor duplicate rates and drift after deployment.",
+      "analysis": {
+        "mode": "live",
+        "scores": {
+          "confidence": null,
+          "content": 90,
+          "comprehension": 95
+        },
+        "metrics": {
+          "words": 117,
+          "fillers": 0,
+          "wpm": null,
+          "confidence": null
+        },
+        "summary": "The candidate provided a thorough, methodologically sound explanation of how they prevented data leakage during data splitting for the support ticket classifier, addressing near-duplicates, customer grouping, time-based splitting, and post-leakage evaluation.",
+        "strengths": [
+          "Addressed near-duplicate clustering and customer-level grouping prior to splitting.",
+          "Used a time-based split and avoided fitting TF-IDF vocabulary on validation/test data.",
+          "Transparently reported the drop in macro F1 from 92% to 81% after removing leakage."
+        ],
+        "improvements": [
+          "Could elaborate further on the specific threshold or algorithm used to define near-duplicates.",
+          "Could discuss specific strategies used during the class-level error analysis for rare categories."
+        ],
+        "evidence": [
+          "grouped exact duplicates and near-duplicate templates before any split",
+          "initial random split gave 92 percent macro F1; after removing leakage the held-out score was 81 percent"
+        ],
+        "visual": [],
+        "limitation": "AI estimates can be wrong. Confidence is a pace/filler proxy, not feelings. Camera observations do not affect scores."
+      },
+      "duration": 0,
+      "hasRecording": false,
+      "mime": ""
+    },
+    {
+      "question": {
+        "prompt": "Tell me about a time you had to explain technical trade-offs or model limitations—such as synthetic-data constraints—to teammates or stakeholders. How did you approach it?",
+        "category": "Behavioral",
+        "focus": [
+          "Team communication",
+          "Explaining trade-offs",
+          "Collaboration"
+        ],
+        "id": "ai-2",
+        "source": "generated"
+      },
+      "transcript": "",
+      "analysis": {
+        "mode": "demo",
+        "scores": {
+          "confidence": null,
+          "content": null,
+          "comprehension": null
+        },
+        "metrics": {
+          "words": 0,
+          "fillers": 0,
+          "wpm": null,
+          "confidence": null
+        },
+        "summary": "There is not enough transcript evidence to assess this answer.",
+        "strengths": [],
+        "improvements": [
+          "Add or correct your transcript, then explain a specific example."
+        ],
+        "evidence": [],
+        "visual": [],
+        "limitation": "Practice rubric; no semantic AI evaluation or camera analysis was performed."
+      },
+      "duration": 0,
+      "hasRecording": false,
+      "mime": ""
+    },
+    {
+      "question": {
+        "prompt": "In your CampusGuide project, how did you balance retrieval recall with response accuracy, and what approach did you use to handle cases where the retrieved material did not support an answer?",
+        "category": "Technical",
+        "focus": [
+          "RAG grounding",
+          "Retrieval recall",
+          "Abstention"
+        ],
+        "id": "ai-3",
+        "source": "generated"
+      },
+      "transcript": "",
+      "analysis": {
+        "mode": "demo",
+        "scores": {
+          "confidence": null,
+          "content": null,
+          "comprehension": null
+        },
+        "metrics": {
+          "words": 0,
+          "fillers": 0,
+          "wpm": null,
+          "confidence": null
+        },
+        "summary": "There is not enough transcript evidence to assess this answer.",
+        "strengths": [],
+        "improvements": [
+          "Add or correct your transcript, then explain a specific example."
+        ],
+        "evidence": [],
+        "visual": [],
+        "limitation": "Practice rubric; no semantic AI evaluation or camera analysis was performed."
+      },
+      "duration": 0,
+      "hasRecording": false,
+      "mime": ""
+    }
+  ]
+}
