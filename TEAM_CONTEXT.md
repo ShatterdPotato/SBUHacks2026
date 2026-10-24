@@ -33,6 +33,8 @@ the strongest and weakest recorded answers. This is voluntary personal coaching.
 - `web/lib/pdf-resume.ts`: PDF.js text extraction in a bundled browser worker.
 - Recording-first update: `recording-coach.ts`, `speech.worker.ts`, and the audio
   worklet run English Whisper transcription locally in ~12-second batches.
+  `scripts/build-speech-worker.mjs` isolates the speech worker from Vinext's page
+  transforms at dev/build startup; the browser loads `/vendor/speech/speech.worker.js`.
   `public/vision-capture.worker.js` runs local landmark measurements. Model files
   download from Hugging Face/Google; media is not sent to those download hosts.
 - `recorded-delivery.mjs` calculates labeled delivery components and selects

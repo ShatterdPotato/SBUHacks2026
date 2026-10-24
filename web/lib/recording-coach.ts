@@ -5,7 +5,9 @@ export type VisionEvidence = { at: number; facing: boolean | null; shouldersVisi
 export type RecordingEvidence = { words: SpeechWord[]; audioEvidence: AudioEvidence[]; visionEvidence: VisionEvidence[]; transcript: string };
 
 export class RecordingCoach {
-    private speech = new Worker(new URL('./speech.worker.ts', import.meta.url), { type: 'module' });
+    // Serve an isolated bundle: Vinext's client transforms rewrite import.meta.url
+    // and inject window-based HMR code, neither of which is valid in this worker.
+    private speech = new Worker('/vendor/speech/speech.worker.js', { type: 'module' });
     private vision: Worker | null = null;
     private pending = new Map<number, { resolve: (value: any) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> }>();
     private sequence = 0;
