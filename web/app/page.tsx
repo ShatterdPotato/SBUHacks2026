@@ -4,6 +4,9 @@ import { ArrowUpRight, ArrowRight, AudioLines, Check, CheckCircle2, ChevronDown,
 import { reportFor, overallScore, retrieveQuestions, setupInput, rubricAnalysis, wordCount } from '../lib/interview.mjs';
 import { profileForInterview, personalQuestionRequest } from '../lib/resume-profile.mjs';
 import { resumeText as validateResumeText } from '../lib/resume-text.mjs';
+import { recordedDelivery, selectMoments } from '../lib/recorded-delivery.mjs';
+import { RecordingCoach, type RecordingEvidence } from '../lib/recording-coach';
+import { MomentClip, type Moment } from '../components/moment-clip';
 type Question = {
     id: string;
     prompt: string;
@@ -38,6 +41,11 @@ type Take = {
     hasRecording: boolean;
     url: string | null;
     mime: string;
+    words: RecordingEvidence['words'];
+    audioEvidence: RecordingEvidence['audioEvidence'];
+    visionEvidence: RecordingEvidence['visionEvidence'];
+    transcriptSource: 'recording' | 'recording-corrected' | 'typed' | 'skipped';
+    delivery: ReturnType<typeof recordedDelivery> | null;
 };
 type Pending = {
     video: Promise<Blob>;
@@ -95,6 +103,10 @@ export default function Home() {
         duration: number;
     } | null>(null);
     const [meter, setMeter] = useState(0);
+    const [speechStatus, setSpeechStatus] = useState('');
+    const [recordedTranscript, setRecordedTranscript] = useState('');
+    const [evidence, setEvidence] = useState<RecordingEvidence | null>(null);
+    const coachRef = useRef<RecordingCoach | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const helpRef = useRef<HTMLDialogElement>(null);
@@ -111,6 +123,7 @@ export default function Home() {
     const uploadInProgressRef = useRef(false);
     const q = questions[index];
     const report = reportFor(answers);
+    const moments = selectMoments(answers) as { best: Moment[]; worst: Moment[] };
     const personalFree = fictionalOnly && privacyMode === 'personal';
     const localReview = mode !== 'live' || personalFree;
     const activeResumeText = tab === 'resume' ? resumeText : '';
@@ -123,6 +136,7 @@ export default function Home() {
         demoDataOnly: boolean; mediaCloudAvailable: boolean; pdfCloudAvailable: boolean;
     }; }).then(d => { setCloudAvailable(d.cloudAvailable === true); setProvider(d.provider); setProviderLabel(d.providerLabel); setFictionalOnly(d.demoDataOnly === true); setMediaCloudAvailable(d.mediaCloudAvailable === true); }).catch(() => { setOnline(false); setError('The interview service is unavailable. Refresh once the server is running.'); }); }, []);
     function releaseDevices() {
+        coachRef.current?.dispose(); coachRef.current = null;
         if ('speechSynthesis' in window)
             window.speechSynthesis.cancel();
         streamRef.current?.getTracks().forEach(track => track.stop());
@@ -134,7 +148,7 @@ export default function Home() {
         setMedia(false);
         setMeter(0);
     }
-    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; recorderRef.current?.state === 'recording' && recorderRef.current.stop(); audioRecorderRef.current?.state === 'recording' && audioRecorderRef.current.stop(); streamRef.current?.getTracks().forEach(t => t.stop()); if (meterTimerRef.current)
+    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; coachRef.current?.dispose(); recorderRef.current?.state === 'recording' && recorderRef.current.stop(); audioRecorderRef.current?.state === 'recording' && audioRecorderRef.current.stop(); streamRef.current?.getTracks().forEach(t => t.stop()); if (meterTimerRef.current)
         clearInterval(meterTimerRef.current); void audioContextRef.current?.close().catch(() => { }); urlsRef.current.forEach(u => URL.revokeObjectURL(u)); }; }, []);
     useEffect(() => { if (videoRef.current && streamRef.current) {
         videoRef.current.srcObject = streamRef.current;
@@ -227,6 +241,12 @@ export default function Home() {
         try {
             if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder)
                 throw new Error('Recording needs a supported browser on localhost or HTTPS. You can continue with text answers.');
+            if (!coachRef.current) {
+                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); });
+                coachRef.current = coach;
+                try { await coach.warm(); } catch (error) { coach.dispose(); coachRef.current = null; throw error; }
+            }
+            if (!mountedRef.current) return;
             const stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: { echoCancellation: true, noiseSuppression: true } });
             if (!mountedRef.current) {
                 stream.getTracks().forEach(t => t.stop());
@@ -255,13 +275,14 @@ export default function Home() {
             setBusy('');
         }
     }
-    function startRecording() {
+    async function startRecording() {
         if ('speechSynthesis' in window)
             window.speechSynthesis.cancel();
         if (!streamRef.current || !streamRef.current.getAudioTracks().some(t => t.readyState === 'live')) {
             setError('Reconnect your camera and microphone before recording.');
             return;
         }
+        setBusy('Starting recording');
         try {
             const videoType = ['video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported(t));
             const audioType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(t => MediaRecorder.isTypeSupported(t));
@@ -278,6 +299,9 @@ export default function Home() {
             void pendingRef.current.video.catch(() => { });
             void pendingRef.current.audio.catch(() => { });
             framesRef.current = [];
+            setTranscript(''); setRecordedTranscript(''); setEvidence(null);
+            if (!coachRef.current) throw new Error('Local transcription is not ready. Reconnect the devices to retry.');
+            await coachRef.current.start(streamRef.current, videoRef.current);
             startedRef.current = Date.now();
             setSeconds(0);
             setError('');
@@ -286,25 +310,24 @@ export default function Home() {
             setRecording(true);
         }
         catch (e) {
+            if (coachRef.current) await coachRef.current.stop().catch(() => {});
+            pendingRef.current = null;
             fail(e);
         }
+        finally { setBusy(''); }
     }
     async function transcribe(audio: Blob) {
-        if (!mediaCloudAvailable || !cloudConsent) return;
         setBusy('Transcribing your answer');
         try {
-            const form = new FormData();
-            form.set('file', audio, `answer.${audio.type.includes('mp4') ? 'mp4' : 'webm'}`);
-            form.set('cloudConsent', 'true');
-            form.set('providerConsent', provider);
-            const response = await fetch('/api/transcribe', { method: 'POST', body: form });
-            const data = await response.json() as {
-                error?: string;
-                text: string;
-            };
-            if (!response.ok)
-                throw new Error(data.error);
-            setTranscript(data.text);
+            if (coachRef.current?.failed) { coachRef.current.dispose(); coachRef.current = null; }
+            if (!coachRef.current) {
+                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); });
+                coachRef.current = coach;
+                try { await coach.warm(); } catch (error) { coach.dispose(); coachRef.current = null; throw error; }
+            }
+            const result = await coachRef.current.retry(audio);
+            setEvidence({ ...result, audioEvidence: evidence?.audioEvidence ?? result.audioEvidence, visionEvidence: evidence?.visionEvidence ?? result.visionEvidence });
+            setRecordedTranscript(result.transcript); setTranscript(result.transcript);
         }
         catch (e) {
             fail(e);
@@ -329,10 +352,14 @@ export default function Home() {
             const url = URL.createObjectURL(video);
             urlsRef.current.push(url);
             setClip({ url, blob: video, audio, duration });
-            if (mode === 'live' && cloudConsent && mediaCloudAvailable)
-                await transcribe(audio);
+            setBusy('Finalizing speech transcript');
+            if (coachRef.current) {
+                const result = await coachRef.current.stop(); setEvidence(result); setTranscript(result.transcript); setRecordedTranscript(result.transcript);
+                if (!result.transcript.trim()) setError('No speech was recognized. Your recording is saved. Retry transcription, retake, or enter a correction.');
+            }
         }
         catch (e) {
+            if (coachRef.current) setEvidence(coachRef.current.evidence());
             fail(e);
         }
         finally {
@@ -343,7 +370,7 @@ export default function Home() {
     function retake() { if (clip) {
         URL.revokeObjectURL(clip.url);
         urlsRef.current = urlsRef.current.filter(u => u !== clip.url);
-    } setClip(null); setTranscript(''); setSeconds(0); framesRef.current = []; setError(''); }
+    } setClip(null); setTranscript(''); setRecordedTranscript(''); setEvidence(null); setSeconds(0); framesRef.current = []; setError(''); }
     async function saveAnswer(skip = false) {
         if (recording)
             return;
@@ -354,10 +381,20 @@ export default function Home() {
             const analysis: Analysis = localReview
                 ? rubricAnalysis({ question: q, answer, duration: clip?.duration ?? 0, recorded: !!clip })
                 : await api<Analysis>('/api/analyze', { question: q, answer, duration: clip?.duration ?? 0, recorded: !!clip, mode, cloudConsent, providerConsent: provider, privacyMode, demoDataOnly: privacyMode === 'fictional', frames: visualConsent && mediaCloudAvailable ? framesRef.current : [] });
-            const next = [...answers, { question: q, transcript: skip ? '' : transcript, analysis, duration: clip?.duration ?? 0, hasRecording: !!clip, url: clip?.url ?? null, mime: clip?.blob.type ?? '' }];
+            const measured = evidence ?? coachRef.current?.evidence();
+            const delivery = !skip && clip && measured ? recordedDelivery({ transcript: recordedTranscript, duration: clip.duration, words: measured.words, audio: measured.audioEvidence, vision: measured.visionEvidence }) : null;
+            // Content/comprehension use the audio-derived transcript (with optional corrections).
+            // Delivery always uses the original recognition plus measured media evidence.
+            analysis.scores.confidence = delivery?.score ?? null;
+            if (delivery) analysis.limitation = `${localReview ? 'Content/comprehension use an approximate browser rubric and cannot establish correctness.' : 'AI content/comprehension estimates may be wrong.'} Confidence is a local delivery heuristic using measured recording cues, not feelings or eye contact. Speech timestamps and clip boundaries are approximate.`;
+            if (delivery) { analysis.metrics = { ...analysis.metrics, wpm: delivery.metrics.wpm }; analysis.visual = [...analysis.visual, ...delivery.components.filter(c => /Camera|body/.test(c.name)).map(c => c.evidence)]; }
+            const next: Take[] = [...answers, { question: q, transcript: answer, analysis, duration: clip?.duration ?? 0, hasRecording: !!clip, url: clip?.url ?? null, mime: clip?.blob.type ?? '',
+                words: clip && !skip ? measured?.words ?? [] : [], audioEvidence: clip && !skip ? measured?.audioEvidence ?? [] : [], visionEvidence: clip && !skip ? measured?.visionEvidence ?? [] : [],
+                transcriptSource: skip ? 'skipped' : clip ? transcript === recordedTranscript ? 'recording' : 'recording-corrected' : 'typed', delivery }];
             setAnswers(next);
             setClip(null);
             setTranscript('');
+            setRecordedTranscript(''); setEvidence(null);
             setSeconds(0);
             framesRef.current = [];
             if (index + 1 === questions.length) {
@@ -376,8 +413,8 @@ export default function Home() {
             setBusy('');
         }
     }
-    function reset() { releaseDevices(); urlsRef.current.forEach(u => URL.revokeObjectURL(u)); urlsRef.current = []; framesRef.current = []; setAnswers([]); setQuestions([]); setIndex(0); setClip(null); setTranscript(''); setStage('setup'); setCloudConsent(false); setVisualConsent(false); setMediaConsent(false); setTextOnly(false); setError(''); setSeconds(0); }
-    function exportReport() { const data = { product: 'Cadence', role: displayRole, createdAt: new Date().toISOString(), mode, report, answers: answers.map(({ url, ...rest }) => rest) }; const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); download(url, 'cadence-interview-report.json'); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+    function reset() { releaseDevices(); coachRef.current?.dispose(); coachRef.current = null; setSpeechStatus(''); setRecordedTranscript(''); setEvidence(null); urlsRef.current.forEach(u => URL.revokeObjectURL(u)); urlsRef.current = []; framesRef.current = []; setAnswers([]); setQuestions([]); setIndex(0); setClip(null); setTranscript(''); setStage('setup'); setCloudConsent(false); setVisualConsent(false); setMediaConsent(false); setTextOnly(false); setError(''); setSeconds(0); }
+    function exportReport() { const withoutUrls = (items: Moment[]) => items.map(({ url, ...rest }) => rest); const data = { product: 'Cadence', role: displayRole, createdAt: new Date().toISOString(), mode, report, moments: { best: withoutUrls(moments.best), worst: withoutUrls(moments.worst) }, answers: answers.map(({ url, audioEvidence, visionEvidence, ...rest }) => rest) }; const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); download(url, 'cadence-interview-report.json'); setTimeout(() => URL.revokeObjectURL(url), 1000); }
     function readQuestion() { if (!('speechSynthesis' in window))
         return; window.speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(q.prompt); speech.rate = .95; window.speechSynthesis.speak(speech); }
     return <div className="app-shell">
@@ -397,14 +434,14 @@ export default function Home() {
           <div className="setup-grid">
             <section className="setup-card"><div className="section-heading"><div className="step-badge">01</div><div><h2>Make it your interview</h2><p>A little context makes the questions a lot better.</p></div></div>
               <div className="source-tabs" role="group" aria-label="Interview context"><button className={tab === 'prompt' ? 'selected' : ''} onClick={() => changeSource('prompt')}><Sparkles size={15}/>Describe your interview</button><button className={tab === 'resume' ? 'selected' : ''} onClick={() => changeSource('resume')}><FileText size={15}/>Use your resume</button></div>
-              {fictionalOnly && <div className="resume-privacy"><label className="field-label">The information I’m using</label><div className="focus-options" role="group" aria-label="Session data"><button aria-pressed={privacyMode === 'personal'} className={privacyMode === 'personal' ? 'selected' : ''} onClick={() => { setPrivacyMode('personal'); setCloudConsent(false); }}>My real experience</button><button aria-pressed={privacyMode === 'fictional'} className={privacyMode === 'fictional' ? 'selected' : ''} onClick={() => { setPrivacyMode('fictional'); setCloudConsent(false); }}>A fictional sample</button></div><p>{personalFree ? 'Personal resumes are welcome. We read PDF and TXT files in your browser. Your resume and interview answers stay here.' : 'Use made-up details only. With AI enabled, the extracted text and your typed answers go to Google for feedback.'}</p></div>}
+              {fictionalOnly && <div className="resume-privacy"><label className="field-label">The information I’m using</label><div className="focus-options" role="group" aria-label="Session data"><button aria-pressed={privacyMode === 'personal'} className={privacyMode === 'personal' ? 'selected' : ''} onClick={() => { setPrivacyMode('personal'); setCloudConsent(false); }}>My real experience</button><button aria-pressed={privacyMode === 'fictional'} className={privacyMode === 'fictional' ? 'selected' : ''} onClick={() => { setPrivacyMode('fictional'); setCloudConsent(false); }}>A fictional sample</button></div><p>{personalFree ? 'Personal resumes are welcome. We read PDF and TXT files in your browser. Your resume and interview answers stay here.' : 'Use made-up details only. With AI enabled, the extracted text and your answer transcripts go to Google for feedback.'}</p></div>}
               <label className="field-label" htmlFor="role">What role are you preparing for?</label><input id="role" maxLength={160} value={role} onChange={e => { setRole(e.target.value); setCloudConsent(false); }} placeholder="e.g. Software Engineering Intern"/>
               {tab === 'resume' && <><input ref={fileRef} type="file" disabled={!!busy} accept=".pdf,.txt" className="sr-only" aria-label="Upload resume" onChange={e => e.target.files?.[0] && void upload(e.target.files[0])}/><button className="upload-zone" disabled={!!busy} onClick={() => fileRef.current?.click()} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); if (e.dataTransfer.files[0])
             void upload(e.dataTransfer.files[0]); }}><span className="upload-icon">{filename ? <Check size={21}/> : <Upload size={21}/>}</span><strong>{filename || 'Drop your resume here, or browse'}</strong><small>{filename ? `Read successfully · ${resumeText.length.toLocaleString()} ${resumeText.length === 1 ? 'character' : 'characters'}` : 'PDF or TXT · up to 2 MB · read in your browser'}</small></button>{filename && <><button className="text-link remove-file" onClick={() => { setFilename(''); setResumeText(''); setCloudConsent(false); }}>Remove file</button><details className="resume-preview"><summary>Review extracted resume text</summary><p>Check the text below and correct anything the PDF reader missed.</p><textarea aria-label="Extracted resume text" rows={8} maxLength={18000} value={resumeText} onChange={e => { setResumeText(e.target.value); setCloudConsent(false); }}/></details></>}</>}
               <label className="field-label" htmlFor="context">{tab === 'resume' ? 'Add a job description or paste resume text' : 'What would you like to practice?'} <span>optional</span></label><textarea id="context" rows={4} maxLength={18000} value={context} onChange={e => { setContext(e.target.value); setCloudConsent(false); }} placeholder={tab === 'resume' ? 'Paste your resume, a job description, or a skill you want to focus on…' : 'Tell us about the role, a project you built, or the questions you want to get better at…'}/>
               <div className="field-row"><div><label className="field-label" htmlFor="level">Experience level</label><select id="level" value={level} onChange={e => setLevel(e.target.value)}><option>Internship</option><option>Entry level</option><option>Experienced</option></select></div><div><label className="field-label" htmlFor="count">Session length</label><select id="count" value={count} onChange={e => setCount(Number(e.target.value))}>{[3, 4, 5, 6].map(n => <option key={n} value={n}>{n} questions · ~{n * 2} min</option>)}</select></div></div>
               <label className="field-label">Interview focus</label><div className="focus-options" role="group" aria-label="Interview focus">{['Mixed', 'Behavioral', 'Technical'].map(t => <button key={t} aria-pressed={type === t} className={type === t ? 'selected' : ''} onClick={() => setType(t)}>{type === t && <Check size={14}/>} {t === 'Mixed' ? 'A bit of both' : t}</button>)}</div>
-              <label className="check-row cloud-check"><input type="checkbox" checked={cloudConsent} disabled={!cloudAvailable} onChange={e => setCloudConsent(e.target.checked)}/><span>{cloudAvailable ? personalFree ? `Use ${providerLabel} for skill-based questions` : `Use ${providerLabel} questions and feedback` : 'AI connection not configured'}<small>{cloudAvailable ? personalFree ? 'I agree to send only the broad role and selected generic skill tags below to Google. No resume text, contact details, employers, or interview answers are sent. Answer feedback uses a browser practice rubric.' : fictionalOnly ? 'I confirm this is fictional sample data and agree to send its text and typed answers to Google. Free-tier data may improve Google products and be reviewed by people. Do not include personal, sensitive, or confidential information.' : `I agree to send my resume/context, answers, and recorded audio to ${providerLabel} for processing.` : 'Curated questions and a transparent browser practice rubric are available now.'}</small></span></label>
+              <label className="check-row cloud-check"><input type="checkbox" checked={cloudConsent} disabled={!cloudAvailable} onChange={e => setCloudConsent(e.target.checked)}/><span>{cloudAvailable ? personalFree ? `Use ${providerLabel} for skill-based questions` : `Use ${providerLabel} questions and feedback` : 'AI connection not configured'}<small>{cloudAvailable ? personalFree ? 'I agree to send only the broad role and selected generic skill tags below to Google. No resume text, contact details, employers, or interview answers are sent. Answer feedback uses a browser practice rubric.' : fictionalOnly ? 'I confirm this is fictional sample data and agree to send its text and answer transcripts to Google. Free-tier data may improve Google products and be reviewed by people. Do not include personal, sensitive, or confidential information.' : `I agree to send my resume/context, answers, and recorded audio to ${providerLabel} for processing.` : 'Curated questions and a transparent browser practice rubric are available now.'}</small></span></label>
               {cloudConsent && personalFree && <div className="skill-profile"><strong>What Google receives</strong><p>Broad role: {profile.roleFamily}. Interview focus, level, and question count. Only the selected tags below; click a tag to exclude it.</p><div className="skill-tags" role="group" aria-label="Generic skills shared with AI">{detectedProfile.skills.map(skill => <button key={skill} aria-pressed={!excludedSkills.includes(skill)} onClick={() => setExcludedSkills(old => old.includes(skill) ? old.filter(s => s !== skill) : [...old, skill])}>{!excludedSkills.includes(skill) && <Check size={11}/>} {skill}</button>)}</div>{!profile.skills.length && <small>No skill tags selected. We’ll ask general questions for this broad role.</small>}<p>Personal answer feedback stays in your browser. Full AI analysis of real resumes and answers requires a paid provider configuration. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noreferrer">Google’s data terms</a></p></div>}
               <button className="primary full" disabled={!!busy || !online} onClick={() => void prepare()}>{busy ? <><LoaderCircle className="spin" size={17}/>{busy}</> : <>Build my interview<ArrowRight size={18}/></>}</button><p className="form-footnote"><LockKeyhole size={12}/>PDFs are read in your browser. Recording is always optional.</p>
             </section>
@@ -415,26 +452,31 @@ export default function Home() {
         {stage === 'studio' && q && <>
           <div className="studio-heading"><div><div className="eyebrow">YOUR PRACTICE, YOUR PACE</div><h1>Find your <em>rhythm.</em></h1><p>{displayRole} · {level}</p></div><div className="question-progress"><strong>{String(index + 1).padStart(2, '0')}</strong><span>/ {String(questions.length).padStart(2, '0')} questions</span><div className="progress-track"><i style={{ width: `${index / questions.length * 100}%` }}/></div></div></div>
           <div className="studio-grid"><div><section className="question-card"><div className="question-meta"><span>{q.category}</span><span>{q.source === 'generated' ? 'AI generated' : 'Curated question'}</span></div><h2>{q.prompt}</h2><div className="question-bottom"><span>Take a breath. You’ve got room to think.</span><button className="text-link" onClick={readQuestion} disabled={recording}><AudioLines size={15}/>Read question</button></div></section>
-            <section className="camera-card">{media && !clip ? <video ref={videoRef} className="live-video" autoPlay muted playsInline aria-label="Live camera preview"/> : clip ? <video src={clip.url} className="playback-video" controls playsInline aria-label="Review your answer recording"/> : <div className="camera-empty"><div className="camera-glyph">{textOnly ? <FileText size={29}/> : <Video size={29}/>}</div><h3>{textOnly ? 'Make space for your answer.' : 'Your practice studio is ready.'}</h3><p>{textOnly ? 'Write your response in the transcript box below.' : 'Turn on your camera and microphone when you’re ready.'}</p>{!textOnly && <><label className="check-row media-check"><input type="checkbox" checked={mediaConsent} onChange={e => setMediaConsent(e.target.checked)}/><span>I agree to record my camera and microphone for this session.</span></label><button className="primary" disabled={!mediaConsent || !!busy} onClick={() => void enableMedia()}><Video size={16}/>Enable camera & microphone</button><button className="text-link" disabled={!!busy} onClick={() => setTextOnly(true)}>Use text answers instead<ArrowRight size={14}/></button></>}</div>}
-              <div className="camera-controls"><span className={recording ? 'recording-status' : 'camera-status'}><i />{recording ? 'Recording' : clip ? (media ? 'Answer captured · camera on' : 'Answer captured') : media ? 'Camera & mic on' : 'Camera & mic off'}</span><span className="record-time">{clock(clip?.duration ?? seconds)} <small>/ 03:00</small></span><div className="meter" aria-label="Microphone level">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ height: 5 + Math.min(1, meter) * (8 + (i % 4) * 6), opacity: media ? .45 + Math.min(1, meter) * .5 : .2 }}/>)}</div>{recording ? <button className="stop-button" onClick={() => void stopRecording()} disabled={!!busy}><Square size={13} fill="currentColor"/>Stop answer</button> : media && !clip ? <button className="record-button" onClick={startRecording} disabled={!!busy}><span />Record answer</button> : clip ? <button className="text-link" disabled={!!busy} onClick={retake}>Retake</button> : null}{media && <button className="device-off" aria-label="Turn off camera and microphone" disabled={recording || !!busy} onClick={releaseDevices}><Video size={14}/><X size={10}/></button>}</div>
+            <section className="camera-card">{media && !clip ? <video ref={videoRef} className="live-video" autoPlay muted playsInline aria-label="Live camera preview"/> : clip ? <video src={clip.url} className="playback-video" controls playsInline aria-label="Review your answer recording"/> : <div className="camera-empty"><div className="camera-glyph">{textOnly ? <FileText size={29}/> : <Video size={29}/>}</div><h3>{textOnly ? 'Make space for your answer.' : 'Your practice studio is ready.'}</h3><p>{textOnly ? 'Write your response in the transcript box below.' : 'Turn on your camera and microphone when you’re ready.'}</p>{!textOnly && <><label className="check-row media-check"><input type="checkbox" checked={mediaConsent} onChange={e => setMediaConsent(e.target.checked)}/><span>I agree to record and analyze my camera and microphone on this device. Speech and vision models download on first use; English speech becomes a transcript automatically.</span></label><button className="primary" disabled={!mediaConsent || !!busy} onClick={() => void enableMedia()}><Video size={16}/>Enable camera & microphone</button><button className="text-link" disabled={!!busy} onClick={() => setTextOnly(true)}>Use text answers instead<ArrowRight size={14}/></button></>}</div>}
+              <div className="camera-controls"><span className={recording ? 'recording-status' : 'camera-status'}><i />{recording ? 'Recording' : clip ? (media ? 'Answer captured · camera on' : 'Answer captured') : media ? 'Camera & mic on' : 'Camera & mic off'}</span><span className="record-time">{clock(clip?.duration ?? seconds)} <small>/ 03:00</small></span><div className="meter" aria-label="Microphone level">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ height: 5 + Math.min(1, meter) * (8 + (i % 4) * 6), opacity: media ? .45 + Math.min(1, meter) * .5 : .2 }}/>)}</div>{recording ? <button className="stop-button" onClick={() => void stopRecording()} disabled={!!busy}><Square size={13} fill="currentColor"/>Stop answer</button> : media && !clip ? <button className="record-button" onClick={() => void startRecording()} disabled={!!busy}><span />Record answer</button> : clip ? <button className="text-link" disabled={!!busy} onClick={retake}>Retake</button> : null}{media && <button className="device-off" aria-label="Turn off camera and microphone" disabled={recording || !!busy} onClick={releaseDevices}><Video size={14}/><X size={10}/></button>}</div>
             </section>
-            <section className="transcript-card"><div><label className="field-label" htmlFor="transcript">Your answer transcript</label><span>{wordCount(transcript)} {wordCount(transcript) === 1 ? 'word' : 'words'}</span></div><p>{localReview ? personalFree ? 'Your answer stays in this browser. Feedback uses a transparent practice rubric, not AI analysis. Type or paste what you said.' : 'Practice mode: type or paste what you said. The browser rubric uses this text, not the recording.' : fictionalOnly ? 'Fictional sample mode: type a made-up answer only. This text goes to Google; recordings stay local.' : 'Stop recording to transcribe, then review and correct your words before continuing.'}</p><textarea id="transcript" rows={5} maxLength={20000} placeholder={mode === 'live' && fictionalOnly && !personalFree ? 'In this fictional example, I built a pretend project…' : 'Your words go here. A specific situation, what you did, and what changed…'} value={transcript} disabled={recording || !!busy} onChange={e => setTranscript(e.target.value)}/>{clip && mode === 'live' && mediaCloudAvailable && <button className="text-link" disabled={!!busy} onClick={() => void transcribe(clip.audio)}>Retry audio transcription</button>}</section>
+            <section className="transcript-card"><div><label className="field-label" htmlFor="transcript">{textOnly ? 'Your answer transcript' : 'Transcript from your recording'}</label><span>{wordCount(transcript)} {wordCount(transcript) === 1 ? 'word' : 'words'}</span></div>
+              {speechStatus && <p role="status" aria-live="polite">{speechStatus}</p>}
+              <p>{clip || recording || media ? 'Speak naturally. Your audio is transcribed on this device in short batches and finalized when you stop. Correct recognition errors if needed; there is no need to type your answer.' : 'Text practice is also available. Camera answers generate their own transcript.'} {personalFree || mode !== 'live' ? 'Content and comprehension use the browser practice rubric.' : fictionalOnly ? 'Only fictional spoken answers may be sent to Google for feedback.' : 'The transcript uses the cloud feedback consent you enabled.'}</p>
+              <textarea id="transcript" rows={5} maxLength={20000} placeholder={textOnly ? 'Write your answer here…' : 'Your spoken words will appear here automatically…'} value={transcript} disabled={recording || !!busy} onChange={e => setTranscript(e.target.value)}/>
+              {clip && <button className="text-link" disabled={!!busy} onClick={() => void transcribe(clip.audio)}>Retry transcription from recording</button>}
+            </section>
             <div className="studio-actions"><button className="text-link" disabled={recording || !!busy || !!clip || !!transcript.trim()} onClick={() => void saveAnswer(true)}>Skip this question</button><button className="primary" disabled={recording || !!busy || !transcript.trim()} onClick={() => void saveAnswer()}>{busy ? <><LoaderCircle className="spin" size={17}/>{busy}</> : <>{index === questions.length - 1 ? 'Finish & see feedback' : 'Save & next question'}<ArrowRight size={17}/></>}</button></div>
-          </div><aside className="coaching-sidebar"><div className="coaching-card"><span className="tiny-label">A SMALL REMINDER</span><h3>Let the story<br />do the talking.</h3><p>You don’t need a perfect answer. You need a clear one.</p><ol><li><span>S</span><div><strong>Set the scene</strong><small>What was happening?</small></div></li><li><span>A</span><div><strong>Make it yours</strong><small>What did you actually do?</small></div></li><li><span>R</span><div><strong>Show the change</strong><small>What happened? What did you learn?</small></div></li></ol></div><div className="privacy-card"><LockKeyhole size={19}/><h4>Your recording stays here.</h4><p>Clips stay in this browser until you download them or close the page.</p>{mode === 'live' && (mediaCloudAvailable ? <><label className="check-row"><input type="checkbox" checked={visualConsent} disabled={recording || !!busy || !!clip} onChange={e => setVisualConsent(e.target.checked)}/><span>Include camera observations<small>Send up to 4 sampled frames to {providerLabel} for framing, posture, and face/mouth visibility feedback.</small></span></label><p>Audio and transcripts use the cloud processing you enabled. Camera observations do not affect scores.</p></> : <p>{personalFree ? 'Your personal resume, answers, and recordings stay in this browser. Only the approved generic role and skill tags are used for AI questions. Answer feedback uses the browser practice rubric.' : 'Fictional sample text and typed answers use Gemini. No original PDFs, audio, or camera frames are sent.'}</p>)}</div>{textOnly && <button className="text-link" onClick={() => setTextOnly(false)}>Switch to camera practice<ArrowRight size={14}/></button>}</aside></div>
+          </div><aside className="coaching-sidebar"><div className="coaching-card"><span className="tiny-label">A SMALL REMINDER</span><h3>Let the story<br />do the talking.</h3><p>You don’t need a perfect answer. You need a clear one.</p><ol><li><span>S</span><div><strong>Set the scene</strong><small>What was happening?</small></div></li><li><span>A</span><div><strong>Make it yours</strong><small>What did you actually do?</small></div></li><li><span>R</span><div><strong>Show the change</strong><small>What happened? What did you learn?</small></div></li></ol></div><div className="privacy-card"><LockKeyhole size={19}/><h4>Your recording stays here.</h4><p>Clips stay in this browser until you download them or close the page. Speech recognition and landmark measurements run on your device. Model files download from Hugging Face and Google; recording data is not sent to those download hosts.</p>{mode === 'live' && (mediaCloudAvailable ? <><label className="check-row"><input type="checkbox" checked={visualConsent} disabled={recording || !!busy || !!clip} onChange={e => setVisualConsent(e.target.checked)}/><span>Include camera observations<small>Send up to 4 sampled frames to {providerLabel} for framing, posture, and face/mouth visibility feedback.</small></span></label><p>Audio stays on this device. Transcripts and optional sampled cloud frames use your consent. Cloud visual notes do not affect scores.</p></> : <p>{personalFree ? 'Your personal resume, answers, and recordings stay in this browser. Only the approved generic role and skill tags are used for AI questions. Answer feedback uses the browser practice rubric.' : 'Fictional sample text and answer transcripts use Gemini. No original PDFs, audio, or camera frames are sent.'}</p>)}</div>{textOnly && <button className="text-link" onClick={() => setTextOnly(false)}>Switch to camera practice<ArrowRight size={14}/></button>}</aside></div>
         </>}
         {stage === 'review' && <>
           <div className="studio-heading report-heading"><div><div className="eyebrow"><CheckCircle2 size={14}/>ONE PRACTICE CLOSER</div><h1>That’s how you <em>grow.</em></h1><p>{displayRole} · {answers.length} answers · {localReview ? 'Browser practice rubric' : 'AI coaching estimates'}</p></div><button className="secondary" onClick={exportReport}><Download size={16}/>Download report</button></div>
-          <div className="report-overview"><div className="overall"><span className="tiny-label">YOUR SESSION</span><div>{scoreText(report.overall)}<small>/100</small></div><p>{report.overall === null ? 'Not enough answer evidence' : 'A starting point for your next practice'}</p></div><div className="score-grid">{[{ key: 'confidence', name: 'Confidence', sub: 'Speaking pace + filler proxy', icon: AudioLines }, { key: 'content', name: 'Content', sub: 'Specificity, structure & evidence', icon: FileText }, { key: 'comprehension', name: 'Comprehension', sub: 'How you address the question', icon: Sparkles }].map(item => <div className="score-item" key={item.key}><item.icon size={19}/><div><span>{item.name}</span><strong>{scoreText(report.scores[item.key])}<small>{report.scores[item.key] === null ? 'unavailable' : '/100'}</small></strong><p>{item.sub}</p></div></div>)}</div></div>
-          <p className="score-disclaimer">{localReview ? 'Practice scores use simple text heuristics and cannot establish correctness or genuine comprehension.' : 'AI feedback is provisional and may be wrong.'} Confidence describes delivery patterns, not how you feel. Camera observations never affect scores.</p>
-          <div className="section-title-row"><div><span className="eyebrow">THE REPLAY ROOM</span><h2>Moments to come back to.</h2></div><span>Whole answer clips · ranked by available scores</span></div>
-          <div className="moments-grid">{[{ kind: 'best', label: 'YOUR STRONGEST MOMENT', index: report.best }, { kind: 'worst', label: 'YOUR BIGGEST OPPORTUNITY', index: report.worst }].map(item => { const take = item.index === null ? null : answers[item.index]; return <section className={`moment-card ${item.kind}`} key={item.kind}><div className="moment-label"><span>{item.kind === 'best' ? <Sparkles size={15}/> : <ArrowUpRight size={16}/>} {item.label}</span>{take && <strong>{scoreText(overallScore(take.analysis.scores))}/100</strong>}</div>{take?.url ? <><video controls playsInline src={take.url} preload="metadata" aria-label={item.kind === 'best' ? 'Strongest answer clip' : 'Weakest answer clip'}/><div className="moment-copy"><span>QUESTION {(item.index ?? 0) + 1} · {clock(take.duration)}</span><h3>{take.question.prompt}</h3><p>{take.analysis.summary}</p><button className="text-link" onClick={() => download(take.url!, `cadence-${item.kind}-answer.${take.mime.includes('mp4') ? 'mp4' : 'webm'}`)}><Download size={15}/>Download this clip</button></div></> : <div className="moment-empty"><Film size={28}/><h3>{item.kind === 'best' ? 'Your next replay starts here.' : 'Make room for a comparison.'}</h3><p>{item.kind === 'best' ? 'Record at least one scored answer to see a highlight.' : 'Record at least two scored answers to compare your strongest and weakest moments.'}</p></div>}</section>; })}</div>
+          <div className="report-overview"><div className="overall"><span className="tiny-label">YOUR SESSION</span><div>{scoreText(report.overall)}<small>/100</small></div><p>{report.overall === null ? 'Not enough answer evidence' : 'A starting point for your next practice'}</p></div><div className="score-grid">{[{ key: 'confidence', name: 'Confidence / delivery', sub: 'Measured audio + available video cues', icon: AudioLines }, { key: 'content', name: 'Content', sub: 'Specificity, structure & evidence', icon: FileText }, { key: 'comprehension', name: 'Comprehension', sub: 'How you address the question', icon: Sparkles }].map(item => <div className="score-item" key={item.key}><item.icon size={19}/><div><span>{item.name}</span><strong>{scoreText(report.scores[item.key])}<small>{report.scores[item.key] === null ? 'unavailable' : '/100'}</small></strong><p>{item.sub}</p></div></div>)}</div></div>
+          <p className="score-disclaimer">{localReview ? 'Practice scores use simple text heuristics and cannot establish correctness or genuine comprehension.' : 'AI feedback is provisional and may be wrong.'} Confidence is a labeled delivery estimate from pace, pauses, possible repetitions, and available head-position, framing, and body-movement measurements. It does not measure feelings or eye contact. Missing cues are excluded.</p>
+          <div className="section-title-row"><div><span className="eyebrow">THE REPLAY ROOM</span><h2>Moments to come back to.</h2></div><span>Variable-length excerpts · local heuristic selection</span></div>
+          <div className="moments-grid">{(['best', 'worst'] as const).map(kind => <section className={`moment-card ${kind}`} key={kind}><div className="moment-label"><span>{kind === 'best' ? <Sparkles size={15}/> : <ArrowUpRight size={16}/>} {kind === 'best' ? 'STRONG MOMENTS' : 'MOMENTS TO IMPROVE'}</span></div>{moments[kind].length ? moments[kind].map(moment => <MomentClip key={moment.id} moment={moment} kind={kind}/>) : <div className="moment-empty"><Film size={28}/><h3>{kind === 'best' ? 'Your next replay starts here.' : 'More speech gives us a comparison.'}</h3><p>Record at least two distinct speech sections, within one answer or across answers, to show both categories. Unavailable evidence is never duplicated into a second clip.</p></div>}</section>)}</div>
           <div className="section-title-row"><h2>Go a little deeper.</h2><span>Your answers, with something to work on.</span></div>
-          <div className="answer-list">{answers.map((take, i) => <details key={take.question.id}><summary><span className="answer-number">{String(i + 1).padStart(2, '0')}</span><span>{take.question.prompt}</span><strong>{scoreText(overallScore(take.analysis.scores))}<small>/100</small></strong><ChevronDown size={17}/></summary><div className="answer-detail"><p>{take.analysis.summary}</p><div className="feedback-columns"><div><h4>Keep doing</h4><ul>{take.analysis.strengths.map((s, j) => <li key={j}>{s}</li>)}</ul></div><div><h4>Try next time</h4><ul>{take.analysis.improvements.map((s, j) => <li key={j}>{s}</li>)}</ul></div></div>{take.analysis.visual.length > 0 && <div><h4>Camera observations</h4><ul>{take.analysis.visual.map((s, j) => <li key={j}>{s}</li>)}</ul></div>}<div className="transcript-quote"><h4>Your transcript</h4><p>{take.transcript || 'Question skipped. No transcript submitted.'}</p></div>{take.analysis.evidence.length > 0 && <p className="evidence-note">Evidence: “{take.analysis.evidence[0]}”</p>}<div className="answer-metrics"><span>{take.analysis.metrics.words} {take.analysis.metrics.words === 1 ? 'word' : 'words'}</span><span>{take.analysis.metrics.fillers} filler phrases</span><span>{take.analysis.metrics.wpm === null ? 'Pace unavailable' : `${take.analysis.metrics.wpm} words/min incl. pauses`}</span><span>{take.analysis.mode === 'live' ? 'AI feedback' : 'Practice rubric'}</span></div>{take.url && <button className="text-link" onClick={() => download(take.url!, `cadence-answer-${i + 1}.${take.mime.includes('mp4') ? 'mp4' : 'webm'}`)}><Download size={14}/>Download answer recording</button>}</div></details>)}</div>
+          <div className="answer-list">{answers.map((take, i) => <details key={take.question.id}><summary><span className="answer-number">{String(i + 1).padStart(2, '0')}</span><span>{take.question.prompt}</span><strong>{scoreText(overallScore(take.analysis.scores))}<small>/100</small></strong><ChevronDown size={17}/></summary><div className="answer-detail"><p>{take.analysis.summary}</p><div className="feedback-columns"><div><h4>Keep doing</h4><ul>{take.analysis.strengths.map((s, j) => <li key={j}>{s}</li>)}</ul></div><div><h4>Try next time</h4><ul>{take.analysis.improvements.map((s, j) => <li key={j}>{s}</li>)}</ul></div></div>{take.analysis.visual.length > 0 && <div><h4>Camera observations</h4><ul>{take.analysis.visual.map((s, j) => <li key={j}>{s}</li>)}</ul></div>}<div className="transcript-quote"><h4>{take.transcriptSource.startsWith('recording') ? 'Transcript from recording audio' : 'Your transcript'}</h4><p>{take.transcript || 'Question skipped. No transcript submitted.'}</p></div>{take.analysis.evidence.length > 0 && <p className="evidence-note">Evidence: “{take.analysis.evidence[0]}”</p>}{take.delivery && <div className="delivery-evidence"><h4>Confidence / delivery breakdown</h4><ul>{take.delivery.components.map(component => <li key={component.name}><strong>{component.name}: {component.score}/100 ({component.weight}% weight)</strong> — {component.evidence}</li>)}</ul>{take.delivery.notes.map(note => <p key={note}>{note}</p>)}</div>}<div className="answer-metrics"><span>{take.analysis.metrics.words} {take.analysis.metrics.words === 1 ? 'word' : 'words'}</span><span>{take.analysis.metrics.fillers} filler phrases</span><span>{take.analysis.metrics.wpm === null ? 'Pace unavailable' : `${take.analysis.metrics.wpm} words/min incl. pauses`}</span><span>{take.analysis.mode === 'live' ? 'AI feedback' : 'Practice rubric'}</span></div>{take.url && <button className="text-link" onClick={() => download(take.url!, `cadence-answer-${i + 1}.${take.mime.includes('mp4') ? 'mp4' : 'webm'}`)}><Download size={14}/>Download answer recording</button>}</div></details>)}</div>
           <div className="review-footer"><div><LockKeyhole size={18}/><p>Keep the moments that matter.<small>Download your clips before closing this page. Starting fresh clears this session.</small></p></div><button className="primary" onClick={reset}>Start a fresh practice<ArrowRight size={17}/></button></div>
         </>}
         <footer className="page-footer"><span>Built for the person you’re becoming.</span><span>cadence<span className="brand-dot">.</span></span></footer>
       </main>
     </div>
-    <dialog ref={helpRef} className="help-dialog" aria-labelledby="how-it-works-title"><button className="dialog-close" aria-label="Close explanation" onClick={() => helpRef.current?.close()}><X size={20}/></button><span className="eyebrow">A LITTLE PRACTICE GOES A LONG WAY</span><h2 id="how-it-works-title">Your interview, rehearsed.</h2><ol><li><strong>Bring context.</strong> Upload a PDF or TXT resume. PDFs are read in this browser; review the extracted text before building your interview.</li><li><strong>Practice your way.</strong> Give text answers or opt into camera/microphone recording. Each answer becomes its own downloadable clip.</li><li><strong>Review your words.</strong> Cloud audio transcription is available only when the provider’s data policy permits it. Otherwise enter the transcript yourself.</li><li><strong>Find your next step.</strong> Review content, comprehension, and delivery feedback, then replay the strongest and weakest recorded answers.</li></ol><p>Confidence is a delivery proxy based on pace and filler phrases. Camera feedback covers visible framing and posture; it never infers feelings or identity. Missing evidence stays unavailable.</p><p>Videos stay in browser memory. {fictionalOnly ? 'Personal mode keeps your resume and answers in this browser and can send selected generic skill tags for AI questions. Fictional sample mode sends extracted text and typed answers to Google. Free-tier cloud data may improve Google products and be reviewed by people.' : `With cloud consent, resume/context, transcript, audio, and optional sampled frames are sent to ${providerLabel}; its data policies apply.`} Download clips before closing this page.</p><button className="primary" onClick={() => helpRef.current?.close()}>Let’s practice<ArrowRight size={17}/></button></dialog>
+    <dialog ref={helpRef} className="help-dialog" aria-labelledby="how-it-works-title"><button className="dialog-close" aria-label="Close explanation" onClick={() => helpRef.current?.close()}><X size={20}/></button><span className="eyebrow">A LITTLE PRACTICE GOES A LONG WAY</span><h2 id="how-it-works-title">Your interview, rehearsed.</h2><ol><li><strong>Bring context.</strong> Upload a PDF or TXT resume. PDFs are read in this browser; review the extracted text before building your interview.</li><li><strong>Practice your way.</strong> Give text answers or opt into camera/microphone recording. Each answer becomes its own downloadable clip.</li><li><strong>Review your words.</strong> Recorded audio is transcribed on your device in short batches. Stop recording to finalize it, then optionally correct recognition errors. English speech is supported initially.</li><li><strong>Find your next step.</strong> Review content, comprehension, and delivery feedback, then replay the strongest and weakest recorded answers.</li></ol><p>Confidence is a delivery estimate from pace, pauses, possible word repetitions, camera-facing head position, and upper-body framing when available. Head direction does not prove eye contact. No feelings, identity, or speech disorder is inferred. Missing evidence stays unavailable.</p><p>Videos stay in browser memory. {fictionalOnly ? 'Personal mode keeps your resume and answers in this browser and can send selected generic skill tags for AI questions. Fictional sample mode sends extracted text and answer transcripts to Google. Free-tier cloud data may improve Google products and be reviewed by people.' : `With cloud consent, resume/context, transcript, and optional sampled frames are sent to ${providerLabel}; its data policies apply.`} Download clips before closing this page.</p><button className="primary" onClick={() => helpRef.current?.close()}>Let’s practice<ArrowRight size={17}/></button></dialog>
   </div>;
 }

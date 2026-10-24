@@ -1,0 +1,149 @@
+import { timedWords } from './recorded-delivery.mjs';
+export type SpeechWord = { text: string; start: number; end: number };
+export type AudioEvidence = { at: number; rms: number };
+export type VisionEvidence = { at: number; facing: boolean | null; shouldersVisible: boolean | null; bodyShift?: number | null };
+export type RecordingEvidence = { words: SpeechWord[]; audioEvidence: AudioEvidence[]; visionEvidence: VisionEvidence[]; transcript: string };
+
+export class RecordingCoach {
+    private speech = new Worker(new URL('./speech.worker.ts', import.meta.url), { type: 'module' });
+    private vision: Worker | null = null;
+    private pending = new Map<number, { resolve: (value: any) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> }>();
+    private sequence = 0;
+    private context: AudioContext | null = null;
+    private node: AudioWorkletNode | null = null;
+    private source: MediaStreamAudioSourceNode | null = null;
+    private chunks: Float32Array[] = [];
+    private samples = 0;
+    private processed = 0;
+    private chain: Promise<void> = Promise.resolve();
+    private active = false;
+    private visionBusy = false;
+    private visionReady = false;
+    private visionTimer: ReturnType<typeof setInterval> | null = null;
+    private started = 0;
+    private lastAudioAt = -1;
+    private generation = 0;
+    private failure: Error | null = null;
+    words: SpeechWord[] = [];
+    audioEvidence: AudioEvidence[] = [];
+    visionEvidence: VisionEvidence[] = [];
+    get failed() { return this.failure !== null; }
+    constructor(private onText: (text: string) => void, private onStatus: (status: string) => void) {
+        this.speech.onmessage = ({ data }) => {
+            if (data.type === 'progress') { this.onStatus(`Loading local speech model (${data.progress}% of current file)`); return; }
+            const pending = this.pending.get(data.id);
+            if (!pending) return;
+            clearTimeout(pending.timer); this.pending.delete(data.id);
+            if (data.type === 'error') pending.reject(new Error(data.message)); else pending.resolve(data.output);
+        };
+        this.speech.onerror = () => { this.rejectPending('Speech worker stopped. Retry transcription or use text practice.'); };
+    }
+    private rejectPending(message: string) {
+        for (const p of this.pending.values()) { clearTimeout(p.timer); p.reject(new Error(message)); }
+        this.pending.clear();
+    }
+    private request(type: string, audio?: Float32Array): Promise<any> {
+        const id = ++this.sequence;
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => { this.pending.delete(id); reject(new Error('Local transcription timed out. Your recording is preserved; retry on a faster device or use text practice.')); }, 180000);
+            this.pending.set(id, { resolve, reject, timer });
+            this.speech.postMessage({ id, type, audio }, audio ? [audio.buffer] : []);
+        });
+    }
+    async warm() {
+        this.onStatus('Loading local speech model. First use may take a minute…');
+        await this.request('warm');
+        this.onStatus('On-device English transcription ready');
+        // MediaPipe's WASM loader uses importScripts, which requires a classic worker.
+        this.vision = new Worker('/vision-capture.worker.js');
+        this.vision.onmessage = ({ data }) => {
+            if (data.type === 'ready') this.visionReady = true;
+            if (data.type === 'unavailable') { this.visionReady = false; this.onStatus('Speech ready; visual measurements unavailable on this device'); }
+            if (data.type === 'frameDone') this.visionBusy = false;
+            if (data.type === 'sample' && this.active && data.generation === this.generation) this.visionEvidence.push({ at: data.at, facing: data.facing, shouldersVisible: data.shouldersVisible, bodyShift: data.bodyShift });
+        };
+        this.vision.onerror = () => { this.visionBusy = false; this.onStatus('Speech ready; visual measurements unavailable on this device'); };
+        this.vision.postMessage({ type: 'warm' });
+    }
+    async start(stream: MediaStream, video: HTMLVideoElement | null) {
+        this.generation++; this.failure = null; this.words = []; this.audioEvidence = []; this.visionEvidence = [];
+        this.chunks = []; this.samples = 0; this.processed = 0; this.lastAudioAt = -1; this.chain = Promise.resolve();
+        this.context = new AudioContext({ sampleRate: 16000 });
+        if (this.context.sampleRate !== 16000) throw new Error('This browser cannot capture 16 kHz speech for local recognition. Try Chrome or Edge, or use text practice.');
+        await this.context.audioWorklet.addModule('/audio-capture.worklet.js');
+        await this.context.resume();
+        this.source = this.context.createMediaStreamSource(stream);
+        this.node = new AudioWorkletNode(this.context, 'cadence-audio-capture');
+        this.active = true; this.started = performance.now();
+        this.node.port.onmessage = ({ data }: MessageEvent<Float32Array>) => {
+            if (!this.active) return;
+            this.chunks.push(data); this.samples += data.length;
+            const at = this.samples / 16000;
+            if (at - this.lastAudioAt >= .1) {
+                this.audioEvidence.push({ at, rms: Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length) }); this.lastAudioAt = at;
+            }
+            if (this.samples - this.processed >= 12 * 16000) this.queueAudio(false);
+        };
+        this.source.connect(this.node); this.node.connect(this.context.destination);
+        if (video) this.visionTimer = setInterval(() => { void this.sampleVideo(video); }, 500);
+        this.onStatus('Listening on this device · captions update in short batches');
+    }
+    private async sampleVideo(video: HTMLVideoElement) {
+        if (!this.active || !this.visionReady || this.visionBusy || !video.videoWidth) return;
+        this.visionBusy = true;
+        try {
+            const frame = await createImageBitmap(video, { resizeWidth: 384, resizeHeight: Math.round(video.videoHeight / video.videoWidth * 384) });
+            if (!this.active) { frame.close(); this.visionBusy = false; return; }
+            this.vision?.postMessage({ type: 'frame', frame, at: (performance.now() - this.started) / 1000, timestamp: performance.now(), generation: this.generation }, [frame]);
+        } catch { this.visionBusy = false; }
+    }
+    private queueAudio(final: boolean) {
+        const end = this.samples, from = this.processed;
+        if (end <= from || (!final && end - from < 12 * 16000)) return;
+        const all = new Float32Array(end); let pos = 0;
+        for (const chunk of this.chunks) { all.set(chunk, pos); pos += chunk.length; }
+        const audio = all.slice(Math.max(0, from - 16000), end);
+        const offset = Math.max(0, from - 16000) / 16000, generation = this.generation;
+        this.processed = end;
+        this.chain = this.chain.then(async () => {
+            if (this.failure || generation !== this.generation) return;
+            // Whisper can hallucinate on silence. Reject silent chunks before inference.
+            if (Math.sqrt(audio.reduce((sum, x) => sum + x * x, 0) / audio.length) < .004) return;
+            const output = await this.request('transcribe', audio);
+            if (generation !== this.generation) return;
+            const words = timedWords(output.chunks, end / 16000, offset).filter((w: SpeechWord) => w.start >= from / 16000 - .15);
+            this.words.push(...words);
+            this.onText(this.words.map(w => w.text).join(' ').trim());
+        }).catch(error => { if (generation !== this.generation) return; this.failure = error instanceof Error ? error : new Error('Transcription failed.'); this.onStatus(this.failure.message); });
+    }
+    async stop(): Promise<RecordingEvidence> {
+        this.active = false;
+        if (this.visionTimer) clearInterval(this.visionTimer);
+        this.visionTimer = null;
+        this.source?.disconnect(); this.node?.disconnect();
+        if (this.context?.state !== 'closed') await this.context?.close(); this.context = null;
+        this.queueAudio(true); await this.chain;
+        if (this.failure) throw this.failure;
+        this.onStatus('Transcript generated from recording audio · review optional corrections');
+        return this.evidence();
+    }
+    evidence(): RecordingEvidence { return { words: [...this.words], audioEvidence: [...this.audioEvidence], visionEvidence: [...this.visionEvidence], transcript: this.words.map(w => w.text).join(' ').trim() }; }
+    async retry(blob: Blob): Promise<RecordingEvidence> {
+        this.generation++; this.failure = null;
+        const context = new AudioContext({ sampleRate: 16000 });
+        try {
+            const buffer = await context.decodeAudioData(await blob.arrayBuffer());
+            const mono = new Float32Array(buffer.length);
+            for (let c = 0; c < buffer.numberOfChannels; c++) { const channel = buffer.getChannelData(c); for (let i = 0; i < mono.length; i++) mono[i] += channel[i] / buffer.numberOfChannels; }
+            const output = await this.request('transcribe', mono);
+            this.words = timedWords(output.chunks, buffer.duration);
+            this.onText(this.words.map(w => w.text).join(' ').trim()); return this.evidence();
+        } finally { await context.close(); }
+    }
+    dispose() {
+        this.active = false; this.generation++;
+        if (this.visionTimer) clearInterval(this.visionTimer);
+        this.source?.disconnect(); this.node?.disconnect(); void this.context?.close().catch(() => {});
+        this.speech.terminate(); this.vision?.terminate(); this.rejectPending('Recording session closed.');
+    }
+}

@@ -1,0 +1,288 @@
+{
+  "fixture": "Public-domain JFK speech from Hugging Face Transformers.js docs, repeated with a 0.5-second gap; canvas video, no physical devices",
+  "duration": 23,
+  "liveCaptionBeforeStop": true,
+  "transcript": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country. so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+  "wordTimestamps": [
+    {
+      "text": "And",
+      "start": 0,
+      "end": 0.74
+    },
+    {
+      "text": "so",
+      "start": 0.74,
+      "end": 1.06
+    },
+    {
+      "text": "my",
+      "start": 1.06,
+      "end": 1.44
+    },
+    {
+      "text": "fellow",
+      "start": 1.44,
+      "end": 1.78
+    },
+    {
+      "text": "Americans",
+      "start": 1.78,
+      "end": 2.24
+    },
+    {
+      "text": "ask",
+      "start": 2.24,
+      "end": 3.88
+    },
+    {
+      "text": "not",
+      "start": 3.88,
+      "end": 4.56
+    },
+    {
+      "text": "what",
+      "start": 4.56,
+      "end": 5.68
+    },
+    {
+      "text": "your",
+      "start": 5.68,
+      "end": 6.04
+    },
+    {
+      "text": "country",
+      "start": 6.04,
+      "end": 6.36
+    },
+    {
+      "text": "can",
+      "start": 6.36,
+      "end": 6.76
+    },
+    {
+      "text": "do",
+      "start": 6.76,
+      "end": 7
+    },
+    {
+      "text": "for",
+      "start": 7,
+      "end": 7.26
+    },
+    {
+      "text": "you,",
+      "start": 7.26,
+      "end": 8.08
+    },
+    {
+      "text": "ask",
+      "start": 8.32,
+      "end": 8.66
+    },
+    {
+      "text": "what",
+      "start": 8.66,
+      "end": 8.96
+    },
+    {
+      "text": "you",
+      "start": 8.96,
+      "end": 9.28
+    },
+    {
+      "text": "can",
+      "start": 9.28,
+      "end": 9.5
+    },
+    {
+      "text": "do",
+      "start": 9.5,
+      "end": 9.72
+    },
+    {
+      "text": "for",
+      "start": 9.72,
+      "end": 9.92
+    },
+    {
+      "text": "your",
+      "start": 9.92,
+      "end": 10.24
+    },
+    {
+      "text": "country.",
+      "start": 10.24,
+      "end": 10.76
+    },
+    {
+      "text": "so",
+      "start": 12.24,
+      "end": 12.56
+    },
+    {
+      "text": "my",
+      "start": 12.56,
+      "end": 12.94
+    },
+    {
+      "text": "fellow",
+      "start": 12.94,
+      "end": 13.28
+    },
+    {
+      "text": "Americans",
+      "start": 13.28,
+      "end": 13.76
+    },
+    {
+      "text": "ask",
+      "start": 13.76,
+      "end": 15.379999999999999
+    },
+    {
+      "text": "not",
+      "start": 15.379999999999999,
+      "end": 16.06
+    },
+    {
+      "text": "what",
+      "start": 16.06,
+      "end": 17.18
+    },
+    {
+      "text": "your",
+      "start": 17.18,
+      "end": 17.62
+    },
+    {
+      "text": "country",
+      "start": 17.62,
+      "end": 17.86
+    },
+    {
+      "text": "can",
+      "start": 17.86,
+      "end": 18.259999999999998
+    },
+    {
+      "text": "do",
+      "start": 18.259999999999998,
+      "end": 18.5
+    },
+    {
+      "text": "for",
+      "start": 18.5,
+      "end": 18.740000000000002
+    },
+    {
+      "text": "you,",
+      "start": 18.740000000000002,
+      "end": 19.759999999999998
+    },
+    {
+      "text": "ask",
+      "start": 19.8,
+      "end": 20.16
+    },
+    {
+      "text": "what",
+      "start": 20.16,
+      "end": 20.439999999999998
+    },
+    {
+      "text": "you",
+      "start": 20.439999999999998,
+      "end": 20.78
+    },
+    {
+      "text": "can",
+      "start": 20.78,
+      "end": 20.98
+    },
+    {
+      "text": "do",
+      "start": 20.98,
+      "end": 21.22
+    },
+    {
+      "text": "for",
+      "start": 21.22,
+      "end": 21.42
+    },
+    {
+      "text": "your",
+      "start": 21.42,
+      "end": 21.72
+    },
+    {
+      "text": "country.",
+      "start": 21.72,
+      "end": 22.240000000000002
+    }
+  ],
+  "delivery": {
+    "score": 100,
+    "components": [
+      {
+        "name": "Speaking pace",
+        "score": 100,
+        "weight": 44,
+        "evidence": "112 words/minute including pauses"
+      },
+      {
+        "name": "Fillers and repeated words",
+        "score": 100,
+        "weight": 22,
+        "evidence": "0 filler phrases; 0 possible word repetitions. ASR may omit or misrecognize disfluencies; this does not diagnose stuttering."
+      },
+      {
+        "name": "Pause cadence",
+        "score": 100,
+        "weight": 33,
+        "evidence": "0 interior low-volume gaps longer than 3.5 seconds; noise can affect detection"
+      }
+    ],
+    "metrics": {
+      "words": 43,
+      "fillers": 0,
+      "wpm": 112,
+      "confidence": 100,
+      "repetitions": 0
+    },
+    "notes": [
+      "Delivery estimate from observable recording cues, not emotional confidence or hiring fitness.",
+      "Head direction unavailable: fewer than five usable face samples.",
+      "Body framing unavailable: fewer than five usable pose samples.",
+      "Body movement unavailable: fewer than five usable motion intervals."
+    ]
+  },
+  "visionSampleCount": 44,
+  "detectedFaceSampleCount": 0,
+  "detectedBodySampleCount": 0,
+  "moments": {
+    "best": [
+      {
+        "id": "0-0",
+        "answerIndex": 0,
+        "start": 0,
+        "end": 11.16,
+        "transcript": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+        "score": 84,
+        "reason": "Local delivery cues plus transcript specificity/keyword heuristic; not an AI correctness judgment.",
+        "mime": "video/webm;codecs=vp8,opus"
+      }
+    ],
+    "worst": [
+      {
+        "id": "0-1",
+        "answerIndex": 0,
+        "start": 11.94,
+        "end": 22.64,
+        "transcript": "so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+        "score": 84,
+        "reason": "Local delivery cues plus transcript specificity/keyword heuristic; not an AI correctness judgment.",
+        "mime": "video/webm;codecs=vp8,opus"
+      }
+    ]
+  }
+}

@@ -4,6 +4,41 @@ Updated October 24, 2026, America/New_York. Read this before continuing. The hum
 requested an immediate GitHub checkpoint because their usage was nearly exhausted.
 Do not restart the project, discard teammate work, or resurrect XTrain.
 
+## New recording-first request (current source; publication pending)
+
+The human requested automatic transcription from recording audio, delivery
+scoring using observable audio/video cues, and multiple variable-length strong
+and weak excerpts. Implementation is on `codex/recording-first-coaching`.
+English Whisper runs locally in a worker with live captions in ~12-second batches
+and automatic finalization on stop. A local MediaPipe worker supplies head-position,
+upper-body framing and movement samples. Confidence is now an explicitly labeled
+delivery heuristic with an evidence/weight breakdown; it never infers feelings,
+identity, eye-contact certainty or a stuttering diagnosis. Content/comprehension
+use the recognized transcript with optional corrections.
+
+Both clip categories can come from one sufficiently long answer or several;
+timestamps are approximate, up to three clips per category, with real local
+audio/video exports of selected ranges. Whole-answer fallback remains when
+timestamps are missing. No billing/data-policy or secret changes were made.
+
+Synthetic browser QA exercised real local speech inference and sampled vision
+workers without physical devices. It recognized the public speech fixture,
+produced captions before a 23-second recording ended, and produced both moment
+categories. Separate exported excerpts decoded with audible audio (7.14 and
+4.62 seconds). See `docs/qa/recording-first-synthetic-2026-10-24.json`.
+Physical camera/microphone and real-person landmark quality still need explicit
+device consent and separate verification; synthetic canvas produced no face/pose
+detections, correctly marked unavailable.
+All 53 tests, TypeScript and production build pass after the final cleanup fixes.
+Detailed evidence: [recording-first QA](qa/RECORDING_FIRST_2026-10-24.md).
+
+Publishing blocker: the existing Site returns `Sites project not found` through
+this account's connector. Browser visitor access works but does not confer
+editing/publishing rights. Preserve the Site ID/audience; do not create a
+replacement or transfer secrets. The human has been given the official owner /
+same-workspace editor-access instructions. The published URL still runs the
+previous build until an authorized account deploys the new source.
+
 Credential continuity: see [CREDENTIALS.md](CREDENTIALS.md). The production key
 was reverified as a configured, redacted Site secret at environment revision 3;
 it persists beyond this chat. A new clone or another account does not inherit it.
@@ -88,9 +123,10 @@ No physical camera/microphone or paid-media checks were performed.
   Scans need OCR; encrypted PDFs need an unlocked copy.
 - Media requires explicit consent and a click. Clips stay in browser memory
   until downloaded or page closed. No server recording database/history exists.
-- Confidence is a pace/filler delivery proxy. No face identity, lip-reading,
+- Confidence is a local observable-delivery heuristic. No face identity, lip-reading,
   emotion/personality/protected-trait inference, or hiring-fitness decisions.
-  Observable framing/posture/head direction/visibility only; no visual score.
+  Local head-position/framing/movement measurements can contribute to delivery;
+  cloud visual notes remain separate from scores. No feelings or gaze certainty.
 - API use is independent of Codex/ChatGPT subscriptions and this chat session.
 
 ## Included source and setup
