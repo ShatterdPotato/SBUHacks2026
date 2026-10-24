@@ -1,0 +1,119 @@
+[
+  {
+    "id": "P01",
+    "case": "Original supplied PDF",
+    "expected": "Accepted, readable text",
+    "observed": "Accepted; 4198 characters",
+    "result": "pass"
+  },
+  {
+    "id": "P02",
+    "case": "Password-protected PDF",
+    "expected": "Prompt rejection without lengthy busy lock",
+    "observed": "Timed repeat rejected in 193 ms with clear unlocked-PDF guidance; initial delay suspicion ruled out",
+    "result": "pass",
+    "bug": "Encrypted PDF waits for timeout"
+  },
+  {
+    "id": "P03",
+    "case": "Keyboard re-entry during encrypted PDF read",
+    "expected": "No overlapping jobs or later stale error",
+    "observed": "Hidden control enabled while visible busy; no stale error reproduced",
+    "result": "unconfirmed",
+    "elapsedSeconds": 44
+  },
+  {
+    "id": "P04",
+    "case": "Ten-page PDF at allowed limit",
+    "expected": "Accepted",
+    "observed": "pages-10.pdf\nRead successfully · 629 characters",
+    "result": "pass"
+  },
+  {
+    "id": "P05",
+    "case": "Eleven-page PDF above limit",
+    "expected": "Rejected with page-limit message",
+    "observed": "Use a resume of 10 pages or fewer.",
+    "result": "pass"
+  },
+  {
+    "id": "P06",
+    "case": "Blank PDF without text",
+    "expected": "Clear readable-text/OCR guidance",
+    "observed": "This PDF has no readable text. Export a text-based PDF or paste your resume text. Scanned-image PDFs need OCR first.",
+    "result": "pass"
+  },
+  {
+    "id": "P07",
+    "case": "Scanned/image-only PDF",
+    "expected": "OCR guidance",
+    "observed": "This PDF has no readable text. Export a text-based PDF or paste your resume text. Scanned-image PDFs need OCR first.",
+    "result": "pass"
+  },
+  {
+    "id": "P08",
+    "case": "Plain text renamed .pdf",
+    "expected": "Rejected as unreadable PDF",
+    "observed": "This PDF could not be read. Export it as a standard PDF or upload a TXT copy.",
+    "result": "pass"
+  },
+  {
+    "id": "P09",
+    "case": "Zero-byte PDF",
+    "expected": "Size/empty guidance",
+    "observed": "Use a PDF between 1 byte and 2 MB.",
+    "result": "pass"
+  },
+  {
+    "id": "P10",
+    "case": "Valid PDF exactly 2 MiB",
+    "expected": "Accepted",
+    "observed": "exact-2mb.pdf\nRead successfully · 4,198 characters",
+    "result": "pass"
+  },
+  {
+    "id": "P11",
+    "case": "PDF 1 byte over 2 MiB",
+    "expected": "Rejected before parsing",
+    "observed": "Please use a resume under 2 MB.",
+    "result": "pass"
+  },
+  {
+    "id": "P12",
+    "case": "Uppercase PDF extension",
+    "expected": "Accepted",
+    "observed": "UPPER.PDF\nRead successfully · 4,198 characters",
+    "result": "pass"
+  },
+  {
+    "id": "P13",
+    "case": "Truncated/corrupt PDF",
+    "expected": "Readable error, old resume preserved",
+    "observed": "This PDF could not be read. Export it as a standard PDF or upload a TXT copy.",
+    "result": "pass"
+  },
+  {
+    "id": "P14",
+    "case": "Explicit software target with ML-heavy resume",
+    "expected": "Broad role is Software engineering",
+    "observed": "Broad role: AI/ML engineering. Interview focus, level, and question count. Only the selected tags below; click a tag to exclude it.",
+    "result": "fail",
+    "bug": "Resume keywords override requested target role"
+  },
+  {
+    "id": "P15",
+    "case": "UTF-16 TXT resume with byte-order mark",
+    "expected": "Readable decoded text or clear encoding error",
+    "observed": "{\"characters\":80,\"nulls\":false,\"preview\":\"FICTIONAL SAMPLE\\nJordan Example\\nPython PyTorch SQL\\nAI/ML engineering internship.\",\"replacement\":false}",
+    "result": "pass",
+    "bug": "UTF-16 text accepted as corrupted UTF-8"
+  },
+  {
+    "id": "P16",
+    "case": "Binary bytes renamed .txt",
+    "expected": "Reject non-text file with clear guidance",
+    "observed": "{\"characters\":1024,\"controls\":116,\"hasReplacement\":true}",
+    "result": "fail",
+    "bug": "Binary/control-character data accepted as resume text"
+  }
+]

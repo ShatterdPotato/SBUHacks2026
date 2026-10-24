@@ -1,0 +1,1002 @@
+[
+  {
+    "id": "E001",
+    "area": "Defaults",
+    "action": "Open setup",
+    "expected": "Setup renders",
+    "observed": "Heading and build control visible",
+    "status": "PASS"
+  },
+  {
+    "id": "E002",
+    "area": "Defaults",
+    "action": "Inspect session mode",
+    "expected": "Personal selected",
+    "observed": "My real experience aria-pressed=true",
+    "status": "PASS"
+  },
+  {
+    "id": "E003",
+    "area": "Consent",
+    "action": "Inspect initial cloud checkbox",
+    "expected": "Opt-in unchecked",
+    "observed": "Unchecked",
+    "status": "PASS"
+  },
+  {
+    "id": "E004",
+    "area": "Defaults",
+    "action": "Inspect role",
+    "expected": "Empty",
+    "observed": "Empty",
+    "status": "PASS"
+  },
+  {
+    "id": "E005",
+    "area": "Defaults",
+    "action": "Inspect context",
+    "expected": "Empty",
+    "observed": "Empty",
+    "status": "PASS"
+  },
+  {
+    "id": "E006",
+    "area": "Defaults",
+    "action": "Inspect level",
+    "expected": "Internship",
+    "observed": "Internship",
+    "status": "PASS"
+  },
+  {
+    "id": "E007",
+    "area": "Defaults",
+    "action": "Inspect count",
+    "expected": "4",
+    "observed": "4",
+    "status": "PASS"
+  },
+  {
+    "id": "E008",
+    "area": "Defaults",
+    "action": "Inspect focus",
+    "expected": "Mixed only selected",
+    "observed": "Mixed true; others false",
+    "status": "PASS"
+  },
+  {
+    "id": "E009",
+    "area": "Navigation",
+    "action": "Inspect studio navigation",
+    "expected": "Disabled before questions",
+    "observed": "Disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E010",
+    "area": "Navigation",
+    "action": "Inspect report navigation",
+    "expected": "Disabled before answers",
+    "observed": "Disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E011",
+    "area": "Optional inputs",
+    "action": "Inspect build without resume",
+    "expected": "Allowed",
+    "observed": "Build enabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E012",
+    "area": "Error state",
+    "action": "Inspect initial alerts",
+    "expected": "None",
+    "observed": "0 alerts",
+    "status": "PASS"
+  },
+  {
+    "id": "E013",
+    "area": "Role boundary",
+    "action": "Enter one-character role",
+    "expected": "Retain P",
+    "observed": "value=P, length=1",
+    "status": "PASS"
+  },
+  {
+    "id": "E014",
+    "area": "Role boundary",
+    "action": "Fill 161 characters",
+    "expected": "UI/logic must handle overlimit safely",
+    "observed": "fill() can bypass maxlength; native behavior to be checked",
+    "status": "LIMITATION"
+  },
+  {
+    "id": "E015",
+    "area": "Injection",
+    "action": "Enter script-looking role",
+    "expected": "Literal input; no execution",
+    "observed": "Literal value displayed, no dialog",
+    "status": "PASS"
+  },
+  {
+    "id": "E016",
+    "area": "Defensive validation",
+    "action": "Fill 161-character role then Build",
+    "expected": "Safe explicit error",
+    "observed": "Role must be text of at most 160 characters.; no navigation",
+    "status": "PASS"
+  },
+  {
+    "id": "E017",
+    "area": "Recovery",
+    "action": "Dismiss role validation error",
+    "expected": "Alert clears",
+    "observed": "0 alerts",
+    "status": "PASS"
+  },
+  {
+    "id": "E018",
+    "area": "Native boundary",
+    "action": "Type y after a 160-character role",
+    "expected": "Native maxlength blocks extra character",
+    "observed": "160 characters, no trailing y",
+    "status": "PASS"
+  },
+  {
+    "id": "E019",
+    "area": "Unicode",
+    "action": "Enter accented/Greek/emoji role",
+    "expected": "Preserve text",
+    "observed": "Exact Unicode text retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E020",
+    "area": "Input normalization",
+    "action": "Paste newline into single-line role",
+    "expected": "No multiline control state",
+    "observed": "AIML retained without newline",
+    "status": "PASS"
+  },
+  {
+    "id": "E021",
+    "area": "Context input",
+    "action": "Enter blank lines in context",
+    "expected": "Preserve paragraph breaks",
+    "observed": "Exact multiline value retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E022",
+    "area": "Native boundary",
+    "action": "Type after 18,000 context characters",
+    "expected": "Block extra character",
+    "observed": "18000 chars; no trailing y",
+    "status": "PASS"
+  },
+  {
+    "id": "E023",
+    "area": "Select controls",
+    "action": "Choose Entry level",
+    "expected": "Selected Entry level",
+    "observed": "Entry level",
+    "status": "PASS"
+  },
+  {
+    "id": "E024",
+    "area": "Select controls",
+    "action": "Choose Experienced",
+    "expected": "Selected Experienced",
+    "observed": "Experienced",
+    "status": "PASS"
+  },
+  {
+    "id": "E025",
+    "area": "Select controls",
+    "action": "Return to Internship",
+    "expected": "Selected Internship",
+    "observed": "Internship",
+    "status": "PASS"
+  },
+  {
+    "id": "E026",
+    "area": "Session length",
+    "action": "Choose 3",
+    "expected": "Selected 3",
+    "observed": "3",
+    "status": "PASS"
+  },
+  {
+    "id": "E027",
+    "area": "Session length",
+    "action": "Choose 5",
+    "expected": "Selected 5",
+    "observed": "5",
+    "status": "PASS"
+  },
+  {
+    "id": "E028",
+    "area": "Session length",
+    "action": "Choose 6",
+    "expected": "Selected 6",
+    "observed": "6",
+    "status": "PASS"
+  },
+  {
+    "id": "E029",
+    "area": "Session length",
+    "action": "Return to 4",
+    "expected": "Selected 4",
+    "observed": "4 in unchanged AX state",
+    "status": "PASS"
+  },
+  {
+    "id": "E030",
+    "area": "Focus selection",
+    "action": "Choose Behavioral",
+    "expected": "Only Behavioral selected",
+    "observed": "Behavioral true; Mixed and Technical false",
+    "status": "PASS"
+  },
+  {
+    "id": "E031",
+    "area": "Focus selection",
+    "action": "Choose Technical",
+    "expected": "Only Technical selected",
+    "observed": "Technical true; others false",
+    "status": "PASS"
+  },
+  {
+    "id": "E032",
+    "area": "Focus selection",
+    "action": "Return to Mixed",
+    "expected": "Only Mixed selected",
+    "observed": "Mixed true; others false",
+    "status": "PASS"
+  },
+  {
+    "id": "E033",
+    "area": "Draft state",
+    "action": "Switch prompt to resume with text entered",
+    "expected": "Retain role and context",
+    "observed": "AI/ML Intern and fictional draft retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E034",
+    "area": "Draft state",
+    "action": "Return resume tab to prompt",
+    "expected": "Retain context",
+    "observed": "Fictional draft: Python PyTorch SQL. retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E035",
+    "area": "Help",
+    "action": "Open See how it works",
+    "expected": "Modal visible",
+    "observed": "Help modal opened",
+    "status": "PASS"
+  },
+  {
+    "id": "E036",
+    "area": "Accessibility",
+    "action": "Inspect help dialog accessible name",
+    "expected": "Dialog named by heading",
+    "observed": "No aria-label or aria-labelledby; unnamed AX container",
+    "status": "FAIL"
+  },
+  {
+    "id": "E037",
+    "area": "Accessibility",
+    "action": "Inspect initial modal focus",
+    "expected": "Focus close control",
+    "observed": "Close explanation focused",
+    "status": "PASS"
+  },
+  {
+    "id": "E038",
+    "area": "Keyboard",
+    "action": "Tab from modal close",
+    "expected": "Focus primary modal action",
+    "observed": "Let’s practice focused",
+    "status": "PASS"
+  },
+  {
+    "id": "E039",
+    "area": "Keyboard",
+    "action": "Tab from last modal action",
+    "expected": "Focus remains/traps in modal",
+    "observed": "Active element label null; browser-chrome focus behavior not determined",
+    "status": "LIMITATION"
+  },
+  {
+    "id": "E040",
+    "area": "Help recovery",
+    "action": "Close via close control",
+    "expected": "Close and restore trigger focus",
+    "observed": "Modal false; See how it works focused",
+    "status": "PASS"
+  },
+  {
+    "id": "E041",
+    "area": "Help recovery",
+    "action": "Open How it works then Escape",
+    "expected": "Close and restore trigger focus",
+    "observed": "How it works focused after Escape",
+    "status": "PASS"
+  },
+  {
+    "id": "E042",
+    "area": "Consent preview",
+    "action": "Enable personal cloud opt-in",
+    "expected": "Show only generic role/topics and clear disclosure",
+    "observed": "AI/ML engineering; Python SQL PyTorch; no personal-text promise",
+    "status": "PASS"
+  },
+  {
+    "id": "E043",
+    "area": "Topic controls",
+    "action": "Exclude SQL",
+    "expected": "SQL aria-pressed=false",
+    "observed": "false",
+    "status": "PASS"
+  },
+  {
+    "id": "E044",
+    "area": "Topic controls",
+    "action": "Reinclude SQL",
+    "expected": "SQL aria-pressed=true",
+    "observed": "true",
+    "status": "PASS"
+  },
+  {
+    "id": "E045",
+    "area": "Privacy UI",
+    "action": "Add fictional contact/employer text",
+    "expected": "Do not expose those strings in shared topic list",
+    "observed": "Only Python SQL PyTorch displayed",
+    "status": "PASS"
+  },
+  {
+    "id": "E046",
+    "area": "Topic boundary",
+    "action": "Exclude every detected skill",
+    "expected": "Show empty-topic fallback",
+    "observed": "No skill tags selected message visible",
+    "status": "PASS"
+  },
+  {
+    "id": "E047",
+    "area": "Empty profile",
+    "action": "Clear role and context with preview open",
+    "expected": "General role and no tags",
+    "observed": "General interview; empty-topic message",
+    "status": "PASS"
+  },
+  {
+    "id": "E048",
+    "area": "Role taxonomy",
+    "action": "Enter electrical/embedded context",
+    "expected": "Electrical role and fixed electrical topics",
+    "observed": "Electrical engineering; Circuits, Embedded systems",
+    "status": "PASS"
+  },
+  {
+    "id": "E049",
+    "area": "Consent reset",
+    "action": "Switch personal to fictional after opt-in",
+    "expected": "Reset cloud consent and explain full-text route",
+    "observed": "Unchecked; fictional full-text disclosure",
+    "status": "PASS"
+  },
+  {
+    "id": "E050",
+    "area": "Consent UI",
+    "action": "Enable fictional full-text opt-in",
+    "expected": "Checked fictional consent; no generic preview",
+    "observed": "Checked=true, generic preview absent",
+    "status": "PASS"
+  },
+  {
+    "id": "E051",
+    "area": "Consent reset",
+    "action": "Switch fictional to personal",
+    "expected": "Reset consent false",
+    "observed": "false",
+    "status": "PASS"
+  },
+  {
+    "id": "E052",
+    "area": "Keyboard",
+    "action": "Space on cloud checkbox",
+    "expected": "Toggle consent",
+    "observed": "true",
+    "status": "PASS"
+  },
+  {
+    "id": "E053",
+    "area": "Provider recovery",
+    "action": "Build with explicit dummy-key local opt-in",
+    "expected": "Safe upstream error, no invented AI questions",
+    "observed": "The AI service could not process this request; stayed setup",
+    "status": "PASS"
+  },
+  {
+    "id": "E054",
+    "area": "Provider recovery",
+    "action": "Inspect draft after upstream error",
+    "expected": "Retain role/context",
+    "observed": "Electrical engineering intern and fictional electrical context retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E055",
+    "area": "Provider recovery",
+    "action": "Inspect busy state after rejection",
+    "expected": "Build enabled again",
+    "observed": "Build enabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E056",
+    "area": "Fallback",
+    "action": "Disable AI after error and Build",
+    "expected": "Local studio opens",
+    "observed": "Practice mode studio opened",
+    "status": "PASS"
+  },
+  {
+    "id": "E057",
+    "area": "Recovery",
+    "action": "Inspect error after successful retry",
+    "expected": "Prior alert cleared",
+    "observed": "No alert in studio",
+    "status": "PASS"
+  },
+  {
+    "id": "E058",
+    "area": "Configured session",
+    "action": "Build three Technical EE questions",
+    "expected": "Count/focus and role-relevant question",
+    "observed": "01/03 Technical; circuit question",
+    "status": "PASS"
+  },
+  {
+    "id": "E059",
+    "area": "Privacy wording",
+    "action": "Inspect personal local transcript notice",
+    "expected": "Identify browser rubric, no AI analysis",
+    "observed": "Explicit browser rubric notice",
+    "status": "PASS"
+  },
+  {
+    "id": "E060",
+    "area": "Media safety",
+    "action": "Inspect initial media state",
+    "expected": "Off and consent unchecked",
+    "observed": "Camera & mic off; unchecked; enable disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E061",
+    "area": "Navigation guard",
+    "action": "Inspect New practice in studio",
+    "expected": "Disabled during active session",
+    "observed": "Disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E062",
+    "area": "Navigation guard",
+    "action": "Inspect report in studio",
+    "expected": "Disabled until report",
+    "observed": "Disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E063",
+    "area": "Media consent",
+    "action": "Check recording consent without enabling device",
+    "expected": "Enable button becomes available only",
+    "observed": "Enabled; no hardware access requested",
+    "status": "PASS"
+  },
+  {
+    "id": "E064",
+    "area": "Media consent",
+    "action": "Withdraw recording consent",
+    "expected": "Disable enable button",
+    "observed": "Disabled",
+    "status": "PASS"
+  },
+  {
+    "id": "E065",
+    "area": "Text mode",
+    "action": "Choose text answers",
+    "expected": "Show writing UI and keep devices off",
+    "observed": "Text UI visible; devices off",
+    "status": "PASS"
+  },
+  {
+    "id": "E066",
+    "area": "Answer boundary",
+    "action": "Enter whitespace-only transcript",
+    "expected": "Save disabled; skip enabled",
+    "observed": "Save false, skip true",
+    "status": "PASS"
+  },
+  {
+    "id": "E067",
+    "area": "Short answer",
+    "action": "Enter one-character transcript",
+    "expected": "Can save as insufficient evidence; cannot skip populated answer",
+    "observed": "Save true, skip false",
+    "status": "PASS"
+  },
+  {
+    "id": "E068",
+    "area": "Answer state",
+    "action": "Save one-character first answer",
+    "expected": "Advance and clear transcript",
+    "observed": "Advanced to Q2; empty transcript",
+    "status": "PASS"
+  },
+  {
+    "id": "E069",
+    "area": "Native boundary",
+    "action": "Type after 20,000 transcript chars",
+    "expected": "Block extra character",
+    "observed": "20000 chars; no trailing z",
+    "status": "PASS"
+  },
+  {
+    "id": "E070",
+    "area": "Long-answer recovery",
+    "action": "Save 20,000-char local answer",
+    "expected": "Advance without failure",
+    "observed": "Advanced to Q3; transcript cleared",
+    "status": "PASS"
+  },
+  {
+    "id": "E071",
+    "area": "Injection",
+    "action": "Submit script/img-looking answer",
+    "expected": "Render literal; no script execution",
+    "observed": "No JS dialog; 0 script/img nodes in report",
+    "status": "PASS"
+  },
+  {
+    "id": "E072",
+    "area": "Insufficient evidence",
+    "action": "Inspect saved one-char answer",
+    "expected": "Unscored",
+    "observed": "Q1 shows —/100",
+    "status": "PASS"
+  },
+  {
+    "id": "E073",
+    "area": "Missing evidence",
+    "action": "Inspect text-only confidence",
+    "expected": "Unavailable",
+    "observed": "Confidence unavailable",
+    "status": "PASS"
+  },
+  {
+    "id": "E074",
+    "area": "Missing recordings",
+    "action": "Inspect text-only clip panels",
+    "expected": "No fabricated best/worst video",
+    "observed": "Both empty-state instructions",
+    "status": "PASS"
+  },
+  {
+    "id": "E075",
+    "area": "Session integrity",
+    "action": "Finish 3-question session",
+    "expected": "Three answer entries",
+    "observed": "3 answers and three details",
+    "status": "PASS"
+  },
+  {
+    "id": "E076",
+    "area": "Score safety",
+    "action": "Inspect local aggregate scores",
+    "expected": "Finite numbers; no NaN",
+    "observed": "Overall 52, content 60, comprehension 43",
+    "status": "PASS"
+  },
+  {
+    "id": "E077",
+    "area": "Scoring limits",
+    "action": "Inspect rubric disclosure",
+    "expected": "Clearly heuristic",
+    "observed": "Cannot establish correctness/comprehension disclaimer",
+    "status": "PASS"
+  },
+  {
+    "id": "E078",
+    "area": "Navigation recovery",
+    "action": "Inspect report navigation",
+    "expected": "New practice enabled; studio disabled",
+    "observed": "Observed enabled/disabled states",
+    "status": "PASS"
+  },
+  {
+    "id": "E079",
+    "area": "Details",
+    "action": "Expand short-answer entry",
+    "expected": "Explain missing evidence",
+    "observed": "Not enough transcript evidence; P transcript retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E080",
+    "area": "Report security",
+    "action": "Expand markup-like answer",
+    "expected": "Escaped literal transcript/evidence",
+    "observed": "Script/img syntax shown as text",
+    "status": "PASS"
+  },
+  {
+    "id": "E081",
+    "area": "Metric correctness",
+    "action": "Inspect five filler phrases",
+    "expected": "Count um, uh, you know, kind of, sort of",
+    "observed": "5 filler phrases",
+    "status": "PASS"
+  },
+  {
+    "id": "E082",
+    "area": "Metric limits",
+    "action": "Inspect text-only pace",
+    "expected": "Unavailable",
+    "observed": "Pace unavailable",
+    "status": "PASS"
+  },
+  {
+    "id": "E083",
+    "area": "Long text integrity",
+    "action": "Expand 20,000-char answer",
+    "expected": "Retain complete transcript",
+    "observed": "DOM text length 20000",
+    "status": "PASS"
+  },
+  {
+    "id": "E084",
+    "area": "Details independence",
+    "action": "Open three answer details",
+    "expected": "Independent expansion",
+    "observed": "3 details open",
+    "status": "PASS"
+  },
+  {
+    "id": "E085",
+    "area": "Keyboard details",
+    "action": "Press Enter on expanded first summary",
+    "expected": "Collapse detail",
+    "observed": "open attribute null",
+    "status": "PASS"
+  },
+  {
+    "id": "E086",
+    "area": "Pointer details",
+    "action": "Click expanded long/markup summaries",
+    "expected": "Collapse without altering report",
+    "observed": "Both details collapsed",
+    "status": "PASS"
+  },
+  {
+    "id": "E087",
+    "area": "Download",
+    "action": "Click Download report",
+    "expected": "Actual JSON file downloaded",
+    "observed": "cadence-interview-report (1).json saved",
+    "status": "PASS"
+  },
+  {
+    "id": "E088",
+    "area": "Export schema",
+    "action": "Open downloaded JSON",
+    "expected": "Valid Cadence demo report",
+    "observed": "JSON parsed; product Cadence, mode demo, six top-level fields",
+    "status": "PASS"
+  },
+  {
+    "id": "E089",
+    "area": "Export integrity",
+    "action": "Inspect answer lengths",
+    "expected": "Preserve all transcripts",
+    "observed": "1, 20000, 144 characters; 3 answers",
+    "status": "PASS"
+  },
+  {
+    "id": "E090",
+    "area": "Export privacy",
+    "action": "Inspect answer URL fields",
+    "expected": "Exclude transient Blob URLs",
+    "observed": "No answer has url field",
+    "status": "PASS"
+  },
+  {
+    "id": "E091",
+    "area": "Export nulls",
+    "action": "Inspect missing confidence",
+    "expected": "Preserve nulls, not invented scores",
+    "observed": "All confidence values null",
+    "status": "PASS"
+  },
+  {
+    "id": "E092",
+    "area": "Export clips",
+    "action": "Inspect absent clip indices",
+    "expected": "Best and worst null",
+    "observed": "Both null",
+    "status": "PASS"
+  },
+  {
+    "id": "E093",
+    "area": "Reset safety",
+    "action": "Start fresh after report",
+    "expected": "Clear report/session and cloud consent",
+    "observed": "Setup, report disabled, cloud false",
+    "status": "PASS"
+  },
+  {
+    "id": "E094",
+    "area": "Reset settings",
+    "action": "Inspect setup after reset",
+    "expected": "Preserve visible reusable settings",
+    "observed": "Role/context/count/focus retained visibly",
+    "status": "PASS"
+  },
+  {
+    "id": "E095",
+    "area": "Whitespace role",
+    "action": "Build with three spaces as role",
+    "expected": "Show General interview fallback",
+    "observed": "Studio subtitle is spaces + dot Internship",
+    "status": "FAIL"
+  },
+  {
+    "id": "E096",
+    "area": "Maximum session",
+    "action": "Build six-question session",
+    "expected": "Progress denominator 06",
+    "observed": "01 / 06",
+    "status": "PASS"
+  },
+  {
+    "id": "E097",
+    "area": "Configured focus",
+    "action": "Build Behavioral-only session",
+    "expected": "Behavioral question category",
+    "observed": "Behavioral at Q1",
+    "status": "PASS"
+  },
+  {
+    "id": "E098",
+    "area": "Skip progression",
+    "action": "Skip first of six",
+    "expected": "Advance once",
+    "observed": "02/06",
+    "status": "PASS"
+  },
+  {
+    "id": "E099",
+    "area": "Skip progression",
+    "action": "Skip through middle questions",
+    "expected": "Maintain progress",
+    "observed": "05/06",
+    "status": "PASS"
+  },
+  {
+    "id": "E100",
+    "area": "Final boundary",
+    "action": "Reach last of six",
+    "expected": "Last progress and configured category correct",
+    "observed": "06/06 Behavioral",
+    "status": "PASS"
+  },
+  {
+    "id": "E101",
+    "area": "Question uniqueness",
+    "action": "Collect six prompts through UI",
+    "expected": "Six distinct prompts",
+    "observed": "Set size=6",
+    "status": "PASS"
+  },
+  {
+    "id": "E102",
+    "area": "All missing scores",
+    "action": "Skip all six answers",
+    "expected": "Overall and dimensions unavailable, never NaN",
+    "observed": "All unavailable; Not enough answer evidence",
+    "status": "PASS"
+  },
+  {
+    "id": "E103",
+    "area": "All-skipped session",
+    "action": "Inspect report answer count",
+    "expected": "Six unscored entries",
+    "observed": "6 answers, every summary —/100",
+    "status": "PASS"
+  },
+  {
+    "id": "E104",
+    "area": "Skipped details",
+    "action": "Expand a skipped answer",
+    "expected": "Explicit no-transcript placeholder",
+    "observed": "Question skipped. No transcript submitted.",
+    "status": "PASS"
+  },
+  {
+    "id": "E105",
+    "area": "Empty role",
+    "action": "Build with genuinely empty role",
+    "expected": "General interview display fallback",
+    "observed": "General interview · Internship",
+    "status": "PASS"
+  },
+  {
+    "id": "E106",
+    "area": "Four-question configuration",
+    "action": "Build Mixed with four questions",
+    "expected": "01/04 and mixed route",
+    "observed": "01/04; behavioral first, technical later",
+    "status": "PASS"
+  },
+  {
+    "id": "E107",
+    "area": "Minimum evidence",
+    "action": "Submit exactly four Latin words",
+    "expected": "Unscored below five-word threshold",
+    "observed": "Q1 —/100",
+    "status": "PASS"
+  },
+  {
+    "id": "E108",
+    "area": "Minimum evidence",
+    "action": "Submit exactly five Latin words",
+    "expected": "Local rubric can score",
+    "observed": "Q2 36/100",
+    "status": "PASS"
+  },
+  {
+    "id": "E109",
+    "area": "Emoji input",
+    "action": "Submit three emoji tokens",
+    "expected": "No invented answer evidence",
+    "observed": "Unscored; editor says 3 words while rubric says 0",
+    "status": "LIMITATION"
+  },
+  {
+    "id": "E110",
+    "area": "Word count consistency",
+    "action": "Submit five spaced CJK tokens",
+    "expected": "Editor/report use a consistent word definition",
+    "observed": "Editor 5 words; report 0 words and unscored",
+    "status": "FAIL"
+  },
+  {
+    "id": "E111",
+    "area": "TXT upload",
+    "action": "Upload valid fictional TXT",
+    "expected": "Read and show editable text",
+    "observed": "valid.txt accepted, 4212 characters",
+    "status": "PASS"
+  },
+  {
+    "id": "E112",
+    "area": "Active source",
+    "action": "Switch loaded resume to Describe interview and enter only circuits",
+    "expected": "Ignore or clearly disclose inactive resume source",
+    "observed": "Hidden resume still supplies 24 unrelated ML tags; no remove control; consent true",
+    "status": "FAIL"
+  },
+  {
+    "id": "E113",
+    "area": "TXT validation",
+    "action": "Upload empty.txt",
+    "expected": "Reject with actionable error",
+    "observed": "This file is empty",
+    "status": "PASS"
+  },
+  {
+    "id": "E114",
+    "area": "TXT validation",
+    "action": "Upload whitespace.txt",
+    "expected": "Reject whitespace-only content",
+    "observed": "This file is empty",
+    "status": "PASS"
+  },
+  {
+    "id": "E115",
+    "area": "TXT lower boundary",
+    "action": "Upload one-character TXT",
+    "expected": "Accept non-empty text without crash",
+    "observed": "Accepted; 1 characters label (cosmetic plural issue)",
+    "status": "PASS"
+  },
+  {
+    "id": "E116",
+    "area": "TXT upper boundary",
+    "action": "Upload exactly 18000 chars",
+    "expected": "Accept exact limit",
+    "observed": "18000 read successfully",
+    "status": "PASS"
+  },
+  {
+    "id": "E117",
+    "area": "TXT overflow/recovery",
+    "action": "Upload 18001 chars after valid file",
+    "expected": "Reject; retain prior valid resume visibly",
+    "observed": "Limit error; exact-18000.txt retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E118",
+    "area": "Extension case",
+    "action": "Upload UPPER.TXT after error",
+    "expected": "Case-insensitive accept and clear error",
+    "observed": "UPPER.TXT accepted",
+    "status": "PASS"
+  },
+  {
+    "id": "E119",
+    "area": "Text encoding",
+    "action": "Upload Unicode TXT",
+    "expected": "Preserve accented/Greek/CJK/emoji text",
+    "observed": "Exact fictional text retained",
+    "status": "PASS"
+  },
+  {
+    "id": "E120",
+    "area": "Text encoding",
+    "action": "Upload UTF-16 fixture",
+    "expected": "Readable text or actionable rejection",
+    "observed": "Decoded readable Jordan/Python text",
+    "status": "PASS"
+  },
+  {
+    "id": "E121",
+    "area": "Text encoding",
+    "action": "Upload UTF-8 BOM fixture",
+    "expected": "No leading BOM in editable text",
+    "observed": "First code point 70 (F), readable text",
+    "status": "PASS"
+  },
+  {
+    "id": "E122",
+    "area": "TXT injection safety",
+    "action": "Upload script/img-looking TXT and open preview",
+    "expected": "Literal editable text, no code execution",
+    "observed": "No JS dialog; no injected script/img nodes",
+    "status": "PASS"
+  },
+  {
+    "id": "E123",
+    "area": "Filename layout",
+    "action": "Upload 189-character filename",
+    "expected": "No document horizontal overflow",
+    "observed": "viewport1280; document1265; upload451.9px",
+    "status": "PASS"
+  },
+  {
+    "id": "E124",
+    "area": "Preview editing",
+    "action": "Edit extracted resume after opting in",
+    "expected": "Retain edit and withdraw cloud consent",
+    "observed": "Text changed to fictional Python/SQL; consent=false; maxlength18000",
+    "status": "PASS"
+  },
+  {
+    "id": "E125",
+    "area": "Resume removal",
+    "action": "Remove selected resume",
+    "expected": "Clear file/preview and withdraw consent",
+    "observed": "Drop zone restored, preview count0, consent=false",
+    "status": "PASS"
+  }
+]

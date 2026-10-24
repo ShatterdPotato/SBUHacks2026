@@ -33,7 +33,7 @@
 
 ### Free Gemini fictional demo
 
-1. Set `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-3.1-flash-lite`,
+1. Set `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-3.5-flash-lite`,
    and `GEMINI_DATA_POLICY=unpaid` in ignored `.dev.vars` or Sites secrets. Redeploy.
 2. Select A fictional sample. Upload the provided fictional AI/ML PDF or describe
    a pretend project. Choose three questions and consent to Google processing.
@@ -73,7 +73,7 @@ as verified merely because browser navigation or unit tests passed.
 ## Verification recorded 2026-10-24
 
 - All 23 tests, `pnpm exec tsc --noEmit`, and the production build passed.
-- Real `gemini-3.1-flash-lite` requests returned HTTP 200 for three generated
+- Real `gemini-3.5-flash-lite` requests returned HTTP 200 for three generated
   questions and scored feedback using fictional, nonpersonal text.
 - Local browser QA completed a text session/report with AI disabled, confirmed
   skipped answers stayed unscored, and found no console warnings/errors.
@@ -85,3 +85,8 @@ Personal-resume update: all 31 tests and TypeScript pass. The exact provided
 AI/ML resume PDF was accepted in browser QA and yielded 4,198 editable characters,
 including its name and Python skills. PDF.js worker/font/CMap assets are served
 from the same origin, copied from the installed package by `run-cadence.mjs`.
+
+Latest audit: 44 tests, type check, and production build passed. Hosted personal
+and fictional PDF question generation passed on deployed source add43d044.
+Final fictional answer feedback/export remains pending. See
+[the detailed manual audit](qa/RESUME_BROWSER_AUDIT_2026-10-24.md).

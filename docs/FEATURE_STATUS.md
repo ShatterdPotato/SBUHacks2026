@@ -6,7 +6,7 @@ Status as of October 24, 2026. Read HANDOFF.md before continuing.
 | --- | --- |
 | Resume or custom prompt | PDF/TXT browser reading, editable text preview, role/context input, 3-6 questions and focus/level settings. PDF limits/errors in HANDOFF.md. |
 | Personal resumes | Accepted locally. Free personal mode shares only approved generic role/skill labels for AI questions; personal answers use browser rubric. Full personal-text AI analysis is not enabled. |
-| AI-generated questions | Gemini 3.1 Flash-Lite, verified live. Optional OpenAI adapter retained. Strict JSON plus runtime checks. |
+| AI-generated questions | Gemini 3.5 Flash-Lite with configured 3.1 fallback; latest live question generation verified. Optional OpenAI adapter retained. Strict JSON plus runtime checks. |
 | Retrieved questions | Local curated bank with keyword relevance. No external interview-question search/index implemented. |
 | Audio/video practice | Explicit consent, camera/mic preview, mic meter, per-answer MediaRecorder, three-minute cap, stop, retake, device-off, text-only option. Physical-device verification remains. |
 | Speech transcription | Configurable server adapters exist; paid/media-eligible policy and consent required. Disabled on current unpaid Gemini setup; type transcripts. Live media verification remains. |

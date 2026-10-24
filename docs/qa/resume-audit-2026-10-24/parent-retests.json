@@ -1,0 +1,32 @@
+[
+  {
+    "id": "RT15-P",
+    "case": "Job-description role overrides ML resume when role field is empty",
+    "observed": "Broad role: Software engineering, with the ML-heavy PDF retained",
+    "status": "PASS"
+  },
+  {
+    "id": "RT16-P",
+    "case": "Reselecting the active source is idempotent",
+    "observed": "Cloud consent remained true",
+    "status": "PASS"
+  },
+  {
+    "id": "LIVE-P1",
+    "case": "Latest deployment personal PDF question generation",
+    "observed": "Four generated questions and AI skill questions report observed",
+    "status": "PASS"
+  },
+  {
+    "id": "LIVE-P2",
+    "case": "Latest deployment fictional PDF question generation",
+    "observed": "4198 characters accepted; three-question AI connected studio; first question referenced fictional support-ticket project",
+    "status": "PASS"
+  },
+  {
+    "id": "LIVE-P3",
+    "case": "Latest deployment fictional answer and feedback",
+    "observed": "Interrupted for GitHub handoff before submitting an answer",
+    "status": "NOT_EXECUTED"
+  }
+]

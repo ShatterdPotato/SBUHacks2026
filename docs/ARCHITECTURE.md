@@ -74,7 +74,7 @@ Word-aligned subclips, full-session editing, and emotion detection are outside M
 
 `AI_PROVIDER=gemini` selects server-only `GEMINI_API_KEY`. Gemini uses native HTTPS
 Interactions with `store:false`, structured JSON schema, and runtime validation;
-default model `gemini-3.1-flash-lite`. REST text is extracted only from model_output
+default model `gemini-3.5-flash-lite`. REST text is extracted only from model_output
 steps, never thought steps. Keys travel in headers, never query strings.
 
 Gemini defaults to `GEMINI_DATA_POLICY=unpaid` with two explicit session choices:
@@ -125,3 +125,11 @@ Official integration references:
 - [Structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 - [File inputs](https://developers.openai.com/api/docs/guides/file-inputs)
 - [File transcription](https://developers.openai.com/api/docs/guides/speech-to-text)
+
+Reliability update: provider transport and HTTP 408/500/502/503/504 failures
+receive at most one retry within 60 seconds. The first attempt has a 30-second
+limit. Optional GEMINI_FALLBACK_MODEL changes only the second Gemini attempt.
+Credentials, quota, and invalid-request failures are not retried. API errors
+include a fixed safe code; raw upstream bodies are neither returned nor logged.
+Selected resume source determines context and generic topics; switching sources
+resets cloud consent. Explicit role/context target takes priority over background.
