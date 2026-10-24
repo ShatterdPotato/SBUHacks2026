@@ -14,10 +14,10 @@ The application is a single-session MVP; there is no durable session store.
 
 | Endpoint | Input | Output |
 | --- | --- | --- |
-| `GET /api/health` | none | `mode`, `cloudAvailable` |
-| `POST /api/questions` | role, context, type, level, count, optional PDF data URL, cloudConsent | mode, questions with id/prompt/category/focus/source |
-| `POST /api/analyze` | question, answer, duration in seconds, recorded, mode, cloudConsent, optional JPEG frames | scores, metrics, summary, strengths, improvements, evidence, visual, limitation |
-| `POST /api/transcribe` | multipart file + cloudConsent=true | text |
+| `GET /api/health` | none | mode, cloudAvailable, provider, providerLabel, model, demoDataOnly, mediaCloudAvailable, pdfCloudAvailable |
+| `POST /api/questions` | role, context, type, level, count, optional PDF data URL, cloudConsent, providerConsent, demoDataOnly | mode, provider when live, questions with id/prompt/category/focus/source |
+| `POST /api/analyze` | question, answer, duration in seconds, recorded, mode, cloudConsent, providerConsent, demoDataOnly, optional JPEG frames | scores, metrics, summary, strengths, improvements, evidence, visual, limitation |
+| `POST /api/transcribe` | multipart file + cloudConsent=true + providerConsent | text |
 
 JSON requests are capped at 4 MB, PDF resumes at 2 MB, audio at 20 MB, and camera
 analysis at four small JPEG frames per answer. Input lengths and types are checked
@@ -60,7 +60,7 @@ network errors preserve the clip for retry. Retake revokes its old Blob URL.
 Finishing the session/unmount stops all tracks and closes the level meter. Reset
 revokes all clips. A page-unload warning reminds users to download recordings.
 Original videos are never uploaded or stored by Cadence. There is no browser
-IndexedDB/localStorage history. OpenAI processing has its own retention policy.
+IndexedDB/localStorage history. Each provider has its own data policies.
 
 Best and worst clips are whole recorded answers ranked by their mean available
 scores. One recording yields only a best clip; no scored recording yields none.
@@ -68,7 +68,25 @@ Word-aligned subclips, full-session editing, and emotion detection are outside M
 
 ## Models and deployment
 
-Default Responses model: `gpt-4.1-mini`; default transcription:
+`AI_PROVIDER=gemini` selects server-only `GEMINI_API_KEY`. Gemini uses native HTTPS
+Interactions with `store:false`, structured JSON schema, and runtime validation;
+default model `gemini-3.1-flash-lite`. REST text is extracted only from model_output
+steps, never thought steps. Keys travel in headers, never query strings.
+
+Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: requests require provider-specific
+consent and `demoDataOnly:true` attestation for fictional text. Real resumes,
+personal, sensitive, and confidential data are excluded. PDF, audio, and sampled
+camera uploads are rejected server-side. Local recording/clips still work and
+the user enters fictional text. Free-tier data may improve Google products and
+undergo human review. Rate-limit failures remain visible errors.
+
+`GEMINI_DATA_POLICY=paid` permits media only after the owner arranges appropriate
+Google billing/data handling. This is an operator declaration, not billing setup
+or proof of entitlement. No billing is enabled by this project. Media adapters
+use inline document/image/audio content. They require separate live verification.
+
+`AI_PROVIDER=openai` selects server-only `OPENAI_API_KEY`. Default Responses model:
+`gpt-4.1-mini`; default transcription:
 `gpt-4o-mini-transcribe`. Both are configurable. Consult current provider
 documentation before changing models or deploying after deprecation dates. As of
 2026-10-24 the legacy transcription endpoint is scheduled to shut down in February
@@ -79,7 +97,15 @@ when adding API secrets. Source is also published to the team's GitHub project.
 No training pipeline or GPU is required. The current backend uses HTTPS provider
 APIs and the browser's media APIs.
 
+Both providers use the versioned `lib/interviewer-instructions.mjs` coaching
+contract. Visitor requests never access this Codex chat, a developer's Codex
+subscription, or a coding-agent session. Provider-specific consent must match
+the active provider; stale consent fails rather than silently changing recipients.
+
 Official integration references:
+- [Gemini Interactions](https://ai.google.dev/gemini-api/docs/interactions)
+- [Gemini REST schema](https://ai.google.dev/api/interactions-api)
+- [Google data terms](https://ai.google.dev/gemini-api/terms)
 - [Structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 - [File inputs](https://developers.openai.com/api/docs/guides/file-inputs)
 - [File transcription](https://developers.openai.com/api/docs/guides/speech-to-text)

@@ -16,20 +16,31 @@ transcripts, receive content/comprehension/delivery feedback, and replay/downloa
 the strongest and weakest recorded answers. This is voluntary personal coaching.
 
 - `web/`: React/Vinext, Sites integration, Cloudflare Worker.
-- `web/lib/service.mjs`: business API, consent, validation, OpenAI integration.
+- `web/lib/service.mjs`: business API, consent, validation.
+- `web/lib/provider.mjs`: Gemini Interactions and OpenAI Responses adapters.
+- `web/lib/interviewer-instructions.mjs`: shared coaching contract for both providers.
 - `web/lib/interview.mjs`: curated retrieval, practice rubric, delivery metrics.
 - `web/app/page.tsx`: setup, studio, report; actual per-answer MediaRecorder clips.
 - `docs/ARCHITECTURE.md`: API/media contracts. `docs/DEMO.md`: verification.
 - `GET /api/health`; `POST /api/questions`, `/api/analyze`, `/api/transcribe`.
-- `OPENAI_API_KEY` is server-only; models configurable. Missing key means labeled
-  practice rubric mode. Chat subscriptions do not supply API credentials.
+- `AI_PROVIDER=gemini` uses server-only `GEMINI_API_KEY`; model defaults to
+  `gemini-3.1-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
+  labeled practice rubric mode. Chat subscriptions do not supply API credentials.
+- Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: fictional text only, with explicit
+  attestation. PDF, audio upload/transcription, and camera-frame upload are blocked
+  server-side. Local recording and curated practice remain available.
 
 ## Privacy and evidence
 
 Media requires consent and a click; text-only practice is available. Videos remain
 in browser memory and disappear on page close unless downloaded. Cloud processing
 has a separate opt-in for resume/context, transcript, audio, and sampled frames.
-OpenAI retention policies apply. No server recording database is implemented.
+The selected provider's data policies apply; both structured adapters use
+`store:false`. Free Gemini inputs/outputs may improve Google products and be
+reviewed by people. Do not send personal, sensitive, or confidential information.
+Only use a paid data policy after the owner arranges appropriate Google billing
+and data handling; an environment flag cannot enable billing. No server recording
+database is implemented. The API is independent of Codex chat/subscription usage.
 
 Confidence is a delivery proxy using speaking pace and transcript filler words,
 not feelings or personality. Content/comprehension use text; demo keyword
@@ -62,3 +73,7 @@ Proposed interface or next action:
 Paid provider calls and physical recording hardware require separate end-to-end
 checks. Mocked tests do not establish live AI or real camera/microphone behavior.
 Report actual verification results and remaining setup in the handoff.
+
+2026-10-24: Gemini 3.1 Flash-Lite question generation and text feedback verified
+with real API requests and fictional data. 23 tests, type check, and production
+build passed. Physical media and paid media adapters remain separately unverified.

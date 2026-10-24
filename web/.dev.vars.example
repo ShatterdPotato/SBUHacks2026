@@ -1,4 +1,11 @@
 # Copy to .dev.vars for local development. Never commit the actual key.
+AI_PROVIDER=gemini
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.1-flash-lite
+# Unpaid: fictional text only. Do not enable paid policy without arranging
+# appropriate billing and data handling with Google. This flag does not enable billing.
+GEMINI_DATA_POLICY=unpaid
+# Optional alternate provider (set AI_PROVIDER=openai):
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
 OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
