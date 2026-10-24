@@ -17,18 +17,33 @@
 
 ## Live AI demo
 
+### Free Gemini personal resume practice
+
+1. Open Use your resume with My real experience selected. Upload a PDF or TXT.
+   The provided fictional AI/ML PDF is also valid in this mode. Confirm the
+   success character count, open Review extracted resume text, and inspect it.
+2. Enable skill-based AI questions. Review the broad role and fixed topic tags;
+   exclude one. Confirm the personal question request contains only that generic
+   profile, interview settings, consent, and privacyMode. No original source.
+3. Generate questions and enter a personal answer. Feedback must say browser
+   practice rubric; no answer API request is made. Skip an answer and verify it
+   remains unscored. Local clips remain optional and downloadable.
+4. With AI off, retrieval and feedback still work in the browser. Try a malformed
+   or scanned PDF and confirm an actionable error, with no cloud upload.
+
 ### Free Gemini fictional demo
 
 1. Set `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-3.1-flash-lite`,
    and `GEMINI_DATA_POLICY=unpaid` in ignored `.dev.vars` or Sites secrets. Redeploy.
-2. Describe a fictional software intern with a pretend block-sorting project.
-   Choose three questions; consent to Google processing and check made-up data.
+2. Select A fictional sample. Upload the provided fictional AI/ML PDF or describe
+   a pretend project. Choose three questions and consent to Google processing.
 3. Generate real AI questions, choose text answers, and submit a fictional answer.
    Confirm provisional feedback and exact transcript evidence. Skip another answer
    and verify it remains unscored. Finish and inspect the report.
 4. Confirm audio transcription and camera-cloud controls are unavailable. PDF
-   uploads must fail clearly. Disabling cloud consent still enables curated/local
-   practice. Do not test free Gemini with actual resumes, personal data, or media.
+   uploads must extract text locally, without forwarding the original document.
+   Disable cloud consent and confirm browser-only practice still works. Never
+   use personal content in fictional mode.
 5. Check quotas/errors without pretending failures are successful AI feedback.
 
 ### Media-capable provider
@@ -65,3 +80,8 @@ as verified merely because browser navigation or unit tests passed.
 - Hosted consent UI required the fictional-data checkbox before generation.
 - Paid media adapters are mocked only. Physical camera/microphone capture and
   live cloud transcription/camera analysis were not tested in this change.
+
+Personal-resume update: all 31 tests and TypeScript pass. The exact provided
+AI/ML resume PDF was accepted in browser QA and yielded 4,198 editable characters,
+including its name and Python skills. PDF.js worker/font/CMap assets are served
+from the same origin, copied from the installed package by `run-cadence.mjs`.

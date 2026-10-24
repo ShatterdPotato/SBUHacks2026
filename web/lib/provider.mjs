@@ -12,10 +12,10 @@ export function providerConfig(env) {
         pdfCloudAvailable: cloudAvailable && !demoDataOnly };
 }
 
-export function assertCloudConsent(body, config) {
+export function assertCloudConsent(body, config, { genericOnly = false } = {}) {
     if (body.cloudConsent !== true || body.providerConsent !== config.provider)
         throw new InputError('Confirm cloud processing for the current AI provider. Refresh the page if the provider changed.', 400);
-    if (config.demoDataOnly && body.demoDataOnly !== true)
+    if (config.demoDataOnly && !genericOnly && body.demoDataOnly !== true)
         throw new InputError('Free Gemini practice requires fictional text only. Confirm that you are not sending personal, sensitive, or confidential information.', 400);
 }
 
