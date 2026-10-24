@@ -2,6 +2,10 @@
 
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
+Continuation snapshot: [docs/HANDOFF.md](docs/HANDOFF.md). Read it for the exact
+latest deployment, verified flows, user decisions, missing features, and next steps.
+See [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md) for the full capability inventory.
+
 - Repository: https://github.com/ShatterdPotato/SBUHacks2026; canonical branch `main`.
 - Updated: 2026-10-24, America/New_York. Team: Aiden Li Productions.
 - Cadence is a working name. The human discontinued XTrain for hardware limitations
@@ -78,6 +82,7 @@ Paid provider calls and physical recording hardware require separate end-to-end
 checks. Mocked tests do not establish live AI or real camera/microphone behavior.
 Report actual verification results and remaining setup in the handoff.
 
-2026-10-24: Gemini 3.1 Flash-Lite question generation and text feedback verified
-with real API requests and fictional data. 23 tests, type check, and production
-build passed. Physical media and paid media adapters remain separately unverified.
+2026-10-24: 31 tests, type check, and production build passed. Exact supplied PDF
+accepted (4,198 characters); hosted personal generic-AI questions and browser-rubric
+report verified. Fictional PDF generated AI questions; final fictional answer check
+was interrupted. Physical media and paid media adapters remain separately unverified.
