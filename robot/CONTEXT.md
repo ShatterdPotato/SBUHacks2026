@@ -9,10 +9,10 @@
 
 We are building a small, round, Roomba-shaped robot that drives itself around a room and avoids obstacles without human control. It uses a Raspberry Pi as its brain, a USB webcam for vision, and cheap distance sensors as a safety layer.
 
-- **Event:** Hackathon, **36-hour deadline**. Started: `[DATE/TIME]`. Demo time: `[DATE/TIME]`.
+- **Event:** Hackathon, **36-hour deadline**. Started: `10/23/2026 21:00:00`. Demo time: `[DATE/TIME]`.
 - **Priority:** A reliable, working demo beats extra features. Never break the working version to add something new.
-- **Project name:** `[NAME]`
-- **Team:** `[NAMES AND WHO OWNS WHICH FILE]`
+- **Project name:** `XTrain`
+- **Team:** `Aiden Li Productions`
 
 ---
 
