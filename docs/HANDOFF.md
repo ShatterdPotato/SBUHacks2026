@@ -171,3 +171,5 @@ fictional samples, deployment and regression checks described above.
 Blocker: no blocker for current free practice. Full AI analysis of personal
 content needs eligible provider data handling; public rollout needs additional work.
 No teammate-message delivery, Site ownership transfer, or credential transfer is claimed.
+
+Windows development note: stop the local dev server before running a production build. Recopying PDF worker assets while Vite watches them can cause an EBUSY file-watcher error. This affects the local preview, not the verified hosted deployment.
