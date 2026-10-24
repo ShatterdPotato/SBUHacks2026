@@ -20,12 +20,12 @@ We are building a small, round, Roomba-shaped robot that drives itself around a 
 
 | Part | Details |
 |---|---|
-| Computer | Raspberry Pi `[4 / 5]`, `[RAM]` GB, Raspberry Pi OS 64-bit (`[Bookworm]`) |
+| Computer | Raspberry Pi `4b`, `` GB, Raspberry Pi OS 64-bit (`[Bookworm]`) |
 | Camera | Logitech USB webcam, model `[MODEL]`, appears as `/dev/video0` |
 | Motor driver | `[L298N / TB6612FNG]` |
 | Motors | 2x DC gear motors, `[VOLTAGE]` V, differential drive (left and right wheels) |
 | Caster | 1 passive caster wheel (front or rear: `[WHICH]`) |
-| Distance sensors | `[N]` x `[HC-SR04 ultrasonic / VL53L0X time-of-flight]` at `[front-left, front-center, front-right]` |
+| Distance sensors | `3` x `Grove Ultrasonic Distance Sensor` at `front-left, front-center, front-right` |
 | Bumper (optional) | `[Yes/No]`, switch on GPIO `[PIN]` |
 | Motor power | `[BATTERY TYPE, e.g. 4xAA, 2S LiPo]`, `[VOLTAGE]` V |
 | Pi power | `[USB power bank, 5V 3A]` (separate from motor power; grounds are shared) |
