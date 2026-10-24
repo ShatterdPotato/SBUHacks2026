@@ -1,219 +1,137 @@
-# CONTEXT.md: Autonomous Obstacle-Avoiding Robot
+# XTrain robot context
 
-> Paste this entire file at the start of every AI coding session (Claude or Codex).
-> Fill in every `[BRACKET]` as soon as it is decided. Keep this file current.
+**Read `../TEAM_CONTEXT.md` first. Orchestrator: `aiden.sol`.**
+This file covers the onboard hardware subsystem of the delivery rover. It is not a
+standalone specification for a room-roaming robot. In MCP sessions, obtain both
+context files through `get_context` and acknowledge the combined revision before
+using operational tools.
 
----
+## Mission and boundaries
 
-## 1. Project Summary
+Transport a small payload between selected stations on a rehearsed route, with an
+approximately 100 m target and at least 50 m indoor fallback. The Pi captures camera
+and sensor data, executes bounded motion commands, and stops independently of the
+desktop or LLM. The desktop/website integration is defined in `TEAM_CONTEXT.md`.
 
-We are building a small, round, Roomba-shaped robot that drives itself around a room and avoids obstacles without human control. It uses a Raspberry Pi as its brain, a USB webcam for vision, and cheap distance sensors as a safety layer.
+The recorded hackathon start is 2026-10-23 21:00 America/New_York. Confirm the actual
+submission and presentation times. Project: XTrain. Team: Aiden Li Productions.
+Prefer reliable integration and a rehearsed delivery over additional features.
 
-- **Event:** Hackathon, **36-hour deadline**. Started: `10/23/2026 21:00:00`. Demo time: `[DATE/TIME]`.
-- **Priority:** A reliable, working demo beats extra features. Never break the working version to add something new.
-- **Project name:** `XTrain`
-- **Team:** `Aiden Li Productions`
+## Hardware inventory
 
----
-
-## 2. Hardware
-
-| Part | Details |
-|---|---|
-| Computer | Raspberry Pi `4b`, `` GB, Raspberry Pi OS 64-bit (`[Bookworm]`) |
-| Camera | Logitech USB webcam, model `[MODEL]`, appears as `/dev/video0` |
-| Motor driver | `[L298N / TB6612FNG]` |
-| Motors | 2x DC gear motors, `[VOLTAGE]` V, differential drive (left and right wheels) |
-| Caster | 1 passive caster wheel (front or rear: `[WHICH]`) |
-| Distance sensors | `3` x `Grove Ultrasonic Distance Sensor` at `front-left, front-center, front-right` |
-| Bumper (optional) | `[Yes/No]`, switch on GPIO `[PIN]` |
-| Motor power | `[BATTERY TYPE, e.g. 4xAA, 2S LiPo]`, `[VOLTAGE]` V |
-| Pi power | `[USB power bank, 5V 3A]` (separate from motor power; grounds are shared) |
-
-**Chassis:** round, approx. `[DIAMETER]` cm. Shell: `[cardboard / acrylic / 3D print]`.
-
----
-
-## 3. Pin Map (BCM numbering)
-
-> Update this table whenever wiring changes. Never guess pins. Ask if a pin is missing.
-
-### Motor driver
-| Function | GPIO (BCM) |
-|---|---|
-| Left motor IN1 | `[GPIO]` |
-| Left motor IN2 | `[GPIO]` |
-| Left motor ENA (PWM) | `[GPIO]` |
-| Right motor IN3 | `[GPIO]` |
-| Right motor IN4 | `[GPIO]` |
-| Right motor ENB (PWM) | `[GPIO]` |
-
-### Distance sensors
-| Sensor | TRIG / SDA | ECHO / SCL |
+| Part | Latest reported details | Still to confirm |
 |---|---|---|
-| Front-left | `[GPIO]` | `[GPIO]` |
-| Front-center | `[GPIO]` | `[GPIO]` |
-| Front-right | `[GPIO]` | `[GPIO]` |
+| Pi | Raspberry Pi 4B | RAM, OS image/version, power requirements |
+| Camera | Logitech USB webcam | Model, device index, modes |
+| Distance sensors | 3 Grove Ultrasonic Distance Sensors, front-left/center/right | Exact SKU/revision, electrical interface, voltage levels |
+| Motor driver | Not selected in the cloud context | Actual model and pin/control scheme |
+| Drive | Planned two DC gear motors and passive caster | Voltage, current, gearing, wheels, placement |
+| Chassis | Cardboard, optional 3D printing | Dimensions, payload retention, mounting |
+| MPU6050 | Previously mentioned by team | Availability, interface, intended use |
+| Power | Motor and Pi supplies to be documented | Battery/regulator ratings, common-ground wiring |
+| Bumper/rear sensing | Not confirmed | Recovery clearance and stop implementation |
 
-> **Warning:** HC-SR04 ECHO pins output 5V. They need a voltage divider (e.g. 1k + 2k ohm) before reaching a 3.3V Pi GPIO pin. Wiring `[HAS / HAS NOT]` been done.
+Do not copy HC-SR04 trigger/echo wiring onto the Grove sensors by assumption.
+Verify the exact sensor's manufacturer documentation and actual board before
+choosing pins, drivers, or level shifting. The previous HC-SR04-specific warning
+was a template, not verified wiring for this inventory. Do not assume the previous
+L298N-style ENA/ENB template applies to whichever motor driver is supplied.
 
----
+## Pin and power map: fill from verified wiring
 
-## 4. Software Environment
+| Signal | Actual part/connector | BCM pin or bus | Voltage/interface verified by |
+|---|---|---|---|
+| Left motor control | TBD | TBD | TBD |
+| Right motor control | TBD | TBD | TBD |
+| Front-left distance | Grove model TBD | TBD | TBD |
+| Front-center distance | Grove model TBD | TBD | TBD |
+| Front-right distance | Grove model TBD | TBD | TBD |
+| Stop/bumper | TBD | TBD | TBD |
+| MPU6050 if used | TBD | TBD | TBD |
 
-- **Language:** Python 3 (`[VERSION]`)
-- **GPIO library:** `gpiozero` (backend `lgpio` on Pi 5). **Do NOT use `RPi.GPIO`**; it does not work on the Pi 5.
-- **Vision:** OpenCV (`cv2`) and NumPy. No heavy frameworks unless discussed.
-- **Optional AI models:** `[YOLO-nano / MobileNet / MiDaS-small / none yet]`, only if the core demo is already stable.
-- **Dev setup:** `[VS Code Remote-SSH to Pi / editing locally and copying]`
-- **Pi hostname / IP:** `[HOSTNAME or IP]`
-- **Install baseline:**
-  ```bash
-  sudo apt update
-  sudo apt install -y python3-opencv python3-gpiozero python3-lgpio git
-  ```
-- Use a virtual environment only if needed (`--system-site-packages` so `cv2` stays available).
+Never guess a GPIO assignment. Do not power motors from GPIO. Verify driver and
+power ratings, grounding, and logic compatibility before applying power.
 
----
+## Software and module ownership
 
-## 5. Repository Structure
+- Python 3, version TBD, on verified Raspberry Pi OS.
+- Choose a GPIO library supported by the actual Pi/OS combination; Pi 5-specific
+  template instructions are not requirements for the currently reported Pi 4B.
+- OpenCV/NumPy are candidates for capture and lightweight preprocessing.
+- YOLO inference is planned on the RTX 4060 desktop; measure before changing this.
+- Camera settings, pins, thresholds, and bounded command values belong in config.
+- Embedded owner: `hardware.embedded`, coordinated with `hardware.mechanical`.
+- AI/backend interface changes go through `aiden.sol` and `fullstack`.
 
-```
+Current files are placeholders, not implementations:
+
+```text
 robot/
-  CONTEXT.md     # this file
-  drive.py       # Drive class: motor control
-  sensors.py     # distance sensor reading
-  vision.py      # camera capture + obstacle/free-space detection
-  main.py        # main control loop (sense -> decide -> act)
-  config.py      # all pins, speeds, thresholds (single source of truth)
-  tests/         # small standalone scripts to test each piece
+  CONTEXT.md
+  drive.py       # motor driver adapter
+  sensors.py     # actual Grove sensor driver, bounded reads and health
+  vision.py      # camera capture/preprocessing and stream integration
+  main.py        # local controller, watchdog, stop policy
+  config.py      # planned; not yet created
+  tests/         # planned hardware bring-up scripts
 ```
 
-**File ownership:** `[drive.py/sensors.py: PERSON]`, `[vision.py: PERSON]`, `[main.py/config.py: PERSON]`. Only edit your own files without telling the owner.
+## Interfaces: agree before implementing
 
----
+Keep `Drive.forward`, `backward`, `turn_left`, `turn_right`, `stop`, and `close` as
+candidate primitive operations. Their 0-1 arguments are duty-cycle requests, not
+physical velocities. Calibrate actual travel and turning behavior under load.
 
-## 6. Module Contracts (keep these interfaces stable)
+Distance readings should identify the sensor and units (cm), timestamp, and health;
+a timeout/error is unavailable data, not zero distance or guaranteed clearance.
+Camera frames need timestamps so the backend can reject stale perception.
 
-### `drive.py`
-```python
-class Drive:
-    def forward(self, speed: float = 0.6): ...   # speed 0.0 to 1.0
-    def backward(self, speed: float = 0.5): ...
-    def turn_left(self, speed: float = 0.5): ...   # spin in place
-    def turn_right(self, speed: float = 0.5): ...  # spin in place
-    def stop(self): ...
-    def close(self): ...                           # release GPIO, stop motors
-```
+Pi/backend commands need job ID, sequence number, bounded command, and expiration.
+Reject stale or out-of-order commands. The local watchdog stops movement when the
+control link is lost or commands expire. Agree on encoding, transport, timing,
+video delivery, and telemetry schemas with the fullstack owner before coding.
 
-### `sensors.py`
-```python
-def read_distances() -> dict:
-    # returns distances in cm, e.g. {"left": 42.0, "center": 18.5, "right": 60.3}
-    # returns None for a sensor on timeout or error; callers must handle None
-```
+## Navigation and stopping behavior
 
-### `vision.py`
-```python
-def get_free_space(frame) -> dict:
-    # returns {"left": float, "center": float, "right": float}
-    # each value 0.0 to 1.0 = fraction of that region that looks like open floor
-```
+Obstacle avoidance is one layer of destination-directed navigation. It cannot
+replace route progress or arrival verification. The route/checkpoint method is
+still to be selected; do not promise unrestricted campus navigation.
 
-### `main.py`
-Control loop: read sensors, read camera, decide, drive. Loop runs about 10 to 20 times per second.
+Priority order:
 
----
+1. Emergency stop: hold stopped until an explicit permitted reset.
+2. Required sensor fault, lost route, lost link, or expired command: stop and report.
+3. Obstacle: stop; report BLOCKED; resume only under the agreed recovery policy.
+4. Valid route-following request: execute within local motion and clearance bounds.
+5. Arrival: stop at the verified destination and report evidence to the backend.
 
-## 7. Behavior Specification
+Do not automatically reverse after an emergency stop. Reversing or turning for
+recovery requires verified clearance and a bounded maneuver. The three reported
+front sensors do not establish rear clearance. Avoid random roaming as a delivery
+fallback; keep it, if useful, as an explicitly isolated component demonstration.
 
-**Decision priority (highest first):**
-1. **Emergency stop:** any sensor under `[10]` cm, or bumper pressed: stop, back up briefly, then turn.
-2. **Obstacle ahead:** center distance under `[25]` cm or center free-space under `[0.4]`: stop and turn toward the clearer side.
-3. **Steer:** if one side is clearly more open, bias toward it while moving forward.
-4. **Default:** drive forward at cruise speed `[0.5 to 0.6]`.
+An LLM response may request high-level actions but cannot bypass stopping logic.
+Camera-only floor appearance is not proof of clearance; compare it with verified
+distance sensing and account for sensor failure. Final thresholds must be measured.
 
-**Anti-stuck rules:**
-- If it turns more than `[N]` times in a row without moving forward more than `[X]` seconds, back up and turn a random amount.
-- Add a short pause (`~0.1 s`) after turns so sensor readings settle.
+## Bring-up and integration checks
 
-**Tunable values live in `config.py`**, never hard-coded in logic.
+1. Verify inventory, power, wiring, and the local stop method.
+2. Lift the wheels before trying new motion code; keep a physical stop accessible.
+3. Confirm each motor direction and each sensor with bounded reads.
+4. Confirm camera capture, frame timestamps, and website display.
+5. Verify stale-command, link-loss, sensor-fault, emergency-stop, and reset behavior.
+6. Run a short dispatch -> route -> obstacle stop -> arrival test.
+7. Repeatedly rehearse the full 50-100 m route with payload under demo conditions.
+8. Record actual duration, interventions, failures, and a backup video.
 
----
+Every motor script needs `try/finally` cleanup, but cleanup alone does not replace
+the runtime watchdog or a physical stop. Tag known-good versions. New dependencies
+must be documented with their install commands, ownership, and reason.
 
-## 8. Coding Rules for the AI
+## Current status
 
-1. **Simple over clever.** Short functions, clear names, comments explaining *why*. We debug at 3 a.m.
-2. **Safety first:** every script that moves motors must wrap its loop in `try/finally` and call `drive.stop()` and `drive.close()` in `finally`. Handle `KeyboardInterrupt`.
-3. **No blocking forever:** all sensor reads need timeouts.
-4. **Handle failure:** camera may fail to open; sensors may return `None`. Code must degrade gracefully (e.g. fall back to sensors only).
-5. **Do not change interfaces in Section 6** without being asked. If a change is needed, say so and explain.
-6. **One small change at a time.** Do not rewrite whole files when asked for a fix. Show only what changed, or the full file if it is short.
-7. **Print useful debug output** (distances, free-space values, chosen action) behind a `DEBUG` flag in `config.py`.
-8. **No new dependencies** without asking and listing the install command for Raspberry Pi OS.
-9. **Pi 5 awareness:** do not use `RPi.GPIO` or libraries known not to support the Pi 5.
-10. **Performance:** keep camera resolution at `[320x240]` and avoid per-pixel Python loops; use NumPy/OpenCV operations.
-
----
-
-## 9. Testing Protocol
-
-- **Motors first with wheels off the ground.** Always lift the robot when testing new motion code.
-- Test each module with a standalone script in `tests/` before integrating:
-  1. `tests/test_drive.py`: spin each wheel forward and back
-  2. `tests/test_sensors.py`: print distances live; wave a hand in front
-  3. `tests/test_camera.py`: grab and save a frame; show free-space values
-  4. `tests/test_vision.py`: run vision on saved images
-- Test final behavior in a space similar to the demo area (same floor, same lighting).
-- Keep a **known-good tagged version** in git (e.g. `git tag working-v1`) and update it after every successful milestone.
-
----
-
-## 10. Known Pitfalls
-
-- **Power:** motors drawing current can brown out the Pi. Keep motor power and Pi power separate, share ground.
-- **Floor segmentation** breaks on shiny floors, shadows, and patterned carpet. Sample floor color from the bottom of the frame each run, and tune thresholds on site.
-- **Ultrasonic sensors** miss soft or angled surfaces (couches, curtains). The camera helps cover this.
-- **Single camera has no true depth.** Use the distance sensors for actual distances.
-- **Pi 5 GPIO** requires `gpiozero` with `lgpio`.
-- **Camera index** may change (`/dev/video0` vs `/dev/video1`). Make it a config value.
-
----
-
-## 11. Current Status (update as you go)
-
-- [ ] Parts gathered
-- [ ] Pi flashed, SSH working, camera detected
-- [ ] Chassis assembled and wired
-- [ ] Motors working from Python
-- [ ] Sensors reading correctly
-- [ ] Reactive sensor-only avoidance working (**fallback demo**)
-- [ ] Camera free-space detection working
-- [ ] Sensors and camera combined in `main.py`
-- [ ] Tested in demo-like environment
-- [ ] Backup demo video recorded
-- [ ] Pitch prepared
-
-**Last known-good version:** `[git tag / commit hash]`
-**Current problem we are working on:** `[DESCRIBE]`
-
----
-
-## 12. How to Ask for Help (prompt template)
-
-> I'm working on the robot described in CONTEXT.md. Today I'm working on `[FILE]`.
-> **Goal:** `[what should happen]`
-> **What I tried / current code:** `[paste code]`
-> **What actually happens:** `[behavior or FULL error traceback]`
-> Please give me the smallest change that fixes this and explain what it does.
-
----
-
-## 13. Hackathon Priorities
-
-1. Working fallback demo (sensor-only avoidance) by about hour 12
-2. Camera enhancement layered on top, never replacing the fallback
-3. Reliability testing in the demo space
-4. Final 6 hours: **no new features**, only fixes, polish, video, and pitch
-
-**Pitch angle:** "Autonomous navigation using on-board vision and multi-sensor fusion, running entirely on a Raspberry Pi."
+Verified from repository baseline `5f8e8b1`: Pi 4B and Grove sensors are reported;
+`drive.py`, `sensors.py`, `vision.py`, and `main.py` are empty. No physical behavior
+has been verified by the orchestrator. Hardware owners should report test evidence
+and blockers through the mailbox before this status is changed.
