@@ -11,6 +11,8 @@
 
 # Generated builds and framework state
 /public/vendor/pdfjs/
+/public/vendor/mediapipe/
+/public/qa-fixtures/
 /dist/
 /.next/
 /.vinext/

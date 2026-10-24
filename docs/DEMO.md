@@ -11,8 +11,10 @@
    fabricated recordings appear. Download the JSON report and inspect its content.
 5. Start fresh. Enable media only after checking consent; verify the permission
    prompt, live preview, mic meter, recording start/stop, replay, and retake.
-6. In practice mode, manually enter the matching transcript for each recording.
-   Record at least two answers, submit, and replay/download best and worst clips.
+6. Allow the local English speech model to load, record a spoken answer, and
+   confirm captions appear in short batches and finalize on stop without typing.
+   Review optional corrections. Record several distinct speech sections, submit,
+   and replay/download both strong and improvement excerpts.
    Verify the files are playable and camera/microphone indicators turn off.
 
 ## Live AI demo
@@ -40,7 +42,7 @@
 3. Generate real AI questions, choose text answers, and submit a fictional answer.
    Confirm provisional feedback and exact transcript evidence. Skip another answer
    and verify it remains unscored. Finish and inspect the report.
-4. Confirm audio transcription and camera-cloud controls are unavailable. PDF
+4. Confirm on-device transcription works and camera-cloud controls remain unavailable. PDF
    uploads must extract text locally, without forwarding the original document.
    Disable cloud consent and confirm browser-only practice still works. Never
    use personal content in fictional mode.
@@ -53,7 +55,8 @@
 2. Opt into cloud processing, upload a non-sensitive PDF/TXT resume or prompt,
    and confirm questions reference actual experience. Declining cloud processing
    must still allow text/curated practice.
-3. Record and stop. Confirm actual transcription, edit mistakes, and submit.
+3. Record and stop. Confirm local audio-derived transcription, optionally correct
+   mistakes, and submit. Check delivery components and available/missing channels.
 4. Opt into camera observations for one answer only. Check actual framing/posture
    observations, uncertainty, and no inferred identity or feelings. No visual score.
 5. Confirm per-answer feedback evidence is present in the transcript. Download

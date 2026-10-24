@@ -37,17 +37,26 @@ questions and feedback use strict JSON schemas plus runtime checks. Resumes,
 prompts, and transcripts are untrusted data within developer instructions.
 
 Content measures relevant specifics, reasoning, and results; comprehension means
-addressing the question. Live AI estimates these from the reviewed transcript.
-The demo instead uses text length, structural words, actions/numbers, and focus
-keyword overlap; it cannot verify correctness. Confidence is a transparent
-pace/filler proxy, only available for a recording of at least five seconds with
-at least fifteen transcript words. WPM includes pauses and depends on transcript
-accuracy. Edited or mismatched transcripts can therefore invalidate the estimate.
-The overall score averages available dimensions and ignores nulls.
+addressing the question. Recorded answers automatically provide a transcript
+from their audio. Optional recognition corrections feed content/comprehension;
+delivery retains the original recognition and measured recording cues. Personal
+free/practice feedback still uses a labeled browser rubric; fictional consented
+cloud feedback uses the same transcript with the configured provider.
 
-Visual notes do not affect scores. They describe visible framing, posture,
-gestures, head orientation, face/mouth visibility, and uncertainty; they do not
-measure gaze, identify faces, infer emotion/traits, lip-read, or rate hiring fit.
+Confidence is a labeled delivery heuristic. Base weights: speaking pace 20%,
+fillers/possible repeated words 10%, interior low-volume gaps 15%, approximately
+camera-facing head position 25%, upper-body framing 20%, shoulder-center movement
+10%. At least five seconds, fifteen recognized words and two available components
+are needed. Missing components are excluded and remaining weights renormalize;
+weights and observations appear in the report. No universal delivery style is
+established by these thresholds. Noise, ASR errors, camera setup and movement
+affect measurements. This does not diagnose stuttering or infer emotional
+confidence. Content/comprehension remain text dimensions. Overall averages the
+three available dimensions and ignores nulls.
+
+Cloud visual notes do not affect scores. Separate on-device landmarks contribute
+observable head-position, framing and movement cues to delivery. They do not
+measure eye contact, identify faces, infer emotion/traits, lip-read, or rate hiring fit.
 This is voluntary self-practice, not employment screening.
 
 ## Media lifecycle
@@ -55,9 +64,16 @@ This is voluntary self-practice, not employment screening.
 Camera and microphone require explicit checkbox consent followed by a button and
 the native permission dialog. Each answer uses video+audio MediaRecorder and a
 separate audio-only recorder. Video is kept locally as a real downloadable clip;
-the audio is sent for transcription only with cloud consent. Sampled frames are
-sent only with an additional camera-observation opt-in. Text answers require no
-device access. Local microphones remain on during the visible camera preview.
+the audio is transcribed locally by `recording-coach.ts` and `speech.worker.ts`
+using quantized English Whisper in a worker. An AudioWorklet captures mono 16 kHz
+PCM; captions update in approximately twelve-second batches and finalize on stop.
+Silence-only batches are rejected before ASR. Word timestamps are approximate.
+Speech and vision models download on first use and may be cached; recordings
+are not cached. Original audio/video never goes to a model download host.
+The old cloud transcription endpoint remains for eligible API clients but the UI
+uses local transcription, including retries. Sampled cloud frames still require
+their additional opt-in and an eligible provider. Text answers need no device
+access. Local microphones remain on during the visible camera preview.
 
 On stop, both recorders finalize before feedback. The user reviews the transcript;
 network errors preserve the clip for retry. Retake revokes its old Blob URL.
@@ -66,9 +82,18 @@ revokes all clips. A page-unload warning reminds users to download recordings.
 Original videos are never uploaded or stored by Cadence. There is no browser
 IndexedDB/localStorage history. Each provider has its own data policies.
 
-Best and worst clips are whole recorded answers ranked by their mean available
-scores. One recording yields only a best clip; no scored recording yields none.
-Word-aligned subclips, full-session editing, and emotion detection are outside MVP.
+Strong and improvement moments are distinct variable-length speech excerpts,
+split on sentence/gap boundaries, with a clause/midpoint split for one long span.
+Local delivery and transcript-specificity/keyword heuristics rank excerpts; this
+does not establish semantic correctness. Up to three of each category can span
+one or several answers. Too little evidence yields an explicit empty state;
+the same excerpt is not duplicated into both categories. With missing timestamps,
+two scored recordings can fall back to separate whole answers.
+Playback seeks/pauses within the chosen range. Download re-encodes that range
+locally with canvas, Web Audio and MediaRecorder; it takes approximately the
+clip's duration. Audio and video are retained; exact frame/word cuts and a full
+session editor remain outside scope. Reports export ranges and evidence without
+Blob URLs or raw sampled audio/landmark arrays.
 
 ## Models and deployment
 

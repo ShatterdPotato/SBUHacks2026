@@ -31,6 +31,13 @@ the strongest and weakest recorded answers. This is voluntary personal coaching.
   `gemini-3.5-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
   labeled practice rubric mode. Chat subscriptions do not supply API credentials.
 - `web/lib/pdf-resume.ts`: PDF.js text extraction in a bundled browser worker.
+- Recording-first update: `recording-coach.ts`, `speech.worker.ts`, and the audio
+  worklet run English Whisper transcription locally in ~12-second batches.
+  `public/vision-capture.worker.js` runs local landmark measurements. Model files
+  download from Hugging Face/Google; media is not sent to those download hosts.
+- `recorded-delivery.mjs` calculates labeled delivery components and selects
+  variable-duration speech excerpts; `components/moment-clip.tsx` and
+  `lib/export-clip.ts` replay/export separate strong and improvement clips.
 - `web/lib/resume-profile.mjs`: fixed skill labels, broad roles, generic request validation.
 - Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: personal PDF/TXT resumes are read
   in the browser. Optional AI questions use only reviewed generic skill labels and
@@ -50,14 +57,18 @@ Only use a paid data policy after the owner arranges appropriate Google billing
 and data handling; an environment flag cannot enable billing. No server recording
 database is implemented. The API is independent of Codex chat/subscription usage.
 
-Confidence is a delivery proxy using speaking pace and transcript filler words,
-not feelings or personality. Content/comprehension use text; demo keyword
+Confidence is a labeled local delivery estimate using pace, pauses, possible
+word repetitions/fillers, camera-facing head position, upper-body framing and
+movement when measurable. Missing channels are excluded and weights renormalize.
+These are coaching heuristics, not feelings or personality. Content/comprehension
+use the recognized transcript (with optional corrections); demo keyword
 heuristics cannot establish correctness. Visual feedback describes framing,
 posture/gestures, head orientation, and face/mouth visibility. Head direction
 does not establish eye contact. No face recognition, lip-reading, emotion/trait
 inference, voice identification, or hiring decisions. Missing evidence is
-unavailable, never fabricated. Clips rank whole recorded answers; precise
-word-aligned editing is not implemented.
+unavailable, never fabricated. Multiple strong/improvement excerpts can come
+from one recording or several. Speech alignment and export boundaries remain
+approximate; whole-answer fallback remains when timestamps are unavailable.
 
 ## Team workflow
 
