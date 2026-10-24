@@ -1,0 +1,5 @@
+Sample interview context for browser QA. Fictional experience, no personal data.
+Role: Machine Learning Intern.
+Built an image classification project in Python and PyTorch.
+Used training and validation splits, a baseline model, and accuracy measurements.
+Collaborated with teammates to test data quality and document experiments.

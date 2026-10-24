@@ -5,3 +5,15 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+node_modules/
+dist/
+.next/
+.wrangler/
+.sites-runtime/
+*.tsbuildinfo
+*.webm
+*.mp4
+*.wav
+*.m4a
+/outputs/
