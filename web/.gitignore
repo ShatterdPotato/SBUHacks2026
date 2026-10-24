@@ -10,6 +10,7 @@
 !/.yarn/versions/
 
 # Generated builds and framework state
+/public/vendor/pdfjs/
 /dist/
 /.next/
 /.vinext/

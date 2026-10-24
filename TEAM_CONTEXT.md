@@ -26,9 +26,13 @@ the strongest and weakest recorded answers. This is voluntary personal coaching.
 - `AI_PROVIDER=gemini` uses server-only `GEMINI_API_KEY`; model defaults to
   `gemini-3.1-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
   labeled practice rubric mode. Chat subscriptions do not supply API credentials.
-- Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: fictional text only, with explicit
-  attestation. PDF, audio upload/transcription, and camera-frame upload are blocked
-  server-side. Local recording and curated practice remain available.
+- `web/lib/pdf-resume.ts`: PDF.js text extraction in a bundled browser worker.
+- `web/lib/resume-profile.mjs`: fixed skill labels, broad roles, generic request validation.
+- Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: personal PDF/TXT resumes are read
+  in the browser. Optional AI questions use only reviewed generic skill labels and
+  a broad role; personal answers use the browser rubric. No raw personal resume,
+  answer, contact, employer, or project data goes to the free API. Fictional sample
+  mode can send made-up text for AI feedback. Raw PDFs/audio/frames remain blocked.
 
 ## Privacy and evidence
 

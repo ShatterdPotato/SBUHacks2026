@@ -1,5 +1,6 @@
 import { InputError, setupInput, retrieveQuestions, rubricAnalysis, deliveryMetrics, text } from './interview.mjs';
 import { providerConfig, assertCloudConsent, structured, transcribeFile } from './provider.mjs';
+import { personalQuestionSetup } from './resume-profile.mjs';
 const string = { type: 'string' };
 const strings = { type: 'array', items: string };
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
@@ -60,13 +61,14 @@ export async function handleApi(request, env = {}, fetcher = fetch) {
             return json({ error: 'Cross-origin requests are not allowed.' }, 403);
         if (path === '/api/questions') {
             const body = await bodyJson(request);
-            const setup = setupInput(body);
+            const genericOnly = config.demoDataOnly && body?.privacyMode === 'personal';
+            const setup = setupInput(genericOnly ? personalQuestionSetup(body) : body);
             const live = config.cloudAvailable && setup.cloudConsent;
             if (setup.resume && !live)
                 throw new InputError('PDF analysis needs an AI key and cloud consent. Paste resume text instead.');
             if (!live)
                 return json({ mode: 'demo', questions: retrieveQuestions(setup) });
-            assertCloudConsent(body, config);
+            assertCloudConsent(body, config, { genericOnly });
             if (setup.resume && !config.pdfCloudAvailable)
                 throw new InputError('Free Gemini practice accepts fictional text only. PDF resumes are not sent to this provider.');
             const content = [{ type: 'input_text', text: `Generate exactly ${setup.count} distinct ${setup.type} questions for a ${setup.level} ${setup.role} interview. Tailor to the experience and prompt. Include short focus keywords. Mixed means behavioral and technical. Context: ${setup.context}` }];
@@ -98,6 +100,8 @@ export async function handleApi(request, env = {}, fetcher = fetch) {
         const body = await bodyJson(request);
         if (!body || typeof body !== 'object' || Array.isArray(body))
             throw new InputError('Invalid answer.');
+        if (config.demoDataOnly && body.privacyMode === 'personal')
+            throw new InputError('Personal answers use the browser practice rubric with this free setup; they are not sent for cloud analysis.');
         const answer = text(body.answer, 'Answer', 20000);
         const question = { prompt: text(body.question?.prompt, 'Question', 1200), focus: body.question?.focus ?? [] };
         if (!question.prompt || !Array.isArray(question.focus) || question.focus.length > 12 || !question.focus.every(v => typeof v === 'string' && v.length <= 100))

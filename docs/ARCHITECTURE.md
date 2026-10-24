@@ -27,7 +27,11 @@ server-side. Mutations reject a foreign Origin. Provider calls time out after
 ## Modes and scoring
 
 No key or no cloud opt-in uses curated retrieval and a labeled approximate rubric.
-PDF input cannot silently fall back: the user must paste text or enable live AI.
+The browser extracts PDF text locally in a bundled PDF.js worker, with a 2 MB,
+ten-page, 18,000-character, 30-second limit. Users can review/edit the extracted
+text. Empty/scanned, encrypted, or invalid files get actionable errors. The
+original PDF never leaves the browser through the current UI. Legacy direct
+API PDF attachments still require a media-capable provider and cloud consent.
 Provider errors remain errors and preserve the local answer for retry. Generated
 questions and feedback use strict JSON schemas plus runtime checks. Resumes,
 prompts, and transcripts are untrusted data within developer instructions.
@@ -73,12 +77,24 @@ Interactions with `store:false`, structured JSON schema, and runtime validation;
 default model `gemini-3.1-flash-lite`. REST text is extracted only from model_output
 steps, never thought steps. Keys travel in headers, never query strings.
 
-Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: requests require provider-specific
-consent and `demoDataOnly:true` attestation for fictional text. Real resumes,
-personal, sensitive, and confidential data are excluded. PDF, audio, and sampled
-camera uploads are rejected server-side. Local recording/clips still work and
-the user enters fictional text. Free-tier data may improve Google products and
-undergo human review. Rate-limit failures remain visible errors.
+Gemini defaults to `GEMINI_DATA_POLICY=unpaid` with two explicit session choices:
+
+- Personal: PDF/TXT resumes, prompts, and answers remain in browser memory. With
+  cloud consent, `/api/questions` accepts `privacyMode:personal` and a `profile`
+  containing a broad `roleFamily` and fixed `skills` labels. The server rejects
+  every other source field and validates both allowlists before constructing a
+  generic prompt. This is topic selection, not anonymized resume transmission.
+  Personal answer feedback uses the pure browser rubric; `/api/analyze` rejects
+  personal mode under this provider policy. No answer API call is made by the UI.
+- Fictional sample: the explicit choice supplies `demoDataOnly:true`. With
+  provider-specific consent, extracted fictional resume text and typed fictional
+  answers can be sent for full AI feedback. No original PDFs are uploaded.
+
+Without cloud opt-in, question retrieval and all feedback run in the browser.
+Raw PDFs, audio, and sampled frames remain rejected on unpaid cloud routes.
+Free-tier cloud data may improve Google products and undergo human review.
+Rate-limit failures remain visible errors. A source-reading worker is bundled
+and served from the same origin, with no third-party PDF parsing service.
 
 `GEMINI_DATA_POLICY=paid` permits media only after the owner arranges appropriate
 Google billing/data handling. This is an operator declaration, not billing setup

@@ -28,18 +28,22 @@ Site runtime and deploy. API usage is independent of Codex or ChatGPT usage.
 OpenAI remains an optional adapter using `AI_PROVIDER=openai` and `OPENAI_API_KEY`.
 
 Gemini defaults to `gemini-3.1-flash-lite` and `GEMINI_DATA_POLICY=unpaid`. Free Gemini
-practice accepts **fictional text only**, with consent and a made-up-data checkbox.
-No real resumes, personal details, sensitive data, or confidential work. Google may
-use free-tier inputs/outputs to improve products and for human review. PDF/audio/
-camera uploads are blocked server-side; recordings stay local. Free quotas may
-limit availability. See [Google's API terms](https://ai.google.dev/gemini-api/terms).
+practice accepts personal PDF/TXT resumes in the browser. Personal mode keeps
+resume text and interview answers on the device; optional AI questions use only
+reviewed, fixed generic skill tags and a broad role. Personal answer feedback is a
+labeled browser heuristic rubric. Fictional sample mode can send extracted text
+and typed fictional answers to Gemini with consent. Google may use free-tier
+inputs/outputs to improve products and for human review. Original PDF/audio/camera
+uploads are blocked server-side. Free quotas may limit availability. See
+[Google's API terms](https://ai.google.dev/gemini-api/terms).
 Only configure `GEMINI_DATA_POLICY=paid` after arranging appropriate Google billing
 and data handling; the flag does not activate billing. No billing is enabled here.
 
 ## Interview flow
 
 1. Add the role, experience, resume (TXT/PDF), or a custom prompt. Choose focus
-   and 3–6 questions. PDF processing requires live AI and cloud consent.
+   and 3–6 questions. PDF text extraction runs in a bundled browser worker and
+   needs no AI key or cloud opt-in. Review and edit the extracted text.
 2. Choose text practice or consent to camera/microphone recording. Each answer
    is recorded separately; a three-minute limit keeps clips manageable.
 3. When cloud media is available, recorded audio is transcribed. Review/edit the
@@ -59,8 +63,10 @@ No server recording storage or account history is implemented. A separate cloud
 opt-in sends context/resume, transcripts, audio, and optionally up to four camera
 frames per answer to the selected provider when its configured data policy permits.
 Provider data policies apply; `store:false` is used for Responses and Interactions
-calls. Free Gemini sends fictional text only. Do not upload information you do not
-want processed. Both providers share `web/lib/interviewer-instructions.mjs`; this
+calls. Free personal mode sends only fixed generic topic labels for questions;
+fictional mode can send made-up resume and answer text. Personal resumes/answers
+remain in browser memory. PDF uploads are limited to 2 MB and ten pages; scanned
+or password-protected files need a text/unlocked copy. Both providers share `web/lib/interviewer-instructions.mjs`; this
 is a versioned coaching prompt, not access to a live Codex conversation or account.
 
 Practice scores use approximate lexical heuristics and do not establish technical
