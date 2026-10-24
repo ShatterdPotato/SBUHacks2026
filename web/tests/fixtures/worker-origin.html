@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Cadence worker-origin check</title>
+<main><h1>Cadence worker-origin regression</h1><p>No camera or microphone is accessed.</p><button id="run">Load recording speech worker</button><button id="transcribe">Transcribe public speech fixture</button><p id="status" role="status">Ready</p><p id="transcript"></p></main>
+<script type="module">
+import { RecordingCoach } from '/lib/recording-coach.ts';
+const status=document.querySelector('#status');
+document.querySelector('#run').onclick=async()=>{
+  let coach;
+  try {
+    coach=new RecordingCoach(()=>{},text=>status.textContent=text);
+    await coach.warm();
+    status.textContent='PASS: RecordingCoach constructed and warmed its speech worker through the actual Cadence server.';
+  } catch(error) {status.textContent='FAIL: '+error.message;}
+  finally {coach?.dispose();}
+};
+document.querySelector('#transcribe').onclick=async()=>{
+  let coach;
+  try {
+    coach=new RecordingCoach(text=>document.querySelector('#transcript').textContent=text,text=>status.textContent=text);
+    await coach.warm();
+    const response=await fetch('https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/jfk.wav');
+    if(!response.ok)throw new Error('Public fixture download failed');
+    const result=await coach.retry(await response.blob());
+    if(!result.transcript.toLowerCase().includes('country')||result.words.length<15)throw new Error('Known speech was not recognized');
+    status.textContent='PASS: actual Cadence-origin bundle transcribed the public speech fixture and returned word timestamps.';
+  } catch(error) {status.textContent='FAIL: '+error.message;}
+  finally {coach?.dispose();}
+};
+</script></html>

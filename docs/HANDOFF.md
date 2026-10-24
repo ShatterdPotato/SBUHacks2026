@@ -4,6 +4,13 @@ Updated October 24, 2026, America/New_York. Read this before continuing. The hum
 requested an immediate GitHub checkpoint because their usage was nearly exhausted.
 Do not restart the project, discard teammate work, or resurrect XTrain.
 
+Latest local fix: camera setup was blocked by a `file:///` speech-worker URL in
+Vinext. A standalone same-origin worker bundle now bypasses both import-meta URL
+rewriting and page-only HMR injection. Actual Cadence-origin model warm-up and
+public-fixture transcription passed, without physical device capture. See
+[worker-origin regression](qa/WORKER_ORIGIN_FIX_2026-10-24.md). Restart `pnpm dev`
+after editing worker source so its public bundle is regenerated.
+
 ## New recording-first request (current source; publication pending)
 
 The human requested automatic transcription from recording audio, delivery

@@ -44,8 +44,6 @@ export default defineConfig(async ({ command }) => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
-    worker: { format: 'es' as const },
-    optimizeDeps: { include: ['@huggingface/transformers'] },
     server: {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }

@@ -12,6 +12,7 @@
 # Generated builds and framework state
 /public/vendor/pdfjs/
 /public/vendor/mediapipe/
+/public/vendor/speech/
 /public/qa-fixtures/
 /dist/
 /.next/
