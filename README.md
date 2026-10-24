@@ -1,5 +1,9 @@
 # Cadence
 
+**Continuing this project? Start with [the complete handoff](docs/HANDOFF.md)
+and [feature inventory](docs/FEATURE_STATUS.md).** Fictional test resumes are in
+[examples/](examples/README.md).
+
 **Your interview, rehearsed.** An AI interview practice service for SBUHacks 2026,
 built by Aiden Li Productions. Upload a resume or describe a role, practice an
 interview, and leave with useful feedback and recordings worth revisiting.

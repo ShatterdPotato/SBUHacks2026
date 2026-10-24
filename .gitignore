@@ -17,3 +17,5 @@ dist/
 *.wav
 *.m4a
 /outputs/
+/output/
+/tmp/

@@ -1,6 +1,7 @@
 # Agent startup
 
-Read `TEAM_CONTEXT.md` before planning, project answers, or edits. The project is
+Read `TEAM_CONTEXT.md` before planning, project answers, or edits. Read
+`docs/HANDOFF.md` for the latest stopping point and next steps. The project is
 **Cadence**, an AI interview practice service. XTrain and the rover mailbox are
 retired by the human. Orchestrator: **aiden.sol**.
 
