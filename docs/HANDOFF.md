@@ -4,6 +4,10 @@ Updated October 24, 2026, America/New_York. Read this before continuing. The hum
 requested an immediate GitHub checkpoint because their usage was nearly exhausted.
 Do not restart the project, discard teammate work, or resurrect XTrain.
 
+Credential continuity: see [CREDENTIALS.md](CREDENTIALS.md). The production key
+was reverified as a configured, redacted Site secret at environment revision 3;
+it persists beyond this chat. A new clone or another account does not inherit it.
+
 ## Current state
 
 Repository: https://github.com/ShatterdPotato/SBUHacks2026 (Sameer's repository).
