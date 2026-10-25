@@ -20,7 +20,7 @@ The build contains only `/`; the temporary QA route was removed. Existing large
 bundle and Vinext route-classification notices remain. Browser checks include
 desktop/320 px setup, text interview/report, Idle man 1 and mocked multi-turn chat
 with consent, retry, cancellation and correction reset. Physical camera accuracy
-and live provider voice/chat remain separate verification work. No key was read
+and live provider voice remain separate verification work. No key was read
 or changed. Hosted/source publication records follow once tools confirm them.
 
 Publication confirmed: implementation `f1b3f30` is pushed in
@@ -194,3 +194,5 @@ Follow-up publication: implementation commit `233fe10` is pushed to
 `codex/adaptive-interview-rubric` and draft PR #13. Final checks: 137 tests,
 TypeScript and production build passed; working preview restarted with root and
 health HTTP 200. No merge or hosted deployment.
+
+Live post-deployment check: a fictional text interview reached the report. Two real Gemini results-chat requests succeeded: a specific gap plus worked practice exercise, then a contextual follow-up using that exercise. No personal data or media was used.

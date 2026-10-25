@@ -44,5 +44,7 @@ October 25, 2026. Agent: montasir. Based on `d954c59` on the unmerged
 Final TypeScript/build/publication results are in HANDOFF.md. Chat browser tests
 used mocked replies. Local health reported no configured AI provider; no secret
 file was read or changed. Physical-camera accuracy (glasses, lighting, placement),
-calibration, live cloud chat and actual ElevenLabs listening remain unverified.
+calibration and actual ElevenLabs listening remain unverified.
 No new gaze score weight or proven accuracy improvement is claimed.
+
+Post-deployment live check: PASS. A fictional text session reached the production report; Gemini returned a gap explanation and worked exercise, followed by a contextual revised introduction. Two actual requests completed. Audience/secrets stayed unchanged at environment revision 3.
