@@ -75,3 +75,8 @@ Same branch and draft PR #13; root will record the final pushed commit. No merge
 hosted deployment, account/billing/storage change, or personal-media upload.
 Unpaid Gemini still requires explicit fictional/non-sensitive consent. No numeric
 accuracy is invented when the relevant factual assertion or reference is absent.
+
+Follow-up publication: implementation commit `233fe10` is pushed to
+`codex/adaptive-interview-rubric` and draft PR #13. Final checks: 137 tests,
+TypeScript and production build passed; working preview restarted with root and
+health HTTP 200. No merge or hosted deployment.
