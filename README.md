@@ -1,8 +1,10 @@
-# Cadence
+# Gearwell
+
+The supplied Gearwell frontend now wraps the Cadence interview engine: brass styling, animated VRM examiner, mechanical room transition and consented ElevenLabs interviewer speech. See [integration and every speech call](docs/GEARWELL_INTEGRATION.md).
 
 October 25 feedback update: behavioral questions have separate scoring and never receive probes. Clip captions cite their own speech, and Gemini grades with high thinking plus evidence-based justifications. See [QA](docs/qa/FEEDBACK_GROUNDING_2026-10-25.md).
 
-**Your interview, rehearsed.** A voluntary AI interview practice service for
+**Interviews that run like clockwork.** A voluntary AI interview practice service for
 SBUHacks 2026, built by Aiden Li Productions. Upload a resume or describe a role,
 practice a conversation, then review your words, feedback and recorded moments.
 
@@ -21,7 +23,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open `http://localhost:5173`. Practice mode needs no API key. It includes curated
+Open `http://localhost:5173`. Text practice needs no API key. Spoken Gearwell questions require a server-side `ELEVENLABS_API_KEY` and separate voice consent. It includes curated
 questions, text conversation, local follow-ups, optional recording, on-device
 English transcription, labeled delivery estimates and excerpt downloads.
 First-use speech/landmark model downloads require network access.

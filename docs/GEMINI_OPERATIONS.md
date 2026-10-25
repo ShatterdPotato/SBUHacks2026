@@ -1,5 +1,7 @@
 # Gemini operation map
 
+Interviewer speech is a separate ElevenLabs call through `POST /api/speech`, using the fixed Gearwell voice. Preview, every spoken question/probe, retry and individual Read question use that route. It sends text only and does not consume Gemini tokens. See [the complete speech map](GEARWELL_INTEGRATION.md). All Gemini calls below are preserved.
+
 Every operation below uses `generation_config.thinking_level: high` through
 `web/lib/provider.mjs`. The output ceilings are 8,192 tokens for planning and the
 interviewer, 16,384 for grading, verification, synthesis, clip coaching, drills

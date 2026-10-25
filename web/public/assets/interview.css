@@ -1,0 +1,23 @@
+.interview-room[hidden]{display:none}
+.interview-room{height:100svh;min-height:600px;display:flex;flex-direction:column;padding:clamp(1rem,3vw,2.5rem);background:radial-gradient(ellipse at 15% 0,#64461c38,transparent 55%),#15120e}
+.room-header,.room-footer{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;width:100%;max-width:1520px;margin:0 auto}
+.room-brand{color:var(--brass2);font:1.4rem "IM Fell English",serif;letter-spacing:.04em}.room-heading{margin-top:.4rem;font-size:clamp(1.8rem,3vw,2.6rem)}
+.room-role{margin:.5rem 0 0;color:var(--muted);font-size:1rem;max-width:65ch;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.admin-cancel{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;align-self:flex-start;border:1px solid #e49978;border-radius:7px;padding:.65rem 1rem;background:#6d2d20;color:#fff0df;font-size:1rem;box-shadow:0 3px 0 #2e130d}
+.admin-cancel:hover{background:#913e2b}.admin-cancel svg{width:17px;height:17px}
+.room-grid{position:relative;width:100%;max-width:1520px;margin:1.5rem auto;flex:1;min-height:300px}
+.participant-tile{position:relative;isolation:isolate;min-width:0;aspect-ratio:4/3;max-height:68svh;overflow:hidden;border:1px solid #8b6b3e;border-radius:14px;background:#0c0c0b;box-shadow:0 16px 45px #0005}
+.participant-tile.examiner-tile{width:100%;height:100%;aspect-ratio:auto;max-height:none;border-color:#c69b50;background:radial-gradient(ellipse at 50% 38%,#70512e55,transparent 75%),#211d16}
+.room-avatar-mount{position:absolute;inset:0}.room-avatar-mount .examiner-stage{height:100%;max-width:none;border:0;border-radius:0;box-shadow:none;background:transparent}
+.room-avatar-mount .examiner-stage::after,.room-avatar-mount .machine,.room-avatar-mount .examiner-caption{display:none}
+.participant-label{position:absolute;z-index:4;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:2.5rem 1.1rem .9rem;background:linear-gradient(transparent,#090908dd);pointer-events:none}
+.participant-name{font:1.2rem "IM Fell English",serif;color:#fff5df}.participant-name small{display:block;font:.85rem "Crimson Pro",serif;color:#cdbf9f;margin-top:.1rem}
+.participant-state{font-size:.8rem;color:#d5c5a7;border:1px solid #8b795754;background:#201c16c9;border-radius:99px;padding:.15rem .55rem}
+#interviewee-video{display:block;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}#interviewee-video[hidden]{display:none}
+.room-footer{padding-top:.8rem;border-top:1px solid #69512e80;color:var(--muted);font-size:.9rem}.room-preview{display:flex;align-items:center;gap:.5rem}.room-preview::before{content:"";width:6px;height:6px;background:var(--brass2);border-radius:50%}
+@media(max-width:560px){.room-header{align-items:flex-start;gap:1rem}.room-heading{font-size:1.7rem}.room-brand{font-size:1.15rem}.admin-cancel{padding:.6rem .7rem;font-size:.9rem}.room-grid{margin:1rem auto;min-height:300px}.room-footer{flex-wrap:wrap;gap:.4rem}.room-role{max-width:40ch}}
+
+.participant-tile.interviewee-tile{position:absolute;z-index:5;right:clamp(.7rem,2vw,1.5rem);bottom:clamp(.7rem,2vw,1.5rem);width:clamp(145px,24vw,280px);aspect-ratio:4/3;max-height:none;border:2px solid #a68853;border-radius:10px;box-shadow:0 8px 24px #0009}
+.interviewee-tile .participant-label{padding:1.6rem .65rem .55rem;gap:.4rem}.interviewee-tile .participant-name{font-size:1rem}.interviewee-tile .participant-name small{display:none}.interviewee-tile .participant-state{font-size:.65rem}
+.room-footer-meta{display:flex;flex-direction:column;gap:.15rem}.room-footer .examiner-controls{margin:0}.room-footer{flex-shrink:0}.room-header{flex-shrink:0}
+@media(max-width:700px){.interviewee-tile .participant-state{display:none}}

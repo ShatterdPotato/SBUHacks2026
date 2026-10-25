@@ -1,5 +1,7 @@
 # Gemini interview and grading agent
 
+The candidate-facing interviewer is now Gearwell. Gemini still generates/assesses structured text at high thinking; ElevenLabs separately voices approved live question text. Never add speech instructions or private reasoning to question prompts. See `../../docs/GEARWELL_INTEGRATION.md`.
+
 Every provider request now loads an operation-specific interviewer system role
 from `../lib/interviewer-instructions.mjs`. Live question turns speak directly to
 the candidate, respond to actual technical claims and avoid canned praise, tutor

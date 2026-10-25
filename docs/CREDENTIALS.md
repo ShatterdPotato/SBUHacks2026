@@ -1,5 +1,7 @@
 # Cadence credentials and access
 
+October 25 Gearwell integration: the user-authorized handoff ElevenLabs key is merged into ignored `web/.dev.vars` as `ELEVENLABS_API_KEY`. The server sends it only to the fixed ElevenLabs speech host. No secret value, private handoff file, or alternate hosting identity was committed. The example config includes a blank variable; hosted configuration is unchanged.
+
 Updated October 24, 2026. The earlier repository audit read no credential values.
 Later the user authorized local Gemini configuration. The supplied value was
 written through hidden stdin to ignored `web/.dev.vars`, never read back or

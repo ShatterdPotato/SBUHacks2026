@@ -1,5 +1,7 @@
 # Cadence: shared team context
 
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](docs/GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](docs/qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](docs/GEMINI_OPERATIONS.md) and [current QA](docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
@@ -15,7 +17,7 @@ adaptive interview/rubric implementation on `codex/adaptive-interview-rubric`.
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
 Repository: https://github.com/ShatterdPotato/SBUHacks2026. Canonical branch:
-`main`. Team: Aiden Li Productions. Cadence is the working product name.
+`main`. Team: Aiden Li Productions. Gearwell is the public product name; Cadence names the underlying interview engine.
 The human retired XTrain, hardware roles and the rover mailbox. Do not revive
 them or change unrelated repositories.
 
@@ -38,7 +40,7 @@ each subsequent consented AI question is written from the latest answer, role,
 approved skill topics, focus/level and recent conversation, rather than a preset
 slate. Short exact response quotes can be highlighted; repeats/invented quotes
 are rejected. Without AI opt-in, local retrieval/templates are labeled. The default
-`ConversationStudio` supports local spoken English questions, typed answers or
+`ConversationStudio` supports optional ElevenLabs-spoken questions through the Gearwell avatar, typed answers or
 optional continuous camera/microphone recording, energy-based turn completion
 after 5/7/10 seconds, manual completion, interruption, pause/resume, skips, early
 finish and one optional follow-up per substantive technical topic. Pause stops listening while
@@ -81,7 +83,7 @@ missing; one full-interview download is offered.
 `web/` contains React 19 / Vinext, a Cloudflare Worker and Sites integration.
 `app/page.tsx` handles setup, individual practice and report;
 `components/conversation-studio.tsx` handles conversation;
-`lib/service.mjs` routes twelve API endpoints through `worker/index.ts`;
+`lib/service.mjs` routes thirteen API endpoints through `worker/index.ts`;
 `lib/premium-service.mjs` implements the seven new interview/review routes.
 See the architecture for the module and request map. D1/R2 are disabled; the
 database/auth/connector utilities are retained scaffolding, not account history.

@@ -6,12 +6,13 @@ import { localTurn, localFollowup, localNextQuestion, answerAnchor } from '../li
 import { rememberQuestions, freshQuestions, recentBankIds } from '../lib/question-variety.mjs';
 import { nextTurnAction, questionKind } from '../lib/question-kind.mjs';
 import { aiRequest } from '../lib/ai-client';
+import {speakInterviewLine,stopInterviewerVoice,attachInterviewCamera} from '../lib/gearwell-voice';
 import { coverageSchedule, sampleBank, bankEntry } from '../lib/technical-bank.mjs';
 import type { InterviewPlan } from '../lib/interview-types';
 import type { Question, Take, Analysis } from '../lib/interview-types';
 
 type Phase = 'ready'|'loading'|'speaking'|'listening'|'thinking'|'paused'|'review'|'ending';
-type Props = {plan?:InterviewPlan;questions:Question[];questionLimit?:number;type?:string;level?:string;profile?:{roleFamily:string;skills:string[]};role:string;roleFamily:string;provider:string;providerLabel:string;cloudAvailable:boolean;unpaid:boolean;onComplete:(takes:Take[],warning?:string)=>void;onLegacy:()=>void};
+type Props = {voiceConsent:boolean;plan?:InterviewPlan;questions:Question[];questionLimit?:number;type?:string;level?:string;profile?:{roleFamily:string;skills:string[]};role:string;roleFamily:string;provider:string;providerLabel:string;cloudAvailable:boolean;unpaid:boolean;onComplete:(takes:Take[],warning?:string)=>void;onLegacy:()=>void};
 const empty = ():RecordingEvidence => ({words:[],audioEvidence:[],visionEvidence:[],transcript:''});
 const time = (n:number) => `${Math.floor(n/60)}:${Math.floor(n%60).toString().padStart(2,'0')}`;
 
@@ -32,6 +33,7 @@ export function ConversationStudio(props:Props) {
     const [caption,setCaptionState] = useState('');
     const [status,setStatus] = useState('');
     const [error,setError] = useState('');
+    const [voiceFailed,setVoiceFailed]=useState(false);
     const [elapsed,setElapsed] = useState(0);
     const [log,setLog] = useState<{question:string;answer:string}[]>([]);
     const phaseRef = useRef<Phase>('ready'), mounted = useRef(true), video = useRef<HTMLVideoElement>(null);
@@ -40,13 +42,18 @@ export function ConversationStudio(props:Props) {
     const lastVoice = useRef(0), voiced = useRef(0), noise = useRef<number[]>([]), captionRef = useRef('');
     const takes = useRef<Take[]>([]), baseIndex = useRef(0), isFollowup = useRef(false), current = useRef(question);
     const locked = useRef(false), startup = useRef(0), speechToken = useRef(0), speechTimer = useRef<ReturnType<typeof setTimeout>|null>(null), requestController = useRef<AbortController|null>(null);
-    function phaseTo(p:Phase) { phaseRef.current=p;if(mounted.current)setPhaseState(p); }
+    function phaseTo(p:Phase) { phaseRef.current=p;document.dispatchEvent(new CustomEvent('gearwell:emotion',{detail:{emotion:p==='thinking'?'thinking':'listening'}}));if(mounted.current)setPhaseState(p); }
     function captionTo(s:string) {captionRef.current=s;if(mounted.current)setCaptionState(s);}
-    function stopSpeech() { speechToken.current++; if(speechTimer.current)clearTimeout(speechTimer.current);window.speechSynthesis?.cancel(); }
-    function release() { stopSpeech();coach.current?.dispose();coach.current=null;stream.current?.getTracks().forEach(t=>t.stop());stream.current=null; }
+    function stopSpeech() { speechToken.current++; if(speechTimer.current)clearTimeout(speechTimer.current);stopInterviewerVoice(); }
+    function release() { stopSpeech();attachInterviewCamera(null);coach.current?.dispose();coach.current=null;stream.current?.getTracks().forEach(t=>t.stop());stream.current=null; }
     useEffect(()=>{ mounted.current=true;return()=>{mounted.current=false;requestController.current?.abort();stopSpeech();if(recorder.current?.state==='recording')recorder.current.stop();coach.current?.dispose();stream.current?.getTracks().forEach(t=>t.stop());}; },[]);
+    useEffect(()=>{
+        const status=(event:Event)=>{if(phaseRef.current!=='speaking')return;const p=(event as CustomEvent).detail?.phase;const messages:Record<string,string>={preparing:'Preparing Gearwell’s ElevenLabs voice · listening begins after playback',speaking:'Gearwell is speaking · your microphone is excluded from transcription',blocked:'The question audio is ready. Select Play voice above, or interrupt to answer.',paused:'Voice playback paused. Select Play voice above to continue.',buffering:'Buffering the question audio · listening is paused'};if(messages[p])setStatus(messages[p]);};
+        document.addEventListener('gearwell:voice-state',status);return()=>document.removeEventListener('gearwell:voice-state',status);
+    },[]);
     useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(recorder.current?.state==='recording'){event.preventDefault();event.returnValue='';}};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn);},[]);
     useEffect(()=>{if(video.current&&stream.current){video.current.srcObject=stream.current;void video.current.play().catch(()=>{});}},[phase,camera]);
+    useEffect(()=>{if(phase==='speaking')document.getElementById('room-heading')?.scrollIntoView({block:'start'});},[phase,question.id]);
     useEffect(()=>{
         if(phase==='ready'||phase==='loading')return;
         const timer=setInterval(()=>{
@@ -61,7 +68,7 @@ export function ConversationStudio(props:Props) {
     },[phase,camera,silence]);
     function listen(message?:string) {
         if(!mounted.current||phaseRef.current==='ending')return;
-        stopSpeech();captionTo('');voiced.current=0;noise.current=[];lastVoice.current=performance.now();
+        stopSpeech();setVoiceFailed(false);setError('');coach.current?.setListening(true);captionTo('');voiced.current=0;noise.current=[];lastVoice.current=performance.now();
         turnStart.current=coach.current?.beginTurn()??performance.now()/1000;
         phaseTo('listening');setStatus(message??(camera?'Your turn. Finish naturally; a pause advances the conversation.':'Your turn. Type your response below.'));
     }
@@ -69,13 +76,17 @@ export function ConversationStudio(props:Props) {
         if(takes.current.length)rememberQuestions(props.role,[q]);
         current.current=q;setQuestion(q);captionTo('');coach.current?.setListening(false);phaseTo('speaking');
         stopSpeech();const token=speechToken.current;
-        const voice=window.speechSynthesis?.getVoices().find(v=>v.localService&&/^en(?:-|_)/i.test(v.lang));
-        if(!voice){listen('Your turn. No local English voice is available; read the question above, then answer.');return;}
-        const speech=new SpeechSynthesisUtterance(q.prompt);speech.voice=voice;speech.rate=1;
-        const done=()=>{if(token===speechToken.current&&mounted.current&&phaseRef.current==='speaking')listen();};
-        speech.onend=done;speech.onerror=done;speechTimer.current=setTimeout(done,45000);
-        setStatus('Interviewer speaking · your microphone is excluded from transcription until your turn');window.speechSynthesis.speak(speech);
+        if(!props.voiceConsent){listen('Voice is off. Read the question, then answer.');return;}
+        setVoiceFailed(false);setStatus('Preparing Gearwell’s ElevenLabs voice · listening begins after playback');
+        void speakInterviewLine(q.prompt,props.voiceConsent).then(()=>{
+            if(token===speechToken.current&&mounted.current&&phaseRef.current==='speaking')listen();
+        }).catch(e=>{
+            if(token!==speechToken.current||!mounted.current)return;
+            setVoiceFailed(true);setError(e.name==='AbortError'?'Voice playback was interrupted. Replay the question or continue by reading it.':e.message);
+            setStatus('Voice unavailable · your answer has not started. Retry, or read the question and answer.');
+        });
     }
+
     async function start() {
         if(camera&&!consent)return;
         const attempt=++startup.current;
@@ -85,7 +96,7 @@ export function ConversationStudio(props:Props) {
                 if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw new Error('Camera recording requires Chrome or Edge on localhost/HTTPS. Text conversation is available.');
                 const newStream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
                 if(!mounted.current||attempt!==startup.current){newStream.getTracks().forEach(t=>t.stop());return;}
-                stream.current=newStream;
+                stream.current=newStream;attachInterviewCamera(newStream);
                 if(video.current){video.current.srcObject=stream.current;await video.current.play();}
                 if(attempt!==startup.current||!mounted.current)return;
                 coach.current=new RecordingCoach(()=>{
@@ -229,7 +240,7 @@ export function ConversationStudio(props:Props) {
         {waitingRetry&&<div className="studio-actions"><button className="primary" disabled={phase==='thinking'} onClick={()=>void retryNext()}>Retry AI question</button><button className="secondary" disabled={phase==='thinking'} onClick={()=>void retryNext(true)}>Continue with local bank</button></div>}
         <div className="studio-grid"><div>
             <section className="question-card"><div className="question-meta"><span>{isFollowup.current?'Follow-up':question.category}</span><span>{question.source==='generated'?'AI question':'Local question'}</span></div>{question.anchorQuote&&<blockquote className="question-anchor"><span>From your previous answer</span><mark>{question.anchorQuote}</mark></blockquote>}<h2>{question.prompt}</h2>{question.answerFormat&&<p>For an independent calculation check, include <strong>{question.answerFormat}</strong>.</p>}<p role="status" aria-live="polite">{status||'The interviewer speaks, then listens. One continuous recording captures the whole conversation.'}</p></section>
-            {camera&&<section className="camera-card"><video ref={video} autoPlay playsInline muted className="live-video" aria-label="Continuous interview camera preview"/><div className="camera-controls"><span className={active?'recording-status':'camera-status'}><i/>{active?'Continuous recording · stays on this device':stream.current?'Camera & microphone preview · model loading':'Camera off'}</span><span>{phase==='listening'?'Listening':phase==='speaking'?'Interviewer speaking':phase==='thinking'?'Preparing response':phase}</span></div></section>}
+            {camera&&<section className="camera-card engine-camera"><video ref={video} autoPlay playsInline muted className="live-video" aria-label="Continuous interview camera preview"/><div className="camera-controls"><span className={active?'recording-status':'camera-status'}><i/>{active?'Continuous recording · stays on this device':stream.current?'Camera & microphone preview · model loading':'Camera off'}</span><span>{phase==='listening'?'Listening':phase==='speaking'?'Interviewer speaking':phase==='thinking'?'Preparing response':phase}</span></div></section>}
             {phase==='ready'&&<section className="transcript-card">
                 <label className="check-row"><input type="checkbox" checked={camera} onChange={e=>setCamera(e.target.checked)}/><span>Use camera and microphone (turn off for text conversation)</span></label>
                 {camera&&<label className="check-row"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I agree to record and analyze audio/video on this device. English speech and landmark models download on first use. Recordings stay in browser memory.</span></label>}
@@ -239,7 +250,7 @@ export function ConversationStudio(props:Props) {
             </section>}
             {phase==='loading'&&<div><p role="status">Connecting devices and loading the larger English speech model. First use can take several minutes.</p><button className="secondary" onClick={()=>{startup.current++;release();setStatus('');phaseTo('ready');}}>Cancel & turn off devices</button></div>}
             {active&&<section className="transcript-card"><label className="field-label" htmlFor="conversation-caption">{camera?'Live transcript · finalized after your turn':'Your response'}</label><textarea id="conversation-caption" rows={5} value={caption} maxLength={12000} readOnly={camera&&phase!=='review'} onChange={e=>captionTo(e.target.value)} placeholder="Your answer appears here…"/>
-                {phase==='speaking'&&<button className="secondary" onClick={()=>listen()}>Interrupt & answer</button>}
+                {phase==='speaking'&&<>{voiceFailed&&<button className="primary" onClick={()=>{setError('');ask(current.current);}}>Retry question voice</button>}<button className="secondary" onClick={()=>listen()}>{voiceFailed?'Read question & answer without voice':'Interrupt & answer'}</button></>}
                 {phase==='listening'&&<><button className="primary" disabled={!camera&&!caption.trim()} onClick={()=>void submitTurn()}>I’m done speaking</button> <button className="secondary" onClick={()=>{coach.current?.setListening(false);phaseTo('paused');setStatus(camera?'Listening paused. Recording continues on this device; finish to stop recording.':'Conversation paused.');}}>Pause listening</button> <button className="text-link" onClick={()=>void submitTurn(true)}>Skip</button></>}
                 {phase==='paused'&&!waitingRetry&&<button className="primary" onClick={()=>{coach.current?.setListening(true);phaseTo('listening');lastVoice.current=performance.now();setStatus('Your turn. Continue your answer.');}}>Resume answer</button>}
                 {phase==='review'&&<><button className="primary" onClick={()=>listen()}>Try this answer again</button><button className="secondary" disabled={!caption.trim()} onClick={()=>void submitTurn(false,true)}>Use corrected caption</button><button className="text-link" onClick={()=>void submitTurn(true)}>Skip</button></>}

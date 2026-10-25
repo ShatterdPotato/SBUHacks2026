@@ -1,5 +1,7 @@
 # Cadence demo and verification
 
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
@@ -38,8 +40,8 @@ supported browser. No provider key is needed for local practice.
 1. Leave cloud AI off. Enter a target role such as McDonald's cashier, optional
    fictional background and a target of 3–6 main topics. Choose conversation format.
 2. Build the interview, turn off camera/microphone and start. Verify that questions
-   speak with an available local English voice, or clearly fall back to readable
-   text. No native device permission should be requested for text practice.
+   stay readable with voice off. Enable separate ElevenLabs consent to test
+   MP3 speech and the 3D model; an unavailable voice offers retry/text continuation. No native device permission should be requested for text practice.
 3. Submit a specific answer, a vague answer and a skip. Try one local follow-up
    after a substantive answer, interruption, pause/resume and early finish.
 4. Review content feedback and unavailable delivery for text-only practice.

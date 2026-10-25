@@ -1,5 +1,7 @@
 # Cadence architecture
 
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
@@ -51,7 +53,7 @@ the needed access/usage controls.
 ## API contract
 
 Responses use `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`.
-Twelve routes include health, seven premium routes and four compatibility adapters.
+Thirteen routes include health, seven premium routes, four compatibility adapters and ElevenLabs speech.
 The current UI uses the premium routes; `/api/transcribe` remains a retained adapter.
 See [the complete call map](GEMINI_OPERATIONS.md). Recognized mutation routes require POST and reject a supplied foreign Origin.
 JSON bodies must be `application/json` and are bounded to **4,000,000 bytes**,
@@ -103,9 +105,9 @@ Highlighted anchor quotes must occur literally in the latest answer.
 
 ## Conversation and individual media lifecycle
 
-Conversation owns one MediaRecorder, RecordingCoach and turn state. A selected
-local English system voice reads each question when available; otherwise the
-question remains readable with a clear fallback message. Recognition is gated
+Conversation owns one MediaRecorder, RecordingCoach and turn state. With explicit voice consent, Gearwell reads each question through ElevenLabs.
+Without consent the question remains readable; a voice failure offers retry or
+explicit text continuation. Recognition is gated
 during interviewer playback and thinking time. A microphone-energy threshold
 ends a voiced turn after a configured 5/7/10-second wait. Manual completion,
 interrupt, skip, text conversation and early finish are available. One follow-up

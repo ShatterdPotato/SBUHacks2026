@@ -15,6 +15,7 @@ dist/
 *.webm
 *.mp4
 *.wav
+!web/public/assets/mechanical-gate.wav
 *.m4a
 /outputs/
 /output/

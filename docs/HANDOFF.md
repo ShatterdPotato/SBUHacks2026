@@ -1,9 +1,12 @@
 # Cadence continuation handoff
 
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Updated October 25, 2026. Read TEAM_CONTEXT.md first. Orchestrator: aiden.sol.
-Current work is on codex/adaptive-interview-rubric, based on c13107c.
+Current Gearwell work is on codex/gearwell-frontend, based on merged main cc47084.
+The previous adaptive-interview-rubric work was merged through PR #13.
 Prior repository/context and rubric work has been preserved. GitHub publication
 status is recorded below after final checks; no merge to main is implied.
 

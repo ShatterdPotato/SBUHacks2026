@@ -1,0 +1,108 @@
+/* Application controls extend the imported Gearwell brass palette and typography. */
+[hidden]{display:none!important}
+.gearwell-content{--ink:var(--text);--green:var(--brass);--paper:var(--bg);--mint:var(--panel);--rust:var(--copper);min-width:0}
+.gearwell-content button,.gearwell-content select,.gearwell-content input{font:inherit}
+.gearwell-content button{border:1px solid var(--line);border-radius:6px;padding:.55rem .85rem;background:#332719;color:var(--brass2);display:inline-flex;align-items:center;justify-content:center;gap:.45rem;line-height:1.3;max-width:100%}
+.gearwell-content button:hover:not(:disabled){border-color:var(--brass2);filter:brightness(1.13)}
+.gearwell-content button.primary{background:linear-gradient(#ffdc84,#c49135);color:#241707;border-color:#ffdb82;box-shadow:0 3px 0 #74501c;padding:.8rem 1.2rem}
+.gearwell-content button:disabled{opacity:.55;cursor:not-allowed}
+.gearwell-content .text-link{background:transparent;border-color:transparent;text-decoration:underline;text-underline-offset:4px;padding:.4rem .2rem}
+.gearwell-content input:not([type=checkbox]),.gearwell-content select{width:100%;background:#171109;color:var(--text);border:1px solid #b58b4c;border-radius:7px;padding:.55rem .8rem}
+.gearwell-content input[type=checkbox]{accent-color:var(--brass);width:18px;height:18px;flex-shrink:0;margin:.25rem 0 0}
+.gearwell-content p{color:var(--muted);margin:.6rem 0;line-height:1.5}
+.gearwell-content small{font-size:.85rem;color:var(--muted)}
+.gearwell-content strong,.gearwell-content b{color:var(--brass2)}
+.gearwell-content h1{font-size:clamp(2.2rem,4vw,3.4rem)}
+.gearwell-content h2{font-size:1.65rem;line-height:1.3}
+.gearwell-content h3{font-size:1.35rem;line-height:1.35}
+.gearwell-content h4{font-size:1.05rem;margin:.5rem 0}
+.gearwell-content section{padding:0}
+.gearwell-content .field-label{margin:1rem 0 .4rem}
+.gearwell-content .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.gearwell-content .focus-options,.gearwell-content .skill-tags,.gearwell-content .studio-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0}
+.gearwell-content .focus-options button.selected,.gearwell-content .skill-tags button[aria-pressed=true]{background:#65451e;border-color:var(--brass2);color:#fff2d4}
+.check-row{display:flex;gap:.7rem;align-items:flex-start;margin:.85rem 0;font-size:1rem;line-height:1.35}
+.check-row small{display:block;margin-top:.35rem;line-height:1.4}
+.interview-settings{padding:.85rem 1rem;border:1px solid var(--line);border-radius:7px;background:#21180e}
+.gearwell-content summary{cursor:pointer;color:var(--brass2);line-height:1.4}
+.interview-settings[open] summary{margin-bottom:1rem}
+.gearwell-content .upload-zone{justify-content:flex-start;background:transparent;border-style:dashed;text-align:left;flex-wrap:wrap;box-shadow:none;font-size:1rem}
+.upload-zone .upload-icon{display:inline-flex}.upload-zone small{display:block;width:100%}
+.upload-zone strong{font-weight:400}.upload-zone+.remove-file{align-self:flex-start}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0!important}
+.error-banner,.conversation-error{padding:.8rem 1rem;border:1px solid #d97b53;border-radius:7px;background:#4a261b;color:#ffdbbd;display:flex;gap:1rem;align-items:center;justify-content:space-between}
+.error-banner span{flex:1}.error-banner button{flex-shrink:0}
+.interview-room{height:auto!important;min-height:100svh}
+.room-grid{height:clamp(360px,58svh,680px);flex:none!important;position:sticky;top:.5rem;z-index:8}
+#gearwell-session-slot{width:100%;max-width:1520px;margin:0 auto 1.5rem}
+.room-footer{position:relative;flex-wrap:wrap}
+.engine-camera{position:absolute!important;left:-10000px;width:320px;height:240px;overflow:hidden;pointer-events:none}
+.engine-camera video{width:320px;height:240px}
+.studio-heading{display:flex;gap:1rem;justify-content:space-between;align-items:center;margin:1.5rem 0}
+.studio-heading .eyebrow{font-size:.75rem;margin-bottom:.5rem}
+.studio-heading h1{font-size:2rem}
+.studio-heading>strong{white-space:nowrap}
+.studio-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.32fr);gap:1.25rem;align-items:start}
+.studio-grid>*{min-width:0}
+.question-card,.transcript-card,.privacy-card,.coaching-card,.camera-card{background:linear-gradient(140deg,#392a17,#2b2116);border:1px solid var(--line);border-radius:10px;padding:1.3rem!important;margin-bottom:1rem}
+.question-meta,.question-bottom,.camera-controls{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-bottom:.7rem}
+.question-card h2{font-size:1.6rem;line-height:1.35}.question-card p[role=status]{color:var(--brass2)}
+.question-anchor{border-left:3px solid var(--brass);margin:.7rem 0;padding-left:1rem}
+.question-anchor span{display:block;font-size:.8rem;color:var(--muted)}
+mark{background:#765521;color:#fff2d4;padding:.05rem .2rem}
+.transcript-card textarea{margin:.6rem 0}.transcript-card button{margin:.3rem .5rem .3rem 0}
+.privacy-card{font-size:.95rem}.privacy-card .check-row{font-size:.95rem}
+.live-video,.playback-video{width:100%;max-height:420px;border-radius:6px;background:#0c0c0b;object-fit:contain}
+.camera-empty{text-align:center;padding:2rem}.camera-empty .check-row{text-align:left}.camera-controls{align-items:center;margin:.7rem 0 0}
+.camera-controls i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brass);margin-right:.4rem}.recording-status i{background:#ff9856}
+.meter{display:flex;gap:2px;align-items:center}.meter i{width:3px;border-radius:0}
+.question-progress{display:flex;gap:.6rem;align-items:center}.question-progress strong{font-size:2rem}.progress-track{height:3px;background:var(--line)}
+.coaching-card ol{padding-left:1.2rem}.coaching-card li{margin:.6rem 0}.coaching-card small{display:block}
+#gearwell-report-slot{max-width:1240px;padding-bottom:2rem}
+.report-overview{display:grid;grid-template-columns:220px 1fr;gap:1rem;background:linear-gradient(140deg,#392a17,#2b2116);border:1px solid var(--line);border-radius:12px;padding:1.5rem;margin:1rem 0}
+.overall{border-right:1px solid var(--line);padding-right:1rem}.overall>div{font-size:4rem;color:var(--brass2);line-height:1.1}.overall small{font-size:1rem}
+.tiny-label{text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:var(--muted)}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.score-item{display:flex;gap:.8rem}.score-item svg{margin-top:.3rem;flex-shrink:0;color:var(--brass)}
+.score-item span,.score-item strong{display:block}.score-item strong{font-size:2rem}.score-item small{font-size:.8rem;margin-left:.3rem}.score-item p{font-size:.9rem}
+.score-disclaimer{font-size:.9rem}.moments-section,.answers-section{margin-top:2.5rem}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:1rem 0}.section-title span{font-size:.85rem;color:var(--muted)}
+.moments-grid,.clip-grid,.insight-grid,.feedback-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.moment-card,.answer-review{border:1px solid var(--line);border-radius:10px;background:#2b2116;overflow:hidden;margin-bottom:1rem}
+.moment-card video{width:100%;aspect-ratio:16/9;background:#0c0c0b;object-fit:contain}.moment-copy,.moment-content{padding:1rem}
+.moment-card button{margin:.3rem}.moment-kind,.moment-badge{color:var(--brass2);font-size:.85rem}
+.answer-review>summary{display:flex;align-items:center;gap:1rem;padding:1rem;list-style:none}.answer-review>summary strong{margin-left:auto;white-space:nowrap}.answer-review>summary svg{flex-shrink:0}
+.answer-review>div{padding:1.25rem}.answer-review ul{padding-left:1.2rem}.answer-review li{margin:.6rem 0}
+.answer-transcript,.transcript-excerpt,.knowledge-check,.grading-breakdown{padding:1rem;border:1px solid var(--line);border-radius:7px;margin:1rem 0;background:#21180e}
+.evidence-note,.answer-meta,.moment-time{font-size:.9rem;color:var(--muted)}
+.review-footer{display:flex;gap:1rem;align-items:center;justify-content:space-between;padding:1.5rem 0;border-top:4px double var(--line);margin-top:2rem}.review-footer>div{display:flex;align-items:center;gap:.7rem}.review-footer small{display:block}
+.gearwell-content details:not(.interview-settings){margin:.8rem 0}.gearwell-content details>summary{padding:.5rem 0}
+.gearwell-content table{border-collapse:collapse;width:100%;font-size:.95rem}.gearwell-content th,.gearwell-content td{border-bottom:1px solid var(--line);padding:.5rem;text-align:left;vertical-align:top}
+.gearwell-content pre{white-space:pre-wrap;overflow-wrap:anywhere}.gearwell-content blockquote{border-left:3px solid var(--brass);padding-left:1rem;margin:1rem 0}
+.gearwell-content .full{width:100%}
+.premium-review{margin:2rem 0;padding:1.4rem!important;border:1px solid var(--line);border-radius:10px;background:#2b2116}
+.section-title-row{display:flex;gap:1rem;align-items:center;justify-content:space-between;margin:1rem 0}.section-title-row>span{font-size:.85rem;color:var(--muted)}
+.transcript-quote,.knowledge-review{padding:1rem;border:1px solid var(--line);background:#21180e;border-radius:7px;margin:1rem 0}
+.moment-excerpt{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#2b2116;margin-bottom:1rem}
+.moment-excerpt video{width:100%;aspect-ratio:16/9;object-fit:contain;background:#0c0c0b}
+.moment-copy>span{font-size:.8rem;color:var(--brass2)}.moment-transcript{font-style:italic}
+.answer-feedback{padding:1rem}.answer-body{padding:1.25rem}.answer-score{margin-left:auto;white-space:nowrap}.answer-score small{font-size:.75rem}
+.grade-review{padding:.6rem 0;border-bottom:1px solid var(--line)}
+.answer-list>details{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#2b2116}
+.answer-list>details>summary{display:flex;align-items:center;gap:1rem;padding:1rem;list-style:none}
+.answer-list>details>summary>span:nth-child(2){flex:1}.answer-list summary strong{white-space:nowrap}.answer-list summary small{display:block;font-size:.75rem}.answer-list summary svg{flex-shrink:0}
+.answer-number{font:1.2rem 'IM Fell English',serif;color:var(--brass)}.answer-detail{padding:1.25rem;border-top:1px solid var(--line)}
+.feedback-columns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.feedback-columns ul{padding-left:1.2rem}.feedback-columns li{margin:.6rem 0}
+.answer-metrics{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.75rem;margin-top:1rem}
+.moment-label{display:flex;gap:.5rem;align-items:center;color:var(--brass2);margin:.75rem 0}.moment-empty{padding:2rem;border:1px dashed var(--line);border-radius:8px;font-size:1rem;color:var(--muted)}
+@media(max-width:560px){.feedback-columns{grid-template-columns:1fr}.answer-list>details>summary{gap:.6rem}.section-title-row{flex-wrap:wrap}.room-header{flex-wrap:wrap}.room-header #room-controls-mount{order:3;width:100%}}
+@media(min-width:1000px){
+ .interview-room{display:grid!important;grid-template-columns:minmax(0,1.25fr) minmax(400px,1fr);column-gap:1.5rem;align-items:start;align-content:start}
+ .room-header{grid-column:1/-1}.room-grid{grid-column:1;grid-row:2;position:sticky!important;top:1rem!important;height:calc(100svh - 230px);min-height:420px;margin-bottom:0}
+ #gearwell-session-slot{grid-column:2;grid-row:2;margin-top:1.5rem}.room-footer{grid-column:1/-1;margin-top:1rem}
+ #gearwell-session-slot .studio-grid{grid-template-columns:1fr}.conversation-studio>.studio-heading{margin-top:0}.conversation-studio>.studio-heading h1{font-size:1.7rem}
+ .participant-tile.interviewee-tile{width:clamp(145px,16vw,220px)}
+}
+@media(min-width:1000px){.hero{align-items:start}.hero>.examiner-stage{position:sticky;top:1.5rem}.room-grid{position:relative;top:auto}}
+@media(max-width:800px){.studio-grid{grid-template-columns:1fr}.report-overview{grid-template-columns:1fr}.overall{border-right:0;border-bottom:1px solid var(--line);padding-bottom:1rem}.room-grid{position:relative;top:auto;height:420px}.review-footer{flex-wrap:wrap}.studio-heading{align-items:flex-start}}
+@media(max-width:560px){.score-grid,.moments-grid,.clip-grid,.insight-grid,.feedback-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr!important}.room-grid{height:360px}.gearwell-content h2{font-size:1.4rem}.studio-heading{flex-wrap:wrap}.gearwell-content table{display:block;overflow:auto}.answer-review>summary{flex-wrap:wrap}.error-banner{flex-wrap:wrap}}
+.interview-room[hidden],#landing-view[hidden],#gearwell-report-slot[hidden]{display:none!important}
