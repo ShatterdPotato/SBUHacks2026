@@ -1,5 +1,7 @@
 # Cadence demo and verification
 
+October 25 turn-latency checks: use the default 2-second pause and leave Extra transcript accuracy off for faster conversation. Compare with the optional Base/full-answer mode on the same device. Confirm final caption words, corrections and original recordings survive. Decline a technical answer and verify immediate planned progression. Verify all selected topics complete; a simulated premature finish must recover without retry. See qa/TURN_LATENCY_2026-10-25.md.
+
 October 25 montasir continuation: 170 tests, TypeScript and production build pass.
 See [eye/chat QA](qa/MONTASIR_EYE_CHAT_2026-10-25.md). Verify the optional eye-contact
 control in both recording modes, 20-sample/70%-coverage unavailable states,

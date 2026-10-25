@@ -1,7 +1,7 @@
 import { InputError, setupInput, text, wordCount, retrieveQuestions } from './interview.mjs';
 import { structured, providerConfig, assertCloudConsent } from './provider.mjs';
 import { validateGenericProfile } from './resume-profile.mjs';
-import { localTurn } from './conversation.mjs';
+import { localTurn, localNextQuestion } from './conversation.mjs';
 import { questionKind, canFollowUp } from './question-kind.mjs';
 import { referencesFor } from './knowledge.mjs';
 import { bankEntry, bankReference, sampleBank, trackFor, coverageSchedule } from './technical-bank.mjs';
@@ -151,7 +151,19 @@ export async function premiumOperation(path,body,env,fetcher) {
    const used=[...sessionIds,...avoided];
    const seed=target==='Technical'&&trackFor(setup.role)?(sampleBank(setup.role,setup.level,1,previous,used)[0]??sampleBank(setup.role,setup.level,1,previous,sessionIds)[0]):null;
    if(target==='Technical'&&trackFor(setup.role)&&!seed)throw new InputError('No unused question remains at this difficulty. Start a fresh session.',409);
-   const data=await call('adaptive_interviewer',nextSchema,{task:'Act as a natural technical interviewer. Decide whether a targeted probe would reveal a consequential ambiguity in THIS answer. Do not mechanically probe every answer. Otherwise transition to the supplied independent next task or finish. Do not grade, praise correctness, reveal solutions, or produce generic verification questions. A probe must refer to a concrete claim or missing technical step in this answer. Occasionally anchor an exact short quote, only for probes.',profile,priorities:body.plan.priorities,level:setup.level,question,answer,history:history.slice(-4),mayProbe,transitionCategory:target,nextTask:seed,answerKey:bankEntry(question.bankId),rules:'Behavioral answers and introductions NEVER receive probes. When transitioning to a supplied nextTask, prompt must contain its entire prompt unchanged; you may add a brief conversational bridge. Empty anchorQuote on transitions. For non-bank behavioral transitions ask an independent experience question. Maximum 90 words; probes maximum 45. For finish leave prompt/anchorQuote/probeIntent empty.'},env,fetcher);
+   // Coverage is a server decision. A fixed bank transition needs no model rewrite.
+   if(!mayProbe&&target==='finish')return {nextAction:'finish',nextQuestion:{...question,id:crypto.randomUUID()},transitionSource:'schedule'};
+   if(!mayProbe&&seed)return {nextAction:'transition',nextQuestion:{...seed,id:crypto.randomUUID(),anchorQuote:'',isFollowup:false},transitionSource:'question-bank'};
+   const allowedActions=[...(mayProbe?['probe']:[]),target==='finish'?'finish':'transition'];
+   const actionSchema={...nextSchema,properties:{...nextSchema.properties,action:{type:'string',enum:allowedActions}}};
+   const data=await call('adaptive_interviewer',actionSchema,{task:'Act as a natural technical interviewer. Decide whether a targeted probe would reveal a consequential ambiguity in THIS answer. Do not mechanically probe every answer. Otherwise transition to the supplied independent next task or finish. Do not grade, praise correctness, reveal solutions, or produce generic verification questions. A probe must refer to a concrete claim or missing technical step in this answer. Occasionally anchor an exact short quote, only for probes.',profile,priorities:body.plan.priorities,level:setup.level,question,answer,history:history.slice(-4),mayProbe,transitionCategory:target,nextTask:seed,answerKey:bankEntry(question.bankId),rules:'The server owns the topic count: use ONLY the allowed action enum. Behavioral answers and introductions NEVER receive probes. When transitioning to a supplied nextTask, return its entire prompt unchanged without an extra bridge. Empty anchorQuote on transitions. For non-bank behavioral transitions ask one concise independent experience question. Maximum 90 words; probes maximum 35. For finish leave prompt/anchorQuote/probeIntent empty.'},env,fetcher);
+   // Defensive recovery for a provider ignoring the constrained schema. Never
+   // discard the saved answer or require a retry just to serve a known next task.
+   if(data.action==='finish'&&target!=='finish'){
+     const next=seed??localNextQuestion({role:setup.role,type:target,level:setup.level,index:completed.length,previous});
+     if(!freshQuestions([next],previous).length)throw new InputError('No fresh question is available for this topic. Continue locally or finish your saved session.',409);
+     return {nextAction:'transition',nextQuestion:{...next,id:crypto.randomUUID(),anchorQuote:'',isFollowup:false},transitionSource:'schedule-recovery'};
+   }
    if(!['probe','transition','finish'].includes(data.action)||typeof data.prompt!=='string'||data.prompt.length>1200||typeof data.anchorQuote!=='string'||data.anchorQuote.length>160||(data.anchorQuote&&!answer.includes(data.anchorQuote)))throw new InputError('Invalid interviewer response. Retry this turn.',502);
    if(data.action==='probe') {
      if(!mayProbe||questionKind({...question,prompt:data.prompt}).category!=='Technical'||!validText(data.probeIntent,400)||!validText(data.prompt,600)||wordCount(data.prompt)>45||/how would you (check|verify) whether the approach/i.test(data.prompt))throw new InputError('The AI returned an unsuitable follow-up. Retry this turn.',502);

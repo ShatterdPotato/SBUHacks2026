@@ -1,5 +1,13 @@
 # Cadence continuation handoff
 
+## October 25 turn speed and premature-finish fix
+
+User reported slow answer transitions and “The AI ended before coverage was complete.” Production logs showed adaptive questions at 2.5–5.0 seconds, voice at 1.4–3.5 seconds, plus a five-second silence timer and local speech/refinement.
+
+Implemented: two-second default pause; local Whisper Tiny English/six-second batches for quick conversation; optional Base/full-answer accuracy mode; silence trimming and avoiding duplicate final inference; no model rewrite of fixed bank transitions; schedule-constrained action schema and canonical recovery from a premature finish. High-thinking Gemini and post-interview grading remain. ElevenLabs defaults to Flash v2.5 using the existing hosted secret, fixed voice and 1.25x rate.
+
+See qa/TURN_LATENCY_2026-10-25.md for tests, actual timing, limits and publication. Physical-device accuracy and general latency guarantees are not established by synthetic fixtures. No key or provider policy changes are part of this source update.
+
 ## Montasir continuation — October 25
 
 Hosted voice correction: the user-authorized `ELEVENLABS_API_KEY` was added as a

@@ -30,7 +30,8 @@ export function ConversationStudio(props:Props) {
     const [eyeEnabled,setEyeEnabled]=useState(true),[eyeSummary,setEyeSummary]=useState<EyeSummary|null>(null);
     const [aiConsent,setAiConsent] = useState(false);
     const [followups,setFollowups] = useState(true);
-    const [silence,setSilence] = useState(5);
+    const [silence,setSilence] = useState(2);
+    const [refineCaptions,setRefineCaptions]=useState(false);
     const [question,setQuestion] = useState(props.questions[0]);
     const [caption,setCaptionState] = useState('');
     const [status,setStatus] = useState('');
@@ -112,7 +113,7 @@ export function ConversationStudio(props:Props) {
                     const threshold=Math.min(.02,Math.max(.008,(sorted[Math.floor(sorted.length*.2)]??.003)*2.5));
                     if(rms>threshold){lastVoice.current=performance.now();voiced.current+=.1;}
                 },{eyeContact:eyeEnabled,onEyeContact:summary=>{if(mounted.current)setEyeSummary(summary);}});
-                await coach.current.warm();if(attempt!==startup.current||!mounted.current)return;
+                await coach.current.warm(refineCaptions?'accurate':'quick');if(attempt!==startup.current||!mounted.current)return;
                 const runningCoach=coach.current;await runningCoach.start(newStream,video.current);
                 if(attempt!==startup.current||!mounted.current){runningCoach.dispose();return;}
                 runningCoach.setListening(false);
@@ -135,7 +136,7 @@ export function ConversationStudio(props:Props) {
         try {
             if(corrected)evidence={...empty(),transcript:captionRef.current};
             else if(camera&&coach.current){
-                try{evidence=await coach.current.finishTurn(turnStart.current);}catch(e){
+                try{evidence=await coach.current.finishTurn(turnStart.current,{refine:refineCaptions});}catch(e){
                     if(!skip){setError('Recognition failed. Review the live caption below or finish the session to keep the video.');phaseTo('review');return;}
                 }
                 if(!mounted.current)return;
@@ -171,7 +172,7 @@ export function ConversationStudio(props:Props) {
                     if(!mounted.current)return;
                     nextRetry.current={body,fallback:nextQuestion,action:localAction};setWaitingRetry(true);
                     setError((e instanceof Error?e.message:'AI unavailable.')+' Your answer and recording are saved. Retry the question or explicitly continue locally.');
-                    phaseTo('paused');return;
+                    setStatus('Your answer is saved. Retry the AI question or continue with the next planned topic.');phaseTo('paused');return;
                 }
             }
             if(!mounted.current)return;
@@ -191,7 +192,7 @@ export function ConversationStudio(props:Props) {
         const retry=nextRetry.current;if(!retry||locked.current)return;
         locked.current=true;setError('');phaseTo('thinking');setStatus(local?'Continuing with a local bank question.':'Retrying the adaptive interviewer…');
         try{const result=local?{nextAction:retry.action,nextQuestion:retry.fallback}:await aiRequest<{nextAction:string;nextQuestion:Question}>('/api/interviewer',retry.body);await advance(result.nextAction,result.nextQuestion);}
-        catch(e){setError(e instanceof Error?e.message:'Retry failed.');phaseTo('paused');}
+        catch(e){setError(e instanceof Error?e.message:'Retry failed.');setStatus('Your answer is saved. Retry or continue with the next planned topic.');phaseTo('paused');}
         finally{locked.current=false;}
     }
     async function finishSession(fromSubmit=false) {
@@ -201,7 +202,7 @@ export function ConversationStudio(props:Props) {
         try{
             if(!fromSubmit&&!nextRetry.current&&['listening','paused','review'].includes(previousPhase)){
                 let e:RecordingEvidence={...empty(),transcript:captionRef.current};
-                if(camera&&coach.current){try{e=await coach.current.finishTurn(turnStart.current);}catch{/* Keep live captions and the original video on a recognition error. */}}
+                if(camera&&coach.current){try{e=await coach.current.finishTurn(turnStart.current,{refine:refineCaptions});}catch{/* Keep live captions and the original video on a recognition error. */}}
                 if(!mounted.current)return;
                 if(e.transcript.trim()){
                     const duration=Math.min(180,Math.max(0,camera?(coach.current?.currentTime??turnStart.current)-turnStart.current:performance.now()/1000-turnStart.current));
@@ -230,16 +231,17 @@ export function ConversationStudio(props:Props) {
         {error&&<p role="alert" className="conversation-error">{error}</p>}
         {waitingRetry&&<div className="studio-actions"><button className="primary" disabled={phase==='thinking'} onClick={()=>void retryNext()}>Retry AI question</button><button className="secondary" disabled={phase==='thinking'} onClick={()=>void retryNext(true)}>Continue with local bank</button></div>}
         <div className="studio-grid"><div>
-            <section className="question-card"><div className="question-meta"><span>{isFollowup.current?'Follow-up':question.category}</span><span>{question.source==='generated'?'AI question':'Local question'}</span></div>{question.anchorQuote&&<blockquote className="question-anchor"><span>From your previous answer</span><mark>{question.anchorQuote}</mark></blockquote>}<h2>{question.prompt}</h2>{question.answerFormat&&<p>For this task, include <strong>{question.answerFormat}</strong>.</p>}<p role="status" aria-live="polite">{status||'The interviewer speaks, then listens. One continuous recording captures the whole conversation.'}</p></section>
+            <section className="question-card"><div className="question-meta"><span>{isFollowup.current?'Follow-up':question.category}</span><span>{question.source==='generated'?'AI question':question.source==='bank'?'Question bank':'Local question'}</span></div>{question.anchorQuote&&<blockquote className="question-anchor"><span>From your previous answer</span><mark>{question.anchorQuote}</mark></blockquote>}<h2>{question.prompt}</h2>{question.answerFormat&&<p>For this task, include <strong>{question.answerFormat}</strong>.</p>}<p role="status" aria-live="polite">{status||'The interviewer speaks, then listens. One continuous recording captures the whole conversation.'}</p></section>
             {camera&&<section className="camera-card engine-camera"><video ref={video} autoPlay playsInline muted className="live-video" aria-label="Continuous interview camera preview"/><div className="camera-controls"><span className={active?'recording-status':'camera-status'}><i/>{active?'Continuous recording · stays on this device':stream.current?'Camera & microphone preview · model loading':'Camera off'}</span><span>{phase==='listening'?'Listening':phase==='speaking'?'Interviewer speaking':phase==='thinking'?'Preparing response':phase}</span></div></section>}
             {phase==='ready'&&<section className="transcript-card">
                 <label className="check-row"><input type="checkbox" checked={camera} onChange={e=>setCamera(e.target.checked)}/><span>Use camera and microphone (turn off for text conversation)</span></label>
                 {camera&&<><label className="check-row"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I agree to record and analyze audio/video on this device. English speech and landmark models download on first use. Recordings stay in browser memory.</span></label><label className="check-row"><input type="checkbox" checked={eyeEnabled} onChange={e=>setEyeEnabled(e.target.checked)}/><span>Include an on-device eye-contact estimate<small>Measures approximate camera-directed gaze. Glasses, lighting and camera position affect tracking. It has no score weight until camera validation.</small></span></label></>}
                 <label className="check-row"><input type="checkbox" checked={followups} onChange={e=>setFollowups(e.target.checked)}/><span>Allow one follow-up after technical answers only. Introductions and behavioral answers move to the next topic.</span></label>
-                <label className="field-label" htmlFor="silence">Wait after I stop speaking</label><select id="silence" value={silence} onChange={e=>setSilence(Number(e.target.value))}><option value={5}>5 seconds</option><option value={7}>7 seconds</option><option value={10}>10 seconds</option></select>
+                <label className="field-label" htmlFor="silence">Wait after I stop speaking</label><select id="silence" value={silence} onChange={e=>setSilence(Number(e.target.value))}><option value={2}>2 seconds · quick</option><option value={3}>3 seconds</option><option value={5}>5 seconds · more thinking time</option><option value={7}>7 seconds</option><option value={10}>10 seconds</option></select>
+                {camera&&<label className="check-row"><input type="checkbox" checked={refineCaptions} onChange={e=>setRefineCaptions(e.target.checked)}/><span>Extra transcript accuracy · slower turns<small>Use the larger speech model and rerun the complete answer before moving on. Leave off for faster conversation; review caption errors in your report.</small></span></label>}
                 <button className="primary" disabled={camera&&!consent} onClick={()=>void start()}>Start interview</button>
             </section>}
-            {phase==='loading'&&<div><p role="status">Connecting devices and loading the larger English speech model. First use can take several minutes.</p><button className="secondary" onClick={()=>{startup.current++;release();setStatus('');phaseTo('ready');}}>Cancel & turn off devices</button></div>}
+            {phase==='loading'&&<div><p role="status">Connecting devices and loading local English speech recognition. First use downloads the selected model.</p><button className="secondary" onClick={()=>{startup.current++;release();setStatus('');phaseTo('ready');}}>Cancel & turn off devices</button></div>}
             {active&&camera&&eyeEnabled&&<EyeContactReadout summary={eyeSummary} paused={phase!=='listening'}/>}
             {active&&<section className="transcript-card"><label className="field-label" htmlFor="conversation-caption">{camera?'Live transcript · finalized after your turn':'Your response'}</label><textarea id="conversation-caption" rows={5} value={caption} maxLength={12000} readOnly={camera&&phase!=='review'} onChange={e=>captionTo(e.target.value)} placeholder="Your answer appears here…"/>
                 {phase==='speaking'&&<>{voiceFailed&&<button className="primary" onClick={()=>{setError('');ask(current.current);}}>Retry question voice</button>}<button className="secondary" onClick={()=>listen()}>{voiceFailed?'Read question & answer without voice':'Interrupt & answer'}</button></>}
@@ -249,9 +251,9 @@ export function ConversationStudio(props:Props) {
             </section>}
             {active&&<button className="secondary" disabled={phase==='thinking'||phase==='ending'} onClick={()=>void finishSession()}>Finish now & review completed answers</button>}
             {log.length>0&&<details className="transcript-card"><summary>Conversation so far · {log.length} responses</summary>{log.map((t,i)=><div key={i}><h3>{t.question}</h3><p>{t.answer||'Skipped'}</p></div>)}</details>}
-        </div><aside className="privacy-card"><h3>Your words drive the feedback.</h3><p>Speech is transcribed locally with Whisper Base English. Multi-batch answers receive a complete-answer refinement. Captions can be wrong; check them in your report. Use headphones to reduce interviewer echo.</p><p>Technical feedback uses the content rubric and relevant reference approach. Personal stories remain unverified. Video observations describe framing and head position, never feelings or eye-contact certainty.</p>
+        </div><aside className="privacy-card"><h3>Your words drive the feedback.</h3><p>Speech is transcribed locally. Faster conversation uses Whisper Tiny English and finalizes caption batches once; optional extra accuracy uses Whisper Base English and reruns the complete answer. Captions can be wrong; check them in your report. Use headphones to reduce interviewer echo. Select “I’m done speaking” to advance without waiting for the silence timer.</p><p>Technical feedback uses the content rubric and relevant reference approach. Personal stories remain unverified. Video observations describe framing and head position, never feelings or eye-contact certainty.</p>
             <label className="check-row"><input type="checkbox" checked={aiConsent} disabled={!props.cloudAvailable||phase!=='ready'} onChange={e=>setAiConsent(e.target.checked)}/><span>Use {props.providerLabel} for adaptive questions, grading, reports and clip transcript coaching<small>{props.unpaid?'I will use only fictional, non-sensitive practice answers. I consent to sending these transcripts, questions, a broad role, selected skill topics, interview focus/level and session transcripts and evidence-based feedback to Google. Free-tier inputs and outputs may improve Google products and be read by reviewers. My real resume and recording are not uploaded.':'I consent to sending question/answer transcripts, selected skill topics, interview focus/level and session transcripts and evidence-based feedback to the configured AI provider. Recordings remain local.'}</small></span></label>
-            <p>{aiConsent?'Each next question is written after your answer using the role, focus, skill topics and recent conversation. Short exact quotes may highlight something to clarify. Latency and free quotas can interrupt AI; local fallback is labeled. Finishing early preserves the partial response and grades it when AI consent is enabled.':'Without this opt-in, answers stay local, questions use local retrieval/templates and feedback uses an approximate browser rubric.'}</p>
+            <p>{aiConsent?'When useful, Gearwell uses your latest answer to ask a focused follow-up. Otherwise it moves straight to the next planned topic. Short exact quotes may highlight something to clarify. Latency and free quotas can interrupt AI; local fallback is labeled. Finishing early preserves the partial response and grades it when AI consent is enabled.':'Without this opt-in, answers stay local, questions use local retrieval/templates and feedback uses an approximate browser rubric.'}</p>
             {phase==='ready'&&<button className="text-link" onClick={props.onLegacy}>Switch to individual answer setup</button>}
         </aside></div>
     </section>;

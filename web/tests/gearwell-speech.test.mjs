@@ -12,9 +12,15 @@ test('Server sends the exact voice/text and returns private MP3 without the key'
  let call;
  const response=await createSpeechResponse(request({text:'Excellent answer!',emotion:'encouraging'}),{ELEVENLABS_API_KEY:'server-only-test-key'},async(url,init)=>{call={url,init};return mp3();});
  assert.equal(response.status,200);assert.match(call.url,new RegExp(VOICE_ID));assert.match(call.url,/output_format=mp3_44100_128/);
- assert.equal(call.init.headers['xi-api-key'],'server-only-test-key');assert.deepEqual(JSON.parse(call.init.body),{text:'Excellent answer!',model_id:'eleven_multilingual_v2'});
+ assert.equal(call.init.headers['xi-api-key'],'server-only-test-key');assert.deepEqual(JSON.parse(call.init.body),{text:'Excellent answer!',model_id:'eleven_flash_v2_5'});assert.equal(response.headers.get('x-gearwell-model'),'eleven_flash_v2_5');
  assert.equal(response.headers.get('content-type'),'audio/mpeg');assert.equal(response.headers.get('x-gearwell-emotion'),'happy');assert.match(response.headers.get('cache-control'),/no-store/);
  assert.equal((await response.arrayBuffer()).byteLength,13);assert.ok(![...response.headers.values()].join().includes('server-only-test-key'));
+});
+
+test('speech model is server-controlled and can retain Multilingual v2 when configured',async()=>{
+ let model,calls=0;const provider=async(_url,init)=>{calls++;model=JSON.parse(init.body).model_id;return mp3();};
+ const r=await createSpeechResponse(request({text:'A question',model:'injected'}),{ELEVENLABS_API_KEY:'test',ELEVENLABS_MODEL:'eleven_multilingual_v2'},provider);assert.equal(r.status,200);assert.equal(model,'eleven_multilingual_v2');
+ const bad=await createSpeechResponse(request({text:'A question'}),{ELEVENLABS_API_KEY:'test',ELEVENLABS_MODEL:'unrecognized'},provider);assert.equal(bad.status,503);assert.equal(calls,1);
 });
 test('Server rejects invalid requests before making a billable provider call',async()=>{
  let calls=0;const fetcher=async()=>{calls++;return mp3();};const env={ELEVENLABS_API_KEY:'test'};

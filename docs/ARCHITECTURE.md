@@ -1,5 +1,13 @@
 # Cadence architecture
 
+## October 25 turn latency
+
+Conversation uses RecordingCoach.warm('quick') by default: Whisper Tiny English, six-second local caption batches, final-tail silence trimming, and finishTurn(..., {refine:false}). Extra transcript accuracy uses Whisper Base, twelve-second batches and the previous full-answer refinement. Individual practice retains its accurate default. Finalization still awaits the last necessary caption job and preserves timestamped words/audio/vision evidence; missing speech is not invented. Recordings remain local and correctable.
+
+The server owns coverage and computes allowed adaptive actions. Deterministic bank transitions without an eligible probe and completed schedules return immediately without a provider call. Adaptive requests retain high thinking; a premature finish recovers to the required bank or fresh curated topic. Invalid quotations, coverage and unrelated prompts still fail validation. Grades remain deferred.
+
+Speech defaults to eleven_flash_v2_5, keeping the same fixed voice, consent, server-only secret and playback rate. Optional server ELEVENLABS_MODEL=eleven_multilingual_v2 retains the earlier model. No streaming claim is made: the browser still decodes a complete MP3.
+
 ## October 25 eye-contact and coaching update
 
 The existing classic vision worker optionally emits `eyeContact` as contact/away/

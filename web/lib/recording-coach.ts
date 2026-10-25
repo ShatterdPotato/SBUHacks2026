@@ -22,6 +22,7 @@ export class RecordingCoach {
     private chunkStart = 0;
     private listening = true;
     private turnInferences = 0;
+    private batchSeconds = 12;
     private chain: Promise<void> = Promise.resolve();
     private active = false;
     private visionBusy = false;
@@ -53,17 +54,18 @@ export class RecordingCoach {
         for (const p of this.pending.values()) { clearTimeout(p.timer); p.reject(new Error(message)); }
         this.pending.clear();
     }
-    private request(type: string, audio?: Float32Array): Promise<any> {
+    private request(type: string, audio?: Float32Array, speechMode?:'quick'|'accurate'): Promise<any> {
         const id = ++this.sequence;
         return new Promise((resolve, reject) => {
             const timer = setTimeout(() => { this.pending.delete(id); reject(new Error('Local transcription timed out. Your recording is preserved; retry on a faster device or use text practice.')); }, 180000);
             this.pending.set(id, { resolve, reject, timer });
-            this.speech.postMessage({ id, type, audio }, audio ? [audio.buffer] : []);
+            this.speech.postMessage({ id, type, audio, ...(speechMode?{speechMode}:{}) }, audio ? [audio.buffer] : []);
         });
     }
-    async warm() {
+    async warm(speechMode:'quick'|'accurate'='accurate') {
+        this.batchSeconds=speechMode==='quick'?6:12;
         this.onStatus('Loading local speech model. First use may take a minute…');
-        await this.request('warm');
+        await this.request('warm',undefined,speechMode);
         this.onStatus('On-device English transcription ready');
         // MediaPipe's WASM loader uses importScripts, which requires a classic worker.
         this.vision = new Worker('/vision-capture.worker.js');
@@ -101,7 +103,7 @@ export class RecordingCoach {
                 this.audioEvidence.push({ at, rms }); this.lastAudioAt = at;
                 this.onActivity?.(rms, at);
             }
-            if (this.samples - this.processed >= 12 * 16000) this.queueAudio(false);
+            if (this.samples - this.processed >= this.batchSeconds * 16000) this.queueAudio(false);
         };
         this.source.connect(this.node); this.node.connect(this.context.destination);
         if (video) this.visionTimer = setInterval(() => { void this.sampleVideo(video); }, 500);
@@ -127,12 +129,17 @@ export class RecordingCoach {
     private updateEyeContact(){if(this.visionOptions.eyeContact)this.visionOptions.onEyeContact?.(eyeContactSummary(this.visionEvidence.filter(s=>s.at>this.eyeStart)));}
     private queueAudio(final: boolean) {
         const end = this.samples, from = this.processed;
-        if (end <= from || (!final && end - from < 12 * 16000)) return;
+        if (end <= from || (!final && end - from < this.batchSeconds * 16000)) return;
         const all = new Float32Array(end - this.chunkStart); let pos = 0;
         for (const chunk of this.chunks) { all.set(chunk, pos); pos += chunk.length; }
-        const audio = all.slice(Math.max(0, from - this.chunkStart - 16000));
+        let audio = all.slice(Math.max(0, from - this.chunkStart - 16000));
         const offset = Math.max(this.chunkStart, from - 16000) / 16000, generation = this.generation;
         this.processed = end;
+        if(final){
+            const lastVoice=this.audioEvidence.findLast(s=>s.at>from/16000&&s.at<=end/16000&&s.rms>=.004)?.at;
+            if(lastVoice===undefined)return; // No new speech since the last caption batch.
+            audio=audio.slice(0,Math.min(audio.length,Math.ceil((lastVoice+.35-offset)*16000)));
+        }
         this.chain = this.chain.then(async () => {
             if (this.failure || generation !== this.generation) return;
             // Whisper can hallucinate on silence. Reject silent chunks before inference.
@@ -154,12 +161,13 @@ export class RecordingCoach {
         return this.currentTime;
     }
     setListening(value: boolean) { if(this.listening!==value){this.visionEpoch++;if(value)this.lastVisionAt=this.currentTime;}this.listening = value; }
-    async finishTurn(start: number): Promise<RecordingEvidence> {
+    async finishTurn(start: number, {refine = true}:{refine?:boolean} = {}): Promise<RecordingEvidence> {
         this.setListening(false); const end = this.currentTime;
+        this.onStatus('Finishing the last local caption batch…');
         this.queueAudio(true); await this.chain;
-        const audio = new Float32Array(Math.round((end-start)*16000)); let pos = 0;
+        const audio = new Float32Array(refine?Math.round((end-start)*16000):0); let pos = 0;
         for (const chunk of this.chunks) { if(pos>=audio.length)break;audio.set(chunk.subarray(0,audio.length-pos),pos); pos += chunk.length; }
-        if (!this.failure && this.turnInferences!==1 && audio.length && Math.sqrt(audio.reduce((s,x) => s+x*x,0)/audio.length) >= .004) {
+        if (refine && !this.failure && this.turnInferences!==1 && audio.length && Math.sqrt(audio.reduce((s,x) => s+x*x,0)/audio.length) >= .004) {
             this.onStatus('Refining the complete answer on this device…');
             try {
                 // Exclude the automatic end-of-turn waiting silence from the

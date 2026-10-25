@@ -1,5 +1,7 @@
 # Cadence feature inventory
 
+October 25 speed fix: 2-second default pause; quick local Tiny speech recognition in six-second batches; optional slower Base/full-answer refinement. Planned bank transitions and completed schedules avoid redundant AI calls; constrained adaptive actions prevent premature finish errors. Same voice uses faster ElevenLabs Flash v2.5. See qa/TURN_LATENCY_2026-10-25.md for measured scope and limits.
+
 October 25 montasir update: optional local eye-contact estimates in both recording
 modes now include coverage/unavailable states and PDF evidence. They remain
 uncalibrated and have no Confidence score weight. Multi-turn results chat and

@@ -1,5 +1,7 @@
 # Gearwell frontend and interviewer voice
 
+October 25 latency update supersedes the earlier model note: speech defaults to eleven_flash_v2_5 with the same voice ID and 1.25x pitch-preserving playback. Server ELEVENLABS_MODEL=eleven_multilingual_v2 restores the former model when desired. See qa/TURN_LATENCY_2026-10-25.md.
+
 Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
 
 Updated October 25, 2026. Gearwell is the public interface; the existing Cadence
