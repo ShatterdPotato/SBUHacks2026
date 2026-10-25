@@ -38,11 +38,12 @@ test('coverage remains exact for all session lengths and randomized orders',()=>
  }
 });
 test('introduction transitions to a concrete bank task without receiving a probe',async()=>{
- let payload;const r=await handleApi(req('interviewer',{question:intro,answer,history:[],plan,followups:true}),env,async(_u,o)=>{const sent=JSON.parse(o.body);payload=JSON.parse(sent.input[0].text);assert.equal(sent.generation_config.thinking_level,'high');return output({action:'transition',prompt:payload.nextTask.prompt,anchorQuote:'',probeIntent:''});});
- const data=await r.json();assert.equal(r.status,200);assert.equal(payload.mayProbe,false);assert.equal(data.nextQuestion.category,'Technical');assert.ok(bankEntry(data.nextQuestion.bankId));assert.equal(data.nextQuestion.anchorQuote,'');
+ let calls=0;const r=await handleApi(req('interviewer',{question:intro,answer,history:[],plan,followups:true}),env,async()=>{calls++;throw new Error('No rewrite needed');});
+ const data=await r.json();assert.equal(r.status,200);assert.equal(calls,0);assert.equal(data.transitionSource,'question-bank');assert.equal(data.nextQuestion.category,'Technical');assert.ok(bankEntry(data.nextQuestion.bankId));assert.equal(data.nextQuestion.anchorQuote,'');assert.equal(data.nextQuestion.isFollowup,false);
 });
 test('technical main questions cannot be replaced by behavioral prose or a different task',async()=>{
- const r=await handleApi(req('interviewer',{question:intro,answer,history:[],plan,followups:true}),env,async()=>output({action:'transition',prompt:'Tell me about a time you worked on a team.',anchorQuote:'',probeIntent:''}));assert.equal(r.status,502);
+ const question=publicQuestion(executableQuestions[0]);
+ const r=await handleApi(req('interviewer',{question,answer,history:[{question:intro,answer}],plan:{...plan,type:'Technical',schedule:['Technical','Technical','Technical']},followups:true}),env,async()=>output({action:'transition',prompt:'Tell me about a time you worked on a team.',anchorQuote:'',probeIntent:''}));assert.equal(r.status,502);
 });
 test('adaptive technical probe includes actual context and forbids another probe',async()=>{
  const question=publicQuestion(executableQuestions[0]);const technicalAnswer='I divide true positives by all actual positives, because that gives precision.';
@@ -51,8 +52,26 @@ test('adaptive technical probe includes actual context and forbids another probe
  const r=await handleApi(req('interviewer',body),env,fetcher);assert.equal(r.status,200);assert.equal(payload.answer,technicalAnswer);assert.ok(payload.answerKey.essentialFacts.length);assert.equal((await r.json()).nextQuestion.isFollowup,true);
  const twice=await handleApi(req('interviewer',{...body,history:[...body.history,{question,answer:technicalAnswer}],question:{...question,isFollowup:true}}),env,fetcher);assert.equal(twice.status,502);
 });
-test('fabricated quoted anchors and early termination are rejected',async()=>{
- for(const data of [{action:'probe',prompt:'Why?',anchorQuote:'invented',probeIntent:'gap'},{action:'finish',prompt:'',anchorQuote:'',probeIntent:''}]){const r=await handleApi(req('interviewer',{question:intro,answer,history:[],plan,followups:true}),env,async()=>output(data));assert.equal(r.status,502);}
+test('fabricated quoted anchors remain rejected on adaptive probes',async()=>{
+ const question=publicQuestion(executableQuestions[0]);
+ const r=await handleApi(req('interviewer',{question,answer,history:[{question:intro,answer}],plan,followups:true}),env,async()=>output({action:'probe',prompt:'Why?',anchorQuote:'invented',probeIntent:'gap'}));assert.equal(r.status,502);
+});
+
+test('an early model finish cannot interrupt planned technical coverage or require a retry',async()=>{
+ const question=publicQuestion(executableQuestions[0]);let actions;
+ const r=await handleApi(req('interviewer',{question,answer,history:[{question:intro,answer}],plan:{...plan,type:'Technical',schedule:['Technical','Technical','Technical']},followups:true}),env,async(_u,options)=>{const body=JSON.parse(options.body);actions=body.response_format.schema.properties.action.enum;assert.equal(body.generation_config.thinking_level,'high');return output({action:'finish',prompt:'',anchorQuote:'',probeIntent:''});});
+ const data=await r.json();assert.equal(r.status,200);assert.deepEqual(actions,['probe','transition']);assert.equal(data.nextAction,'transition');assert.equal(data.transitionSource,'schedule-recovery');assert.ok(bankEntry(data.nextQuestion.bankId));assert.notEqual(data.nextQuestion.bankId,question.bankId);
+});
+
+test('a behavioral transition schema also excludes an early finish action',async()=>{
+ let actions;const r=await handleApi(req('interviewer',{question:intro,answer,history:[],plan:{...plan,schedule:['Behavioral','Technical','Technical']},followups:true}),env,async(_url,options)=>{actions=JSON.parse(options.body).response_format.schema.properties.action.enum;return output({action:'finish',prompt:'',anchorQuote:'',probeIntent:''});});
+ const data=await r.json();assert.equal(r.status,200);assert.deepEqual(actions,['transition']);assert.equal(data.nextQuestion.category,'Behavioral');assert.equal(data.transitionSource,'schedule-recovery');assert.notEqual(data.nextQuestion.prompt,intro.prompt);
+});
+
+test('a short declined answer advances immediately and complete coverage finishes without a model call',async()=>{
+ const questions=sampleBank('AI/ML engineering','Internship',3);const techPlan={...plan,type:'Technical',schedule:['Technical','Technical','Technical']};let calls=0;const provider=async()=>{calls++;throw new Error('No model needed');};
+ const declined=await handleApi(req('interviewer',{question:questions[0],answer:'I do not know.',history:[{question:intro,answer}],plan:techPlan,followups:true}),env,provider);assert.equal(declined.status,200);assert.equal((await declined.json()).nextAction,'transition');
+ const complete=await handleApi(req('interviewer',{question:questions[2],answer,history:[{question:intro,answer},...questions.slice(0,2).map(question=>({question,answer}))],plan:techPlan,followups:false}),env,provider);assert.equal(complete.status,200);assert.equal((await complete.json()).nextAction,'finish');assert.equal(calls,0);
 });
 test('question answer-key mismatches and tampered coverage never reach the provider',async()=>{
  let calls=0;const fetcher=async()=>{calls++;return output({});};

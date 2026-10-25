@@ -63,6 +63,7 @@ export function createVoiceCheck({button,feedback,onSpeakingChange,onBeforeSpeak
     if(!token.blob.size)throw new Error('The speech service returned an empty audio file.');
     clearTimeout(token.timer);
     token.audio=audioFactory();token.audio.preload='auto';token.audio.volume=.8;
+    token.audio.defaultPlaybackRate=1.25;token.audio.playbackRate=1.25;token.audio.preservesPitch=true;
     token.url=urlAPI.createObjectURL(token.blob);token.audio.src=token.url;
     token.audio.onplaying=()=>{
       if(current!==token)return;

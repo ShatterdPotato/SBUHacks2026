@@ -1,5 +1,16 @@
 # Cadence: shared team context
 
+October 25 latency update: conversation defaults to a 2-second end pause, local Whisper Tiny English with six-second caption batches and no whole-answer rerun. Extra transcript accuracy restores Whisper Base and full-answer refinement. The original recording and transcript correction remain available. Determined bank transitions and completed schedules skip redundant Gemini calls; adaptive schemas constrain finish to completed coverage and recover a premature finish to the required technical task. Gemini high thinking and post-interview grading remain. ElevenLabs now defaults to Flash v2.5 with the same voice ID and 1.25x playback. See docs/qa/TURN_LATENCY_2026-10-25.md and HANDOFF for current verification.
+
+October 25 montasir update: optional local eye-contact estimates now share the
+vision worker in both modes. Twenty classified samples and 70% usable coverage
+are required; missed slots reduce coverage. Gaze remains uncalibrated with no
+Confidence weight pending camera validation. Results chat now supports follow-up
+discussion/drills with separate consent. CadenceAI branding/columns are wider,
+speech plays at 1.25x and interviews loop Idle man 1. See
+[current QA](docs/qa/MONTASIR_EYE_CHAT_2026-10-25.md) and HANDOFF. This supersedes
+the older statements below that eye tracking is absent and Relax is locked.
+
 ## Incoming agent: next assignment
 
 The human is handing this project to a different Codex agent. The next requested

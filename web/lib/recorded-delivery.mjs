@@ -1,5 +1,6 @@
 import { deliveryMetrics } from './interview.mjs';
 import { localTurn } from './conversation.mjs';
+import { eyeContactSummary } from './eye-contact-metrics.mjs';
 
 const normalized = text => (text??'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 function momentFeedback(take, transcript, delivery) {
@@ -13,12 +14,11 @@ function momentFeedback(take, transcript, delivery) {
     const weight=criteria.reduce((sum,c)=>sum+c.weight,0);
     let score=weight?Math.round(criteria.reduce((sum,c)=>sum+c.level/4*c.weight,0)/weight):0;
     if(checks.length)score=Math.min(score,25);
-    const source=matched.length?(take.analysis.grading?.method==='ai-rubric'?'AI rubric evidence':'Local heuristic evidence'):'Local excerpt heuristic';
     const cue=delivery?.components?.length?[...delivery.components].sort((a,b)=>a.score-b.score)[0]:null;
     const cueText=cue?` Delivery observation: ${cue.evidence}.`:'';
     const positiveReason=strongest?`**${strongest.label}:** “${strongest.evidence}” — ${strongest.reason}`:`**No supported content strength identified:** “${transcript.slice(0,180)}” does not have a positively graded evidence span. Treat this as a replay, not proof of a strong answer.`;
     const improvementReason=checks.length?`**Incorrect claim:** “${checks[0].quote}” — ${checks[0].explanation}`:weakest?`**${weakest.label}:** ${weakest.evidence?`“${weakest.evidence}” — `:''}${weakest.reason} ${weakest.improvement}`:`**No specific content gap identified in this excerpt.** “${transcript.slice(0,180)}” supports the reviewed criteria; compare it with the full question before revising.`;
-    return {score,positiveReason:`${positiveReason} (${source}; this excerpt only.)${cueText}`,improvementReason:`${improvementReason} (${source}; this excerpt only.)${cueText}`};
+    return {score,positiveReason:`${positiveReason}${cueText}`,improvementReason:`${improvementReason}${cueText}`};
 }
 
 const clamp = n => Math.max(0, Math.min(100, n));
@@ -57,12 +57,15 @@ export function recordedDelivery({ transcript, duration, words = [], audio = [],
     if (face.length >= 8 && face.length / vision.length >= .7) components.push({ name: 'Camera-facing head position', score: Math.round(average(face.map(v => v.facing ? 100 : 0))), weight: .15, evidence: `${face.filter(v => v.facing).length}/${face.length} usable samples roughly camera-facing; smoothed landmark geometry, not a measure of eye contact` });
     if (body.length >= 8 && body.length / vision.length >= .7) components.push({ name: 'Upper-body framing', score: Math.round(average(body.map(v => v.shouldersVisible ? 100 : 0))), weight: .1, evidence: `${body.filter(v => v.shouldersVisible).length}/${body.length} usable samples with both shoulders in frame; camera setup affects this` });
     const movement = vision.filter(v => Number.isFinite(v.bodyShift) && v.bodyShift >= 0);
+    const eyeSamples=vision.filter(v=>Object.hasOwn(v,'eyeContact'));
+    const eyeContact=eyeSamples.length?eyeContactSummary(eyeSamples):null;
     const usable = duration >= 5 && metrics.words >= 15 && components.length >= 2;
     const weight = components.reduce((sum, c) => sum + c.weight, 0);
     const score = usable ? Math.round(components.reduce((sum, c) => sum + c.score * c.weight, 0) / weight) : null;
-    return { score, components: usable ? components.map(c => ({ ...c, weight: Math.round(c.weight / weight * 100) })) : [],
+    return { score, eyeContact, components: usable ? components.map(c => ({ ...c, weight: Math.round(c.weight / weight * 100) })) : [],
         metrics: { ...metrics, confidence: score, repetitions: repeats },
         notes: ['Delivery estimate from observable recording cues, not emotional confidence or hiring fitness. Ordinary gestures and body movement are not penalized. With word timestamps, pace covers the first through last recognized word, excluding automatic end-of-turn waiting.',
+            ...(eyeContact?[`Eye contact / camera-gaze estimate: ${eyeContact.cameraGaze===null?'unavailable (needs 20 classified samples and 70% usable coverage)':`${eyeContact.cameraGaze}% of classified samples roughly camera-directed`}. Tracking coverage: ${eyeContact.coverage??0}% (${eyeContact.classified}/${eyeContact.frames} scheduled samples); blinks and missing detections are excluded from the gaze percentage. Uncalibrated heuristic, no Confidence score weight until real-camera validation. Glasses, lighting and camera position can affect it.`]:[]),
             `Visual coverage: ${face.length}/${vision.length} usable head-position samples; ${body.length}/${vision.length} usable framing samples. Visual scoring needs at least eight samples and 70% detection coverage.`,
             ...(movement.length >= 5 ? [`${movement.filter(v => v.bodyShift > .25).length} large shoulder-center shifts across ${movement.length} measured intervals. Camera movement can cause this; no movement penalty.`] : []),
             ...(face.length < 8 || face.length/vision.length < .7 ? ['Head direction unavailable: insufficient samples or detection coverage.'] : []),

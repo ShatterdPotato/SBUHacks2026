@@ -8,7 +8,7 @@ export function reportRatings(answers){
  const values=[mean(clarity),mean(substantive.filter(t=>t.hasRecording).map(t=>t.delivery?.score??t.analysis.scores.confidence).filter(finite)),mean(technical.map(t=>t.analysis.scores.content).filter(finite))];
  return [
   {id:'clarity',label:'Clarity',score:values[0],description:'Focus and completeness of your answers',basis:'Average of relevance and completeness rubric levels. Unassessed answers are excluded.'},
-  {id:'confidence',label:'Confidence',score:values[1],description:'Observable delivery, not feelings',basis:'Local delivery estimate from available recording cues. Text-only answers are excluded.'},
+  {id:'confidence',label:'Confidence',score:values[1],description:'Observable delivery, not feelings',basis:'Local delivery estimate from available recording cues. Text-only answers are excluded. Optional eye-contact estimates and tracking coverage appear in each recorded answer’s evidence; gaze has no score weight pending camera validation.'},
   {id:'knowledgeability',label:'Knowledgeability',score:values[2],description:'Technical understanding and reasoning',basis:'Technical content rubric only. Behavioral answers are excluded. No separate factual-accuracy score.'},
  ];
 }

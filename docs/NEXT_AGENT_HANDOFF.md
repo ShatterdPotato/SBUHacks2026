@@ -1,5 +1,16 @@
 # Next agent: eye/body tracking and delivery evidence
 
+## Montasir continuation — implemented October 25
+
+The supplied eye patch now runs in the shared recording worker, with optional
+tracking in both modes, coverage/unavailable handling and PDF notes. Gaze has no
+score weight pending physical-camera validation. Calibration and real-camera/
+glasses/lighting accuracy remain open. Results chat, wider CadenceAI branding,
+1.25x voice and Idle man 1 are implemented. The repeated excerpt parenthetical was
+removed at the user's request. Read [QA](qa/MONTASIR_EYE_CHAT_2026-10-25.md) and
+HANDOFF. Earlier statements below that tracking is absent/Relax is locked are
+historical; the lifecycle pitfalls and camera-validation checklist remain useful.
+
 Updated October 25, 2026. This is the human-requested torch handoff, not a task
 dispatch or delivery receipt. Read TEAM_CONTEXT.md and docs/HANDOFF.md first.
 

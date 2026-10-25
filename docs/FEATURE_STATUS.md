@@ -1,5 +1,14 @@
 # Cadence feature inventory
 
+October 25 speed fix: 2-second default pause; quick local Tiny speech recognition in six-second batches; optional slower Base/full-answer refinement. Planned bank transitions and completed schedules avoid redundant AI calls; constrained adaptive actions prevent premature finish errors. Same voice uses faster ElevenLabs Flash v2.5. See qa/TURN_LATENCY_2026-10-25.md for measured scope and limits.
+
+October 25 montasir update: optional local eye-contact estimates in both recording
+modes now include coverage/unavailable states and PDF evidence. They remain
+uncalibrated and have no Confidence score weight. Multi-turn results chat and
+practice problems use separate cloud consent. Landing branding/columns are wider;
+Gearwell uses Idle man 1 and 1.25x speech. See
+[current QA](qa/MONTASIR_EYE_CHAT_2026-10-25.md) for verification and limits.
+
 Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
 
 Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.

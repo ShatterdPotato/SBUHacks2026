@@ -112,7 +112,7 @@ function setEmotion(value) {
 }
 function relax(){
   emotion='listening';emotionMode=false;cycling=false;running=!reducedMotion.matches;
-  const index=clips.findIndex(clip=>clip.name==='Relax');
+  const index=clips.findIndex(clip=>clip.name==='Idle_man_1');
   // Preserve the current phase of the idle loop across voice and question events.
   if(index>=0&&(clipIndex!==index||!currentAction))playClip(index);
   else updateControl();
