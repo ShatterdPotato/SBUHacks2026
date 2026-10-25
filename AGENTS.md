@@ -2,7 +2,7 @@
 
 Read `TEAM_CONTEXT.md` before planning, project answers, or edits. Read
 `docs/HANDOFF.md` for the latest stopping point and next steps. The project is
-**Cadence**, an AI interview practice service. XTrain and the rover mailbox are
+**Cadence**, with Gearwell as its virtual interviewer. XTrain and the rover mailbox are
 retired by the human. Orchestrator: **aiden.sol**.
 
 Use `docs/REPOSITORY_AUDIT.md` for the repository map, verification provenance
@@ -10,6 +10,13 @@ and known gaps; `docs/FEATURE_STATUS.md` for current source capabilities.
 Read `docs/ARCHITECTURE.md` for API/media work and `docs/DEMO.md` for verification.
 Coordinate shared contracts; preserve teammate work. Use the manual handoff when
 no mailbox is connected. Never invent delivery receipts.
+
+Read `docs/GEARWELL_INTEGRATION.md` for imported UI, VRM and ElevenLabs work.
+The next requested milestone is eye/body tracking for better-supported delivery
+feedback. Read `docs/NEXT_AGENT_HANDOFF.md` before implementing it; it records
+the current measurement limits, tricky lifecycle code and acceptance checks.
+Preserve stable shell portal IDs, server-only speech credentials and separate
+voice consent. Build avatar source through the package scripts.
 
 The default studio is conversational, with local English transcription and
 optional continuous recording. Individual answer practice remains available. For question/grading changes, read

@@ -1,5 +1,17 @@
 # Cadence credentials and access
 
+October 25 hosted voice fix: the user explicitly supplied and authorized an
+ElevenLabs key for the existing Site. `ELEVENLABS_API_KEY` is now a hosted secret
+at environment revision **4**; the tool confirmed its value was redacted. Existing
+Gemini settings, secrets and public audience were preserved. Saved application
+version 7 was redeployed successfully as
+`appgdep_6addd0eafd488191b29e157525e1121f`. Live `/api/speech` returned HTTP 200
+and the fixed Gearwell preview completed without a browser error. The key was not
+written to source, local configuration, shell arguments or Git. Older statements
+below that hosted voice configuration is unchanged describe the prior checkpoint.
+
+October 25 Gearwell integration: the user-authorized handoff ElevenLabs key is merged into ignored `web/.dev.vars` as `ELEVENLABS_API_KEY`. The server sends it only to the fixed ElevenLabs speech host. No secret value, private handoff file, or alternate hosting identity was committed. The example config includes a blank variable; hosted configuration is unchanged.
+
 Updated October 24, 2026. The earlier repository audit read no credential values.
 Later the user authorized local Gemini configuration. The supplied value was
 written through hidden stdin to ignored `web/.dev.vars`, never read back or

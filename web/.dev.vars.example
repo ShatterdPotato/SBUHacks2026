@@ -13,3 +13,8 @@ GEMINI_DATA_POLICY=unpaid
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
 OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
+
+# Server-only Gearwell interviewer voice (separate from Gemini).
+ELEVENLABS_API_KEY=
+# Fast speech generation. Set eleven_multilingual_v2 to prefer the previous model.
+ELEVENLABS_MODEL=eleven_flash_v2_5

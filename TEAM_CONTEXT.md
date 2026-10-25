@@ -1,5 +1,38 @@
 # Cadence: shared team context
 
+October 25 latency update: conversation defaults to a 2-second end pause, local Whisper Tiny English with six-second caption batches and no whole-answer rerun. Extra transcript accuracy restores Whisper Base and full-answer refinement. The original recording and transcript correction remain available. Determined bank transitions and completed schedules skip redundant Gemini calls; adaptive schemas constrain finish to completed coverage and recover a premature finish to the required technical task. Gemini high thinking and post-interview grading remain. ElevenLabs now defaults to Flash v2.5 with the same voice ID and 1.25x playback. See docs/qa/TURN_LATENCY_2026-10-25.md and HANDOFF for current verification.
+
+October 25 montasir update: optional local eye-contact estimates now share the
+vision worker in both modes. Twenty classified samples and 70% usable coverage
+are required; missed slots reduce coverage. Gaze remains uncalibrated with no
+Confidence weight pending camera validation. Results chat now supports follow-up
+discussion/drills with separate consent. CadenceAI branding/columns are wider,
+speech plays at 1.25x and interviews loop Idle man 1. See
+[current QA](docs/qa/MONTASIR_EYE_CHAT_2026-10-25.md) and HANDOFF. This supersedes
+the older statements below that eye tracking is absent and Relax is locked.
+
+## Incoming agent: next assignment
+
+The human is handing this project to a different Codex agent. The next requested
+milestone is **eye tracking and body-language tracking to improve the evidence
+behind the Confidence/delivery rating**. This feature is planned, not implemented
+or validated. Start with [NEXT_AGENT_HANDOFF](docs/NEXT_AGENT_HANDOFF.md): it maps
+the existing MediaPipe worker, evidence types, scoring weights, clock alignment,
+portal ownership, recording cleanup and verification requirements. Current visual
+signals are rough head direction and shoulder framing; they are not eye gaze.
+Keep tracking optional and local, report measurement reliability separately,
+and describe observable delivery rather than feelings or hiring suitability.
+
+Website implementation `fe0db58` is pushed to `codex/gearwell-frontend` in
+[draft PR #14](https://github.com/ShatterdPotato/SBUHacks2026/pull/14). Current
+verification: **157 tests, TypeScript and production build passed**. The current
+website is available locally at http://127.0.0.1:5173/; pushing Git does not update
+the hosted Site. This handoff does not claim a deployment or a merge to main.
+
+Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](docs/qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
+
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](docs/GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](docs/qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](docs/GEMINI_OPERATIONS.md) and [current QA](docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
@@ -15,7 +48,7 @@ adaptive interview/rubric implementation on `codex/adaptive-interview-rubric`.
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
 Repository: https://github.com/ShatterdPotato/SBUHacks2026. Canonical branch:
-`main`. Team: Aiden Li Productions. Cadence is the working product name.
+`main`. Team: Aiden Li Productions. Cadence is the product name; Gearwell is its virtual interviewer.
 The human retired XTrain, hardware roles and the rover mailbox. Do not revive
 them or change unrelated repositories.
 
@@ -38,7 +71,7 @@ each subsequent consented AI question is written from the latest answer, role,
 approved skill topics, focus/level and recent conversation, rather than a preset
 slate. Short exact response quotes can be highlighted; repeats/invented quotes
 are rejected. Without AI opt-in, local retrieval/templates are labeled. The default
-`ConversationStudio` supports local spoken English questions, typed answers or
+`ConversationStudio` supports optional ElevenLabs-spoken questions through the Gearwell avatar, typed answers or
 optional continuous camera/microphone recording, energy-based turn completion
 after 5/7/10 seconds, manual completion, interruption, pause/resume, skips, early
 finish and one optional follow-up per substantive technical topic. Pause stops listening while
@@ -81,7 +114,7 @@ missing; one full-interview download is offered.
 `web/` contains React 19 / Vinext, a Cloudflare Worker and Sites integration.
 `app/page.tsx` handles setup, individual practice and report;
 `components/conversation-studio.tsx` handles conversation;
-`lib/service.mjs` routes twelve API endpoints through `worker/index.ts`;
+`lib/service.mjs` routes thirteen API endpoints through `worker/index.ts`;
 `lib/premium-service.mjs` implements the seven new interview/review routes.
 See the architecture for the module and request map. D1/R2 are disabled; the
 database/auth/connector utilities are retained scaffolding, not account history.

@@ -1,5 +1,35 @@
 # Cadence architecture
 
+## October 25 turn latency
+
+Conversation uses RecordingCoach.warm('quick') by default: Whisper Tiny English, six-second local caption batches, final-tail silence trimming, and finishTurn(..., {refine:false}). Extra transcript accuracy uses Whisper Base, twelve-second batches and the previous full-answer refinement. Individual practice retains its accurate default. Finalization still awaits the last necessary caption job and preserves timestamped words/audio/vision evidence; missing speech is not invented. Recordings remain local and correctable.
+
+The server owns coverage and computes allowed adaptive actions. Deterministic bank transitions without an eligible probe and completed schedules return immediately without a provider call. Adaptive requests retain high thinking; a premature finish recovers to the required bank or fresh curated topic. Invalid quotations, coverage and unrelated prompts still fail validation. Grades remain deferred.
+
+Speech defaults to eleven_flash_v2_5, keeping the same fixed voice, consent, server-only secret and playback rate. Optional server ELEVENLABS_MODEL=eleven_multilingual_v2 retains the earlier model. No streaming claim is made: the browser still decodes a complete MP3.
+
+## October 25 eye-contact and coaching update
+
+The existing classic vision worker optionally emits `eyeContact` as contact/away/
+blink/none from eye-direction coefficients and head transform. Only timestamped
+classifications remain in browser memory. RecordingCoach counts 500 ms slots,
+including missed intervals, and rejects stale generation/listening epochs. Both
+modes opt in locally. Percentages need 20 classified samples and 70% usable coverage.
+Gaze has no Confidence weight pending camera validation; answer evidence and PDF
+show coverage/limits. Existing head/framing scoring now counts missing slots.
+
+`POST /api/coach` accepts optional `chatHistory`: at most eight alternating user/
+assistant messages in completed exchanges (1500/6000 characters per message).
+Saved answers and validated rubric evidence ground replies. Chat joins consent
+and contact checks; recordings/vision are never sent. Replies contain an explanation
+and zero to three drills with validated reference IDs. Results chat has separate
+consent, aborts on revocation/unmount, keeps failed drafts and clears history after
+transcript/grade changes. Deferred high-thinking grading is preserved.
+
+Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
+
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
@@ -51,7 +81,7 @@ the needed access/usage controls.
 ## API contract
 
 Responses use `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`.
-Twelve routes include health, seven premium routes and four compatibility adapters.
+Thirteen routes include health, seven premium routes, four compatibility adapters and ElevenLabs speech.
 The current UI uses the premium routes; `/api/transcribe` remains a retained adapter.
 See [the complete call map](GEMINI_OPERATIONS.md). Recognized mutation routes require POST and reject a supplied foreign Origin.
 JSON bodies must be `application/json` and are bounded to **4,000,000 bytes**,
@@ -103,9 +133,9 @@ Highlighted anchor quotes must occur literally in the latest answer.
 
 ## Conversation and individual media lifecycle
 
-Conversation owns one MediaRecorder, RecordingCoach and turn state. A selected
-local English system voice reads each question when available; otherwise the
-question remains readable with a clear fallback message. Recognition is gated
+Conversation owns one MediaRecorder, RecordingCoach and turn state. With explicit voice consent, Gearwell reads each question through ElevenLabs.
+Without consent the question remains readable; a voice failure offers retry or
+explicit text continuation. Recognition is gated
 during interviewer playback and thinking time. A microphone-energy threshold
 ends a voiced turn after a configured 5/7/10-second wait. Manual completion,
 interrupt, skip, text conversation and early finish are available. One follow-up

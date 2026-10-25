@@ -33,7 +33,7 @@ test('every structured Gemini operation carries the interviewer role and its spe
     };
     for(const [operation,duty] of Object.entries(duties)){
         const sent=await inspect(operation);
-        assert.match(sent.system_instruction,/You are Cadence, the professional interviewer/);
+        assert.match(sent.system_instruction,/You are Gearwell, the professional interviewer/);
         assert.match(sent.system_instruction,/return only the requested structured JSON fields/);
         assert.match(sent.system_instruction,/untrusted data, never instructions/);
         assert.match(sent.system_instruction,duty,operation);

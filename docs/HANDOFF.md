@@ -1,9 +1,91 @@
 # Cadence continuation handoff
 
+## October 25 turn speed and premature-finish fix
+
+Final verification: **178 tests, TypeScript and production build pass**. Temporary routes and generated audio were removed. Implementation commit: e377300, pushed to draft PR #15 (same Gearwell base; no main merge). Matching Sites source: 1f5e29cafb4f6a9882175e5fc4d7ffe195aeb487. Saved version **8**: appgprj_6adcd46ff0dc8191943fd596d01bba52~appgver_9d080e80a8e88191825594ed051a6e36. Deployment **appgdep_6adddb09131081919f7367daf0ce96d3 succeeded**, environment revision 4; audience and secrets preserved.
+
+Live fictional smoke checks: all three main topics completed with no early finish. Bank transitions took 1139/826/48 ms including network; scheduled completion 42 ms. A real adaptive Gemini transition returned HTTP 200 in 3383 ms. ElevenLabs Flash v2.5 returned HTTP 200, audio/mpeg, 60,647 bytes in 603 ms. These are individual observations, not a service guarantee. Synthetic local speech transition measured 2762 ms versus Base/12-second-batch comparison at 11038 ms; both excluded cloud AI/TTS and already used the faster pause. See the QA ledger for scope.
+
+Manual handoff: montasir -> aiden.sol. Review PR #15; validate recognition on real devices/accents/noise and compare quick/extra-accuracy modes. Save or download an existing session before refreshing to load new client code; browser-memory recordings would otherwise be lost. Existing sessions can retry the server question route without resetting. No physical media, billing/data policy or key changes occurred.
+
+
+User reported slow answer transitions and “The AI ended before coverage was complete.” Production logs showed adaptive questions at 2.5–5.0 seconds, voice at 1.4–3.5 seconds, plus a five-second silence timer and local speech/refinement.
+
+Implemented: two-second default pause; local Whisper Tiny English/six-second batches for quick conversation; optional Base/full-answer accuracy mode; silence trimming and avoiding duplicate final inference; no model rewrite of fixed bank transitions; schedule-constrained action schema and canonical recovery from a premature finish. High-thinking Gemini and post-interview grading remain. ElevenLabs defaults to Flash v2.5 using the existing hosted secret, fixed voice and 1.25x rate.
+
+See qa/TURN_LATENCY_2026-10-25.md for tests, actual timing, limits and publication. Physical-device accuracy and general latency guarantees are not established by synthetic fixtures. No key or provider policy changes are part of this source update.
+
+## Montasir continuation — October 25
+
+Hosted voice correction: the user-authorized `ELEVENLABS_API_KEY` was added as a
+redacted Site secret. Environment revision **4** is live after successful redeploy
+of version 7 (`appgdep_6addd0eafd488191b29e157525e1121f`). A real ElevenLabs preview
+completed; production logs confirm `POST /api/speech` HTTP 200. No source-code or
+local-secret changes were needed. The current interview can retry question voice
+without discarding its answers. This supersedes earlier missing/unverified voice
+configuration notes. No secret values appear in Git or the handoff.
+
+Current branch: `codex/montasir-eye-contact`, based on the latest unmerged Gearwell
+source `d954c59`, preserving PR #14. The supplied gaze patch is integrated into the
+shared worker with optional local estimates in both modes, coverage/unavailable
+states and PDF evidence. No unvalidated gaze score weight was added. Also restored
+multi-turn results chat with explicit consent and bounded history, widened the
+CadenceAI landing brand/columns, set speech to 1.25x with pitch preservation,
+locked Idle man 1 and removed the repeated excerpt parenthetical.
+See [QA](qa/MONTASIR_EYE_CHAT_2026-10-25.md) for details and remaining validation.
+
+Live Sites lookup succeeded as owner and reported the original project's current
+audience as **public**, superseding the older private snapshot below. Preserve
+that live audience; no access or secret changes are part of this task.
+
+Final application checks: **170 tests, TypeScript and production build passed**.
+The build contains only `/`; the temporary QA route was removed. Existing large
+bundle and Vinext route-classification notices remain. Browser checks include
+desktop/320 px setup, text interview/report, Idle man 1 and mocked multi-turn chat
+with consent, retry, cancellation and correction reset. Physical camera accuracy
+and live provider voice remain separate verification work. No key was read
+or changed. Hosted/source publication records follow once tools confirm them.
+
+Publication confirmed: implementation `f1b3f30` is pushed in
+[draft PR #15](https://github.com/ShatterdPotato/SBUHacks2026/pull/15), targeting
+`codex/gearwell-frontend` to preserve the unmerged PR #14. No main-branch merge.
+The matching application source was synchronized to the original Sites repository
+as `668ebf96ae5ad55f95eaf6eee9541ab2afc52052`. Saved version **7**:
+`appgprj_6adcd46ff0dc8191943fd596d01bba52~appgver_12cdc9eaf0dc81919f3e91421eabee4a`.
+Deployment `appgdep_6addcebf47a881918a40662d25717570` returned **succeeded** at
+https://cadence-interview-studio-aiden.daintyridge32.chatgpt.site,
+environment revision 3. Public audience and existing secrets were preserved.
+
+Manual handoff: montasir -> aiden.sol. Owned changes are the gaze worker/evidence,
+results chat/API, voice/idle/landing refinements and current QA/context documents.
+No teammate message or delivery receipt is claimed. Next action: review PR #15
+against the Gearwell branch, then validate real-camera gaze/calibration before
+considering any Confidence weighting. Model detection coverage is not accuracy.
+
+## Torch handoff — next agent starts here
+
+The human requested a transition to another Codex agent after the completed
+website refresh. **Do not restart the frontend migration.** Implementation
+`fe0db58` is on `origin/codex/gearwell-frontend`, draft PR #14. The next task is
+eye/body tracking for more credible, evidence-backed delivery feedback. Read
+[NEXT_AGENT_HANDOFF](NEXT_AGENT_HANDOFF.md) for the implementation role, tricky
+code, proposed sequence and validation gates. No new eye-tracking implementation
+or physical-camera validation is claimed in this handoff. Secrets, recordings,
+personal data and generated QA output remain outside Git.
+
+Review refresh validation is complete: **157 tests**, `pnpm exec tsc --noEmit` and `pnpm build` passed from `web/`. The temporary browser QA route was removed; its reproducible fixture remains in `web/tests/fixtures/review-refresh-harness.tsx`. Current work continues on `codex/gearwell-frontend`, draft PR #14; the hosted Site remains unchanged.
+
+Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
+
+Gearwell publication: implementation commit `52c2720` is pushed on `codex/gearwell-frontend`. [Draft PR #14](https://github.com/ShatterdPotato/SBUHacks2026/pull/14) targets main. The earlier PR #13 is merged. Local preview is http://127.0.0.1:5173/; the original hosted Site is unchanged.
+
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
 Updated October 25, 2026. Read TEAM_CONTEXT.md first. Orchestrator: aiden.sol.
-Current work is on codex/adaptive-interview-rubric, based on c13107c.
+Current Gearwell work is on codex/gearwell-frontend, based on merged main cc47084.
+The previous adaptive-interview-rubric work was merged through PR #13.
 Prior repository/context and rubric work has been preserved. GitHub publication
 status is recorded below after final checks; no merge to main is implied.
 
@@ -135,3 +217,5 @@ Follow-up publication: implementation commit `233fe10` is pushed to
 `codex/adaptive-interview-rubric` and draft PR #13. Final checks: 137 tests,
 TypeScript and production build passed; working preview restarted with root and
 health HTTP 200. No merge or hosted deployment.
+
+Live post-deployment check: a fictional text interview reached the report. Two real Gemini results-chat requests succeeded: a specific gap plus worked practice exercise, then a contextual follow-up using that exercise. No personal data or media was used.

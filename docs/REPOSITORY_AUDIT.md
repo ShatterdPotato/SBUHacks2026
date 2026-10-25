@@ -1,5 +1,9 @@
 # Cadence repository audit
 
+Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
+
+Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
+
 This is the documentation-audit snapshot before the adaptive/rubric application
 change. For current source/contracts and checks, read [HANDOFF](HANDOFF.md) and
 [adaptive grading QA](qa/ADAPTIVE_RUBRIC_2026-10-24.md). The original scope/results
@@ -37,7 +41,7 @@ this does not prove a subsequently unchanged remote.
 | --- | --- |
 | Startup and continuation | Root `AGENTS.md`, `CLAUDE.md`, `TEAM_CONTEXT.md`, `README.md`; `docs/HANDOFF.md`, feature/architecture/demo/credentials docs and this audit. |
 | Product entry and presentation | `web/app/page.tsx`, `layout.tsx`, `globals.css`, `public/favicon.svg`. Client setup -> conversation or individual studio -> report. |
-| Conversation | `web/components/conversation-studio.tsx`, `lib/conversation.mjs`, `lib/interview-types.ts`. Turn states, local voice, optional continuous recording, local/provider follow-ups and early finish. |
+| Conversation | `web/components/conversation-studio.tsx`, `lib/conversation.mjs`, `lib/interview-types.ts`. Turn states, Gearwell/ElevenLabs voice, optional continuous recording, local/provider follow-ups and early finish. |
 | Questions and privacy profiles | `lib/interview.mjs`, `role-context.mjs`, `role-questions.mjs`, `question-variety.mjs`, `resume-profile.mjs`. Role priority, finite curated banks, recent memory, validation and allowlisted cloud profiles. |
 | Resume parsing | `lib/pdf-resume.ts`, `resume-text.mjs`. Local PDF.js and TXT validation; no OCR or parser service. |
 | API/providers | `worker/index.ts`, `lib/service.mjs`, `provider.mjs`, `interviewer-instructions.mjs`, `cloudflare-env.d.ts`. Five endpoints, server-side secrets/consent, structured outputs, bounded retry and safe errors. |
@@ -111,7 +115,7 @@ media quality or hosted deployment.
 | Legacy npm installers | `scripts/install-ci.mjs` and `install-ci.sh` refer to npm CI/package-lock and an `install:ci` script absent from package.json. The tracked project uses pnpm. Avoid that legacy path until reconciled; the current frozen pnpm path passed. |
 | No automated browser/CI rollout | No tracked `.github/` workflow or browser-runner script. Browser fixtures are manual and must never be copied into production permanently. |
 | UI copy still contains older descriptions | `app/page.tsx` retains some “content/comprehension” wording and setup consent mentions cloud recorded audio although current UI transcription is local. Align product copy in a separate application change; this task updated docs only. |
-| Individual question voice differs from conversation | Conversation selects a local English voice. Individual `readQuestion()` uses the browser's default synthesis voice; it does not enforce that same selection. Evaluate before making a uniform local-voice promise. |
+| Unified interviewer voice | Resolved by the Gearwell import: both modes and individual replay share the fixed ElevenLabs voice. No browser speech-synthesis path remains in the application. |
 | Export/health provenance | Top-level report mode tracks question generation; actual per-answer feedback can be local/live/mixed. Health availability is key/config presence, not a provider probe. Use per-answer modes/question sources and preserve these semantics in future clients. |
 | Evidence/coverage limits | Reference pack is small/static; local arithmetic accepts only constrained unambiguous amounts. Contact checks are partial, recent memory resets, exact clip cuts are approximate and real-person delivery is unvalidated. These are documented limits, not certified correctness. |
 | Public production features | No durable history, active D1/R2, custom authentication/quotas or public abuse-control rollout. Existing platform helpers do not establish those features. |

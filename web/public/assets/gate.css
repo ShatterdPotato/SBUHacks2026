@@ -1,0 +1,64 @@
+/* The chamber transition is drawn in CSS and SVG so it stays sharp at every size. */
+.mechanical-gate{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:#fff0c8;overflow:hidden;box-shadow:none;isolation:isolate}
+.mechanical-gate::backdrop{background:#130e08b8;backdrop-filter:blur(3px)}
+.gate-stage{position:absolute;inset:0;overflow:hidden;perspective:1100px}
+.gate-door{position:absolute;inset-block:0;width:calc(50% + 2px);overflow:hidden;background:repeating-linear-gradient(0deg,transparent 0 109px,#0d0905 110px,#9c7236 112px,transparent 114px),linear-gradient(100deg,#392b1c,#71522b 25%,#302317 48%,#543b20 72%,#21180f);box-shadow:inset 0 0 90px #0009,0 0 45px #000c;will-change:transform}
+.gate-left{left:0;transform:translateX(-105%);border-right:7px solid #e5b963}
+.gate-right{right:0;transform:translateX(105%);border-left:7px solid #e5b963;background:repeating-linear-gradient(0deg,transparent 0 109px,#0d0905 110px,#9c7236 112px,transparent 114px),linear-gradient(260deg,#392b1c,#71522b 25%,#302317 48%,#543b20 72%,#21180f)}
+.gate-door::before{content:"";position:absolute;inset:25px;border:3px double #ba8b45;border-radius:7px;box-shadow:inset 0 0 0 10px #130e0899,0 0 0 5px #130e0877;background:repeating-linear-gradient(135deg,#ffdfa606 0 1px,transparent 1px 4px)}
+.gate-door::after{content:"";position:absolute;inset:9px;background:radial-gradient(circle at 10px 10px,#ffdda0 0 2px,#68471c 3px 7px,#130c05 8px 10px,transparent 11px) left top/44px 115px repeat-y,radial-gradient(circle at 10px 10px,#ffdda0 0 2px,#68471c 3px 7px,#130c05 8px 10px,transparent 11px) right top/22px 115px repeat-y;pointer-events:none}
+.gate-brace{position:absolute;left:9%;right:9%;height:clamp(22px,5vh,45px);background:linear-gradient(#d5a656,#785329 18%,#352212 50%,#b48848 87%,#e8bd71);border:2px solid #1b1209;box-shadow:0 6px 15px #0008,inset 0 0 0 2px #d4aa6466;transform:rotate(-24deg);opacity:.9}
+.gate-left .gate-brace{top:27%}.gate-left .gate-brace:nth-child(2){top:69%;transform:rotate(24deg)}
+.gate-right .gate-brace{top:27%;transform:rotate(24deg)}.gate-right .gate-brace:nth-child(2){top:69%;transform:rotate(-24deg)}
+.gate-piston{position:absolute;top:48%;width:70%;height:42px;border:3px solid #1b1007;background:linear-gradient(#e4bf78,#78532b 15%,#3a2916 55%,#ae8041 85%,#ffdf9b);box-shadow:0 10px 25px #0009;border-radius:7px}
+.gate-left .gate-piston{left:-12%}.gate-right .gate-piston{right:-12%}
+.gate-piston::after{content:"";position:absolute;inset:7px -35% 7px 40%;background:linear-gradient(#dccba7,#655f4e 30%,#c1ac82 48%,#443c2d 80%,#a58c60);border:2px solid #271b0e;z-index:-1}
+.gate-right .gate-piston::after{inset:7px 40% 7px -35%}
+.gate-cog{position:absolute;width:clamp(180px,28vw,420px);height:auto;fill:#a87b36;stroke:#e3b766;stroke-width:1.2;filter:drop-shadow(0 8px 6px #000a);transform-origin:center;animation:gate-cog-turn 7s linear infinite}
+.gate-cog.small{width:clamp(95px,15vw,220px);animation-duration:5s;animation-direction:reverse;fill:#684820}
+.gate-left .gate-cog{left:-9%;top:7%}.gate-left .gate-cog.small{left:14%;top:auto;bottom:7%}
+.gate-right .gate-cog{right:-9%;bottom:7%;animation-direction:reverse}.gate-right .gate-cog.small{right:14%;bottom:auto;top:7%;animation-direction:normal}
+.gate-frame{position:absolute;z-index:3;left:0;right:0;height:clamp(24px,7vh,62px);background:linear-gradient(#87632d,#2b1e10 18%,#171008 48%,#6d4b22 90%,#e1b566);border-block:2px solid #c99d52;box-shadow:0 5px 20px #000b;transform:translateY(-110%);transition:transform .5s ease}
+.gate-frame.top{top:0}.gate-frame.bottom{bottom:0;transform:translateY(110%);rotate:180deg}
+.gate-brand{position:absolute;z-index:4;top:clamp(12px,2.2vh,23px);left:50%;transform:translate(-50%,-100px);font:.8rem "Crimson Pro",Georgia,serif;text-transform:uppercase;letter-spacing:.32em;white-space:nowrap;color:#f3d69c;transition:transform .5s ease}
+.gate-center{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;transform:scale(.93);transition:opacity .45s,transform .65s;pointer-events:none;text-align:center;padding:4rem 1.2rem}
+.gate-medallion{width:clamp(155px,23vw,225px);aspect-ratio:1;position:relative;margin:0 0 1.5rem;display:grid;place-items:center;border:8px double #e4b96d;border-radius:50%;background:radial-gradient(circle at 35% 25%,#72532d,#22180d 65%);box-shadow:0 0 0 8px #21160b,0 0 0 10px #a87d3e,0 15px 35px #000b,inset 0 0 25px #000b}
+.gate-medallion::before,.gate-medallion::after{content:"";position:absolute;top:50%;width:clamp(55px,13vw,180px);height:24px;z-index:-1;background:linear-gradient(#e3ba73,#745127,#281b0f,#b78b46);border:2px solid #1c1208;box-shadow:0 5px 12px #0009;transform:scaleX(0);transition:transform .35s .3s}
+.gate-medallion::before{right:100%;transform-origin:right}.gate-medallion::after{left:100%;transform-origin:left}
+.gate-monogram{font:clamp(4rem,7vw,6rem) "IM Fell English",Georgia,serif;line-height:1;color:#f9d992;text-shadow:0 3px 0 #34200c}
+.gate-progress-ring{position:absolute;inset:7px;width:calc(100% - 14px);height:calc(100% - 14px);transform:rotate(-90deg);overflow:visible}
+.gate-progress-track{fill:none;stroke:#0005;stroke-width:2}.gate-progress-value{fill:none;stroke:#ffd881;stroke-width:3;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 3px #ffcf62)}
+.mechanical-gate .gate-kicker{font:.75rem "Crimson Pro",Georgia,serif;letter-spacing:.2em;text-transform:uppercase;color:#f0cb83;margin:0 0 .65rem;background:#21160de8;padding:.3rem .8rem;border:1px solid #b38a4e55;border-radius:99px}
+.mechanical-gate h2{font-size:clamp(1.9rem,4vw,3rem);color:#fff0c8;text-shadow:0 3px 10px #000;max-width:25rem;margin:0}
+.mechanical-gate .gate-subtitle{font-size:1rem;color:#edd2a3;margin:.7rem 0 0;background:#21160dcc;padding:.15rem .7rem;border-radius:4px}
+.gate-steam{position:absolute;z-index:4;bottom:0;width:35%;height:40%;opacity:0;pointer-events:none;background:radial-gradient(ellipse at bottom,#eadbb842,transparent 70%);filter:blur(18px);animation:gate-steam-drift 2.5s ease-in-out infinite}
+.gate-steam.left{left:0}.gate-steam.right{right:0;animation-delay:.7s}
+.gate-cancel{position:absolute;z-index:6;right:1.2rem;top:clamp(48px,9vh,85px);border:1px solid #ba9253;background:#21160de8;color:#ffe2a7;border-radius:99px;padding:.4rem .85rem;font-size:.9rem;cursor:pointer}
+.gate-cancel:hover{background:#4c351c}
+.mechanical-gate.is-closing .gate-left{animation:gate-close-left 1.35s cubic-bezier(.42,0,.18,1) both}
+.mechanical-gate.is-closing .gate-right{animation:gate-close-right 1.35s cubic-bezier(.42,0,.18,1) both}
+.mechanical-gate.is-closing .gate-frame{transform:translateY(0)}.mechanical-gate.is-closing .gate-brand{transform:translate(-50%,0)}
+.mechanical-gate.is-sealed .gate-center{opacity:1;transform:scale(1)}
+.mechanical-gate.is-sealed .gate-medallion::before,.mechanical-gate.is-sealed .gate-medallion::after{transform:scaleX(1)}
+.mechanical-gate.is-sealed .gate-steam{opacity:1}
+.mechanical-gate.is-opening .gate-left{animation:gate-open-left .85s cubic-bezier(.6,0,.3,1) both}.mechanical-gate.is-opening .gate-right{animation:gate-open-right .85s cubic-bezier(.6,0,.3,1) both}
+.mechanical-gate.is-opening .gate-center{opacity:0;transform:scale(.96);transition-duration:.2s}.mechanical-gate.is-opening .gate-frame.top{transform:translateY(-110%)}.mechanical-gate.is-opening .gate-frame.bottom{transform:translateY(110%)}.mechanical-gate.is-opening .gate-brand{transform:translate(-50%,-100px)}.mechanical-gate.is-opening .gate-steam{opacity:0}
+@keyframes gate-close-left{0%{transform:translateX(-105%)}88%{transform:translateX(0)}94%{transform:translateX(-.7%)}100%{transform:translateX(0)}}
+@keyframes gate-close-right{0%{transform:translateX(105%)}88%{transform:translateX(0)}94%{transform:translateX(.7%)}100%{transform:translateX(0)}}
+@keyframes gate-open-left{from{transform:translateX(0)}to{transform:translateX(-105%)}}@keyframes gate-open-right{from{transform:translateX(0)}to{transform:translateX(105%)}}
+@keyframes gate-cog-turn{to{transform:rotate(360deg)}}@keyframes gate-steam-drift{0%,100%{transform:translateY(5%) scaleX(.9)}50%{transform:translateY(-12%) scaleX(1.2)}}
+@media(max-width:560px){.gate-door::before{inset:12px}.gate-door::after{inset:4px}.gate-brand{font-size:.7rem;letter-spacing:.16em}.gate-piston{height:29px}.gate-medallion{margin-bottom:1.3rem}.gate-cancel{right:.8rem}.mechanical-gate h2{max-width:16rem}.gate-cog{opacity:.7}}
+@media(prefers-reduced-motion:reduce){.gate-cog,.gate-steam{animation:none!important}.gate-steam{display:none}.gate-door{animation:none!important;transform:translateX(0)!important}.gate-center,.gate-frame,.gate-brand{transition:opacity .2s!important;transform:none!important}.gate-brand{left:0;right:0;text-align:center}.mechanical-gate.is-opening{opacity:0;transition:opacity .2s}.gate-medallion::before,.gate-medallion::after{transition:none}}
+
+.gate-sound-toggle{right:6.5rem}
+@media(max-width:560px){.gate-sound-toggle{right:6rem}}
+
+.audio-options{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.audio-action{font:inherit;border:1px solid #a98347;border-radius:5px;background:#332719;color:#ffdb82;padding:.25rem .65rem;cursor:pointer}
+.audio-action:hover{border-color:#ffdb82;background:#4b351d}
+.audio-help{border:1px solid #ad864b;background:#21180ef5;border-radius:7px;padding:.75rem 1rem;color:#fff0c8;font-size:.95rem}
+.audio-help p{margin:0 0 .6rem!important;color:inherit!important;font-size:inherit!important;max-width:100%!important}
+.audio-help[hidden],.audio-action[hidden]{display:none!important}
+.gate-audio-notice{pointer-events:auto;width:min(30rem,95vw);margin:.8rem 0 0;max-height:28vh;overflow:auto;line-height:1.3}
+.gate-audio-notice>div{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+@media(max-height:650px){.mechanical-gate:has(.gate-audio-notice:not([hidden])) .gate-medallion{width:105px;margin-bottom:.7rem}.gate-audio-notice{font-size:.85rem}}

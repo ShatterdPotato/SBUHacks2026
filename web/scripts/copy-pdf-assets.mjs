@@ -8,3 +8,4 @@ const visionTarget = new URL('../public/vendor/mediapipe/', import.meta.url);
 mkdirSync(visionTarget, { recursive: true });
 cpSync(new URL('../node_modules/@mediapipe/tasks-vision/wasm/', import.meta.url), visionTarget, { recursive: true });
 cpSync(new URL('../node_modules/@mediapipe/tasks-vision/vision_bundle.mjs', import.meta.url), new URL('vision_bundle.mjs', visionTarget));
+cpSync(new URL('../lib/eye-contact-metrics.mjs', import.meta.url), new URL('eye-contact-metrics.mjs', visionTarget));

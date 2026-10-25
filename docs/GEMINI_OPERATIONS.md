@@ -1,5 +1,7 @@
 # Gemini operation map
 
+Interviewer speech is a separate ElevenLabs call through `POST /api/speech`, using the fixed Gearwell voice. Preview, every spoken question/probe, retry and individual Read question use that route. It sends text only and does not consume Gemini tokens. See [the complete speech map](GEARWELL_INTEGRATION.md). All Gemini calls below are preserved.
+
 Every operation below uses `generation_config.thinking_level: high` through
 `web/lib/provider.mjs`. The output ceilings are 8,192 tokens for planning and the
 interviewer, 16,384 for grading, verification, synthesis, clip coaching, drills
@@ -14,10 +16,10 @@ grades, and independent factual verification receives text only.
 | --- | --- | --- |
 | Build a cloud-enabled interview | `POST /api/plan` → `interview_plan` | `web/app/page.tsx` → `web/lib/premium-service.mjs` |
 | Submit a non-skipped conversational answer | `POST /api/interviewer` → `adaptive_interviewer` | `web/components/conversation-studio.tsx` → `web/lib/premium-service.mjs` |
-| Submit an eligible answer, in either mode | `POST /api/grade` → `answer_grade` | Conversation studio (background) or page (individual) → premium service |
-| Missing or invalid factual checks for a referenced technical answer | internal `answer_accuracy` call | Focused factual assessment with checked / no-claim / out-of-reference outcome; does not return content rubric fields |
-| Contradicted facts or an appeal/correction | internal `answer_verification` after factual assessment | Reassesses all rubric reasons/levels and the flagged claims; cannot erase an error by omitting it |
-| Correct a transcript, or regrade / appeal from the report | `POST /api/regrade` → `answer_regrade`, then `answer_verification` | `web/components/premium-review.tsx` → premium service |
+| Finish either interview mode, after media finalization | `POST /api/grade` → `answer_grade` | `page.tsx` → `lib/session-grading.mjs` → premium service; two concurrent, single content-rubric/key passes |
+| Legacy callers only: missing factual checks (not current website) | internal `answer_accuracy` call | Retained compatibility factual assessment |
+| Legacy callers only: contradicted facts or appeal (not current website) | internal `answer_verification` | Retained compatibility rubric/factual reassessment |
+| Correct a transcript, or regrade / appeal from the report | `POST /api/regrade` → `answer_regrade` only | Page or PremiumReview → premium service with `assessmentMode: content`; high-thinking rubric/key assessment |
 | Review a completed consented session | `POST /api/session-report` → `session_report` | PremiumReview; waits for completed grades; invalidated when evidence changes |
 | Review recorded excerpts | `POST /api/clip-feedback` → `clip_coaching` | PremiumReview; at most six locally selected timestamped transcript excerpts plus current answer/grading context; no uploaded video |
 | Ask for an explanation or practice drills | `POST /api/coach` → `practice_coach` | PremiumReview, on explicit button click |
@@ -48,8 +50,7 @@ response schema actually contains a rubric. Transcription adds no dialogue.
 
 ## Request behavior
 
-Question and grading requests start independently. The next question waits only
-for the interviewer. Final review waits for all background grades. Interviewer
+No grading requests start between turns. The next question waits for transcript finalization, the adaptive interviewer and optional ElevenLabs speech. Final media is saved and devices released before two concurrent content assessments run. The grading chamber reports completion and supports cancellation with retryable saved answers. Interviewer
 failures retain the submitted answer and offer retry or an explicit local-bank
 transition; grading failures appear in the report for regrading. Corrections
 invalidate generated report, clip feedback and drills before regrading. A grade

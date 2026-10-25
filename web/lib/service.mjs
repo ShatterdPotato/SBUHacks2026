@@ -1,3 +1,4 @@
+import {createSpeechResponse} from './elevenlabs-speech.mjs';
 import { PREMIUM_ROUTES, premiumOperation } from './premium-service.mjs';
 import { InputError, setupInput, retrieveQuestions, text, wordCount } from './interview.mjs';
 import { providerConfig, assertCloudConsent, structured, transcribeFile } from './provider.mjs';
@@ -52,6 +53,7 @@ async function bodyJson(request) {
 }
 export async function handleApi(request, env = {}, fetcher = fetch) {
     const path = new URL(request.url).pathname;
+    if(path==='/api/speech')return createSpeechResponse(request,env,fetcher);
     env = {...env,__usage:[]};
     const baseJson=json;
     const reply=(data,status=200)=>baseJson({...data,usage:env.__usage},status);
