@@ -64,6 +64,7 @@ export async function createInterviewPdf({role,answers,aiReport,practiceDrills,c
   else {section('Your answer',[take.transcript||'No usable transcript was captured.']);section('Review',[a.summary]);section('What worked',a.strengths);section('What to improve',a.improvements);}
   if(a.grading?.criteria?.length){heading('Rubric evidence',14);const seen=new Set();for(const c of a.grading.criteria){space(43);paragraph(`**${c.label??c.id} · ${c.level}/4**\n${c.reason??c.justification??''}`,{size:9});if(c.evidence?.length&&!seen.has(String(c.evidence))){paragraph(`“${Array.isArray(c.evidence)?c.evidence.join('” · “'):c.evidence}”`,{size:9,color:muted});seen.add(String(c.evidence));}}}
   if(take.referenceAnswer||a.referenceAnswer)section('Reference approach',[(take.referenceAnswer||a.referenceAnswer).replace(/\$([^$]+)\$/g,'$1')]);
+  if(take.delivery){section('Observed delivery',take.delivery.components.map(c=>`${c.name}: ${c.score}/100 · ${c.evidence}`));section('Recording evidence and limits',take.delivery.notes);}
   paragraph('Reference approaches are practice aids, not independent fact certification. Behavioral answers do not contribute to Knowledgeability.',{size:8,color:muted});
  });
  const clips=Object.values(clipFeedback);

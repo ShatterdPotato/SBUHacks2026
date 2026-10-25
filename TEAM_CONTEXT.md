@@ -1,5 +1,14 @@
 # Cadence: shared team context
 
+October 25 montasir update: optional local eye-contact estimates now share the
+vision worker in both modes. Twenty classified samples and 70% usable coverage
+are required; missed slots reduce coverage. Gaze remains uncalibrated with no
+Confidence weight pending camera validation. Results chat now supports follow-up
+discussion/drills with separate consent. CadenceAI branding/columns are wider,
+speech plays at 1.25x and interviews loop Idle man 1. See
+[current QA](docs/qa/MONTASIR_EYE_CHAT_2026-10-25.md) and HANDOFF. This supersedes
+the older statements below that eye tracking is absent and Relax is locked.
+
 ## Incoming agent: next assignment
 
 The human is handing this project to a different Codex agent. The next requested

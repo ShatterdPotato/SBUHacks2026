@@ -6,6 +6,8 @@ import { profileForInterview, personalQuestionRequest } from '../lib/resume-prof
 import { resumeText as validateResumeText } from '../lib/resume-text.mjs';
 import { recordedDelivery, selectMoments } from '../lib/recorded-delivery.mjs';
 import { RecordingCoach, type RecordingEvidence } from '../lib/recording-coach';
+import { EyeContactReadout } from '../components/eye-contact-readout';
+import type { EyeSummary } from '../lib/eye-contact-metrics.mjs';
 import { MomentClip, type Moment } from '../components/moment-clip';
 import type { Question, Analysis, Take } from '../lib/interview-types';
 import { ConversationStudio } from '../components/conversation-studio';
@@ -86,6 +88,7 @@ export default function Home() {
     } | null>(null);
     const [meter, setMeter] = useState(0);
     const [speechStatus, setSpeechStatus] = useState('');
+    const [eyeEnabled,setEyeEnabled]=useState(true),[eyeSummary,setEyeSummary]=useState<EyeSummary|null>(null);
     const [recordedTranscript, setRecordedTranscript] = useState('');
     const [evidence, setEvidence] = useState<RecordingEvidence | null>(null);
     const coachRef = useRef<RecordingCoach | null>(null);
@@ -238,7 +241,7 @@ export default function Home() {
             if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder)
                 throw new Error('Recording needs a supported browser on localhost or HTTPS. You can continue with text answers.');
             if (!coachRef.current) {
-                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); });
+                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); },undefined,{eyeContact:eyeEnabled,onEyeContact:summary=>{if(mountedRef.current)setEyeSummary(summary);}});
                 coachRef.current = coach;
                 try { await coach.warm(); } catch (error) { coach.dispose(); coachRef.current = null; throw error; }
             }
@@ -317,7 +320,7 @@ export default function Home() {
         try {
             if (coachRef.current?.failed) { coachRef.current.dispose(); coachRef.current = null; }
             if (!coachRef.current) {
-                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); });
+                const coach = new RecordingCoach(text => { if (mountedRef.current) { setTranscript(text); setRecordedTranscript(text); } }, status => { if (mountedRef.current) setSpeechStatus(status); },undefined,{eyeContact:eyeEnabled,onEyeContact:summary=>{if(mountedRef.current)setEyeSummary(summary);}});
                 coachRef.current = coach;
                 try { await coach.warm(); } catch (error) { coach.dispose(); coachRef.current = null; throw error; }
             }
@@ -461,8 +464,10 @@ export default function Home() {
           <div className="studio-heading"><div><div className="eyebrow">YOUR PRACTICE, YOUR PACE</div><h1>Find your <em>rhythm.</em></h1><p>{displayRole} · {level}</p></div><div className="question-progress"><strong>{String(index + 1).padStart(2, '0')}</strong><span>/ {String(questions.length).padStart(2, '0')} questions</span><div className="progress-track"><i style={{ width: `${index / questions.length * 100}%` }}/></div></div></div>
           <div className="studio-grid"><div><section className="question-card"><div className="question-meta"><span>{q.category}</span><span>{q.source === 'generated' ? 'AI generated' : 'Curated question'}</span></div><h2>{q.prompt}</h2>{q.answerFormat&&<p>For this task, include <strong>{q.answerFormat}</strong>.</p>}<div className="question-bottom"><span>Take a breath. You’ve got room to think.</span><button type="button" className="text-link" onClick={readQuestion} disabled={recording||!voiceConsent}><AudioLines size={15}/>Read question</button></div></section>
             <section className="camera-card">{media && !clip ? <video ref={videoRef} className="live-video" autoPlay muted playsInline aria-label="Live camera preview"/> : clip ? <video src={clip.url} className="playback-video" controls playsInline aria-label="Review your answer recording"/> : <div className="camera-empty"><div className="camera-glyph">{textOnly ? <FileText size={29}/> : <Video size={29}/>}</div><h3>{textOnly ? 'Make space for your answer.' : 'Your practice studio is ready.'}</h3><p>{textOnly ? 'Write your response in the transcript box below.' : 'Turn on your camera and microphone when you’re ready.'}</p>{!textOnly && <><label className="check-row media-check"><input type="checkbox" checked={mediaConsent} onChange={e => setMediaConsent(e.target.checked)}/><span>I agree to record and analyze my camera and microphone on this device. Speech and vision models download on first use; English speech becomes a transcript automatically.</span></label><button type="button" className="primary" disabled={!mediaConsent || !!busy} onClick={() => void enableMedia()}><Video size={16}/>Enable camera & microphone</button><button type="button" className="text-link" disabled={!!busy} onClick={() => setTextOnly(true)}>Use text answers instead<ArrowRight size={14}/></button></>}</div>}
+              {!media&&!clip&&!textOnly&&<label className="check-row eye-contact-option"><input type="checkbox" checked={eyeEnabled} onChange={e=>setEyeEnabled(e.target.checked)}/><span>Include an on-device eye-contact estimate<small>Approximate camera-directed gaze; no score weight until camera validation.</small></span></label>}
               <div className="camera-controls"><span className={recording ? 'recording-status' : 'camera-status'}><i />{recording ? 'Recording' : clip ? (media ? 'Answer captured · camera on' : 'Answer captured') : media ? 'Camera & mic on' : 'Camera & mic off'}</span><span className="record-time">{clock(clip?.duration ?? seconds)} <small>/ 03:00</small></span><div className="meter" aria-label="Microphone level">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ height: 5 + Math.min(1, meter) * (8 + (i % 4) * 6), opacity: media ? .45 + Math.min(1, meter) * .5 : .2 }}/>)}</div>{recording ? <button type="button" className="stop-button" onClick={() => void stopRecording()} disabled={!!busy}><Square size={13} fill="currentColor"/>Stop answer</button> : media && !clip ? <button type="button" className="record-button" onClick={() => void startRecording()} disabled={!!busy}><span />Record answer</button> : clip ? <button type="button" className="text-link" disabled={!!busy} onClick={retake}>Retake</button> : null}{media && <button type="button" className="device-off" aria-label="Turn off camera and microphone" disabled={recording || !!busy} onClick={releaseDevices}><Video size={14}/><X size={10}/></button>}</div>
             </section>
+            {recording&&eyeEnabled&&<EyeContactReadout summary={eyeSummary}/>}
             <section className="transcript-card"><div><label className="field-label" htmlFor="transcript">{textOnly ? 'Your answer transcript' : 'Transcript from your recording'}</label><span>{wordCount(transcript)} {wordCount(transcript) === 1 ? 'word' : 'words'}</span></div>
               {speechStatus && <p role="status" aria-live="polite">{speechStatus}</p>}
               <p>{clip || recording || media ? 'Speak naturally. Your audio is transcribed on this device in short batches and finalized when you stop. Correct recognition errors if needed; there is no need to type your answer.' : 'Text practice is also available. Camera answers generate their own transcript.'} {personalFree || mode !== 'live' ? 'Content usess the local practice heuristic; accuracy requires reference evidence.' : fictionalOnly ? 'Only fictional spoken answers may be sent to Google for feedback.' : 'The transcript uses the cloud feedback consent you enabled.'}</p>
@@ -476,7 +481,7 @@ export default function Home() {
       report={<><header><a className="logo" href="#" onClick={e=>{e.preventDefault();reset();}}>Cadence</a><span>Your interview report</span></header>{error}        {stage === 'review' && <>
           <div className="studio-heading report-heading"><div><div className="eyebrow"><CheckCircle2 size={14}/>ONE PRACTICE CLOSER</div><h1>That’s how you <em>grow.</em></h1><p>{displayRole} · {answers.length} answers · {reportLocal ? 'Browser practice rubric' : 'AI coaching estimates'}</p></div><button type="button" className="secondary" onClick={()=>void exportReport()} disabled={pdfBusy}><Download size={16}/>{pdfBusy?'Preparing PDF…':'Download PDF report'}</button></div>
           <ReportGauges answers={answers}/><p className="score-disclaimer">{reportLocal?'Content ratings use a labeled local practice rubric.':'AI content coaching may be wrong.'} Clarity reflects focus and completeness. Confidence describes available delivery cues, not feelings or hiring fitness. Knowledgeability uses technical answers only. Missing evidence stays unassessed.</p>
-          <PremiumReview answers={answers} setAnswers={setAnswers} moments={selectedMoments} provider={provider} unpaid={fictionalOnly} onClips={setClipFeedback} onReport={setAiReport} onCoach={setPracticeDrills} />
+          <PremiumReview cloudAvailable={cloudAvailable===true} answers={answers} setAnswers={setAnswers} moments={selectedMoments} provider={provider} unpaid={fictionalOnly} onClips={setClipFeedback} onReport={setAiReport} onCoach={setPracticeDrills} />
           <div className="section-title-row"><div><span className="eyebrow">THE REPLAY ROOM</span><h2>Moments to come back to.</h2></div><span>{Object.keys(clipFeedback).length?'AI reviewed excerpts · approximate timing':'Variable-length excerpts · local heuristic selection'}</span></div>
           <div className="moments-grid">{(['best', 'worst'] as const).map(kind => <section className={`moment-card ${kind}`} key={kind}><div className="moment-label"><span>{kind === 'best' ? <Sparkles size={15}/> : <ArrowUpRight size={16}/>} {kind === 'best' ? 'STRONG MOMENTS' : 'MOMENTS TO IMPROVE'}</span></div>{moments[kind].length ? moments[kind].map(moment => <MomentClip key={moment.id} moment={moment} kind={kind} feedback={clipFeedback[moment.id]}/>) : <div className="moment-empty"><Film size={28}/><h3>{kind === 'best' ? 'Your next replay starts here.' : 'More speech gives us a comparison.'}</h3><p>Record at least two distinct speech sections, within one answer or across answers, to show both categories. Unavailable evidence is never duplicated into a second clip.</p></div>}</section>)}</div>
           <div className="section-title-row"><h2>Go a little deeper.</h2><span>Your answers, with something to work on.</span></div>

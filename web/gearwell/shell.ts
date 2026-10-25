@@ -2,7 +2,7 @@
 export const shellHtml = `
 <div class="wrap" id="landing-view">
 <header>
-  <a class="logo" href="#top" id="top"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path class="lg" fill="#c8963e"/><circle cx="20" cy="20" r="6" fill="#21180e"/></svg>Cadence</a>
+  <a class="logo" href="#top" id="top"><svg width="56" height="56" viewBox="0 0 40 40" aria-hidden="true"><path class="lg" fill="#c8963e"/><circle cx="20" cy="20" r="6" fill="#21180e"/></svg>CadenceAI</a>
   <nav><a class="hide" href="#how">How it works</a><a href="#setup">Get started</a></nav>
 </header>
 

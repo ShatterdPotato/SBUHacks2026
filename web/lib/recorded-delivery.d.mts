@@ -1,7 +1,8 @@
 type Word = { text: string; start: number; end: number };
 type Audio = { at: number; rms: number };
-type Vision = { at: number; facing: boolean | null; shouldersVisible: boolean | null; bodyShift?: number | null };
+type Vision = { at: number; facing: boolean | null; shouldersVisible: boolean | null; bodyShift?: number | null;eyeContact?:import('./eye-contact-metrics.mjs').EyeState };
 export type Delivery = {
+    eyeContact:import('./eye-contact-metrics.mjs').EyeSummary|null;
     score: number | null;
     components: { name: string; score: number; weight: number; evidence: string }[];
     metrics: { words: number; fillers: number; wpm: number | null; confidence: number | null; repetitions: number };

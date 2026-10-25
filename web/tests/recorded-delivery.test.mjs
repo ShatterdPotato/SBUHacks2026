@@ -31,7 +31,7 @@ test('one recorded answer can supply distinct strong and weak excerpts with boun
     const result = selectMoments([take()]);
     assert.ok(result.best.length); assert.ok(result.worst.length);
     assert.notEqual(result.best[0].id, result.worst[0].id);
-    for (const m of [...result.best,...result.worst]) { assert.ok(m.start >= 0 && m.end <= duration && m.end > m.start); assert.ok(m.reason.includes('heuristic')); }
+    for (const m of [...result.best,...result.worst]) { assert.ok(m.start >= 0 && m.end <= duration && m.end > m.start); assert.ok(!m.reason.includes('this excerpt only'));assert.ok(m.reason.includes('**')); }
 });
 test('multiple answers can provide multiple moments without duplicate IDs or typed-answer clips', () => {
     const result = selectMoments([take(), take({ url:'blob:two' }), take({ url:'blob:three' }), take({ hasRecording:false, url:null })]);
@@ -61,4 +61,12 @@ test('ordinary movement has no penalty while long interior pauses affect cadence
 });
 test('one timestamp-free recording retains a highlight without inventing a comparison',()=>{
     const selection=selectMoments([take({words:[]})]);assert.equal(selection.best.length,1);assert.equal(selection.worst.length,0);
+});
+
+test('eye estimates stay separate from delivery scores and missing camera measurements stay null',()=>{
+ const vision=Array.from({length:25},(_,i)=>({at:i*.5,facing:true,shouldersVisible:true,eyeContact:'contact'}));
+ const a=recordedDelivery({transcript,duration,words,audio,vision});
+ const b=recordedDelivery({transcript,duration,words,audio,vision:vision.map(v=>({...v,eyeContact:'away'}))});
+ assert.equal(a.eyeContact.cameraGaze,100);assert.equal(b.eyeContact.cameraGaze,0);assert.equal(a.score,b.score);
+ assert.equal(recordedDelivery({transcript,duration,words,audio}).eyeContact,null);
 });

@@ -1,5 +1,23 @@
 # Cadence architecture
 
+## October 25 eye-contact and coaching update
+
+The existing classic vision worker optionally emits `eyeContact` as contact/away/
+blink/none from eye-direction coefficients and head transform. Only timestamped
+classifications remain in browser memory. RecordingCoach counts 500 ms slots,
+including missed intervals, and rejects stale generation/listening epochs. Both
+modes opt in locally. Percentages need 20 classified samples and 70% usable coverage.
+Gaze has no Confidence weight pending camera validation; answer evidence and PDF
+show coverage/limits. Existing head/framing scoring now counts missing slots.
+
+`POST /api/coach` accepts optional `chatHistory`: at most eight alternating user/
+assistant messages in completed exchanges (1500/6000 characters per message).
+Saved answers and validated rubric evidence ground replies. Chat joins consent
+and contact checks; recordings/vision are never sent. Replies contain an explanation
+and zero to three drills with validated reference IDs. Results chat has separate
+consent, aborts on revocation/unmount, keeps failed drafts and clears history after
+transcript/grade changes. Deferred high-thinking grading is preserved.
+
 Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
 
 Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.

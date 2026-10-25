@@ -42,6 +42,7 @@ function setup(fetcher=async()=>mp3(),blocked=false){
 test('MP3 playback events drive speaking, pause/resume, and completion',async()=>{
  let body;const t=setup(async(_url,options)=>{body=JSON.parse(options.body);return mp3();});
  const done=t.speech.speak(INTRODUCTION);await tick();assert.equal(body.text,INTRODUCTION);assert.equal(t.changes.at(-1),true);assert.equal(t.button.disabled,true);
+ assert.equal(t.audios[0].playbackRate,1.25);assert.equal(t.audios[0].defaultPlaybackRate,1.25);assert.equal(t.audios[0].preservesPitch,true);
  t.audios[0].pause();assert.equal(t.changes.at(-1),false);assert.equal(t.button.textContent,'Play voice');t.button.handlers.click();await tick();assert.equal(t.changes.at(-1),true);
  t.audios[0].end();const result=await done;assert.equal(result.voiceId,VOICE_ID);assert.ok(result.blob instanceof Blob);assert.equal(t.changes.at(-1),false);assert.equal(t.button.disabled,false);assert.equal(t.revoked.length,1);
 });

@@ -1,5 +1,28 @@
 # Cadence continuation handoff
 
+## Montasir continuation — October 25
+
+Current branch: `codex/montasir-eye-contact`, based on the latest unmerged Gearwell
+source `d954c59`, preserving PR #14. The supplied gaze patch is integrated into the
+shared worker with optional local estimates in both modes, coverage/unavailable
+states and PDF evidence. No unvalidated gaze score weight was added. Also restored
+multi-turn results chat with explicit consent and bounded history, widened the
+CadenceAI landing brand/columns, set speech to 1.25x with pitch preservation,
+locked Idle man 1 and removed the repeated excerpt parenthetical.
+See [QA](qa/MONTASIR_EYE_CHAT_2026-10-25.md) for details and remaining validation.
+
+Live Sites lookup succeeded as owner and reported the original project's current
+audience as **public**, superseding the older private snapshot below. Preserve
+that live audience; no access or secret changes are part of this task.
+
+Final application checks: **170 tests, TypeScript and production build passed**.
+The build contains only `/`; the temporary QA route was removed. Existing large
+bundle and Vinext route-classification notices remain. Browser checks include
+desktop/320 px setup, text interview/report, Idle man 1 and mocked multi-turn chat
+with consent, retry, cancellation and correction reset. Physical camera accuracy
+and live provider voice/chat remain separate verification work. No key was read
+or changed. Hosted/source publication records follow once tools confirm them.
+
 ## Torch handoff — next agent starts here
 
 The human requested a transition to another Codex agent after the completed

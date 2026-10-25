@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { RecordingCoach, type RecordingEvidence } from '../lib/recording-coach';
+import { EyeContactReadout } from './eye-contact-readout';
+import type { EyeSummary } from '../lib/eye-contact-metrics.mjs';
 import { recordedDelivery } from '../lib/recorded-delivery.mjs';
 import { localTurn, localFollowup, localNextQuestion, answerAnchor } from '../lib/conversation.mjs';
 import { rememberQuestions, freshQuestions, recentBankIds } from '../lib/question-variety.mjs';
@@ -25,6 +27,7 @@ export function ConversationStudio(props:Props) {
     const [phase,setPhaseState] = useState<Phase>('ready');
     const [camera,setCamera] = useState(true);
     const [consent,setConsent] = useState(false);
+    const [eyeEnabled,setEyeEnabled]=useState(true),[eyeSummary,setEyeSummary]=useState<EyeSummary|null>(null);
     const [aiConsent,setAiConsent] = useState(false);
     const [followups,setFollowups] = useState(true);
     const [silence,setSilence] = useState(5);
@@ -108,7 +111,7 @@ export function ConversationStudio(props:Props) {
                     const sorted=[...noise.current].sort((a,b)=>a-b);
                     const threshold=Math.min(.02,Math.max(.008,(sorted[Math.floor(sorted.length*.2)]??.003)*2.5));
                     if(rms>threshold){lastVoice.current=performance.now();voiced.current+=.1;}
-                });
+                },{eyeContact:eyeEnabled,onEyeContact:summary=>{if(mounted.current)setEyeSummary(summary);}});
                 await coach.current.warm();if(attempt!==startup.current||!mounted.current)return;
                 const runningCoach=coach.current;await runningCoach.start(newStream,video.current);
                 if(attempt!==startup.current||!mounted.current){runningCoach.dispose();return;}
@@ -231,12 +234,13 @@ export function ConversationStudio(props:Props) {
             {camera&&<section className="camera-card engine-camera"><video ref={video} autoPlay playsInline muted className="live-video" aria-label="Continuous interview camera preview"/><div className="camera-controls"><span className={active?'recording-status':'camera-status'}><i/>{active?'Continuous recording · stays on this device':stream.current?'Camera & microphone preview · model loading':'Camera off'}</span><span>{phase==='listening'?'Listening':phase==='speaking'?'Interviewer speaking':phase==='thinking'?'Preparing response':phase}</span></div></section>}
             {phase==='ready'&&<section className="transcript-card">
                 <label className="check-row"><input type="checkbox" checked={camera} onChange={e=>setCamera(e.target.checked)}/><span>Use camera and microphone (turn off for text conversation)</span></label>
-                {camera&&<label className="check-row"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I agree to record and analyze audio/video on this device. English speech and landmark models download on first use. Recordings stay in browser memory.</span></label>}
+                {camera&&<><label className="check-row"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I agree to record and analyze audio/video on this device. English speech and landmark models download on first use. Recordings stay in browser memory.</span></label><label className="check-row"><input type="checkbox" checked={eyeEnabled} onChange={e=>setEyeEnabled(e.target.checked)}/><span>Include an on-device eye-contact estimate<small>Measures approximate camera-directed gaze. Glasses, lighting and camera position affect tracking. It has no score weight until camera validation.</small></span></label></>}
                 <label className="check-row"><input type="checkbox" checked={followups} onChange={e=>setFollowups(e.target.checked)}/><span>Allow one follow-up after technical answers only. Introductions and behavioral answers move to the next topic.</span></label>
                 <label className="field-label" htmlFor="silence">Wait after I stop speaking</label><select id="silence" value={silence} onChange={e=>setSilence(Number(e.target.value))}><option value={5}>5 seconds</option><option value={7}>7 seconds</option><option value={10}>10 seconds</option></select>
                 <button className="primary" disabled={camera&&!consent} onClick={()=>void start()}>Start interview</button>
             </section>}
             {phase==='loading'&&<div><p role="status">Connecting devices and loading the larger English speech model. First use can take several minutes.</p><button className="secondary" onClick={()=>{startup.current++;release();setStatus('');phaseTo('ready');}}>Cancel & turn off devices</button></div>}
+            {active&&camera&&eyeEnabled&&<EyeContactReadout summary={eyeSummary} paused={phase!=='listening'}/>}
             {active&&<section className="transcript-card"><label className="field-label" htmlFor="conversation-caption">{camera?'Live transcript · finalized after your turn':'Your response'}</label><textarea id="conversation-caption" rows={5} value={caption} maxLength={12000} readOnly={camera&&phase!=='review'} onChange={e=>captionTo(e.target.value)} placeholder="Your answer appears here…"/>
                 {phase==='speaking'&&<>{voiceFailed&&<button className="primary" onClick={()=>{setError('');ask(current.current);}}>Retry question voice</button>}<button className="secondary" onClick={()=>listen()}>{voiceFailed?'Read question & answer without voice':'Interrupt & answer'}</button></>}
                 {phase==='listening'&&<><button className="primary" disabled={!camera&&!caption.trim()} onClick={()=>void submitTurn()}>I’m done speaking</button> <button className="secondary" onClick={()=>{coach.current?.setListening(false);phaseTo('paused');setStatus(camera?'Listening paused. Recording continues on this device; finish to stop recording.':'Conversation paused.');}}>Pause listening</button> <button className="text-link" onClick={()=>void submitTurn(true)}>Skip</button></>}
