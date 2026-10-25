@@ -1,5 +1,14 @@
 # Cadence: shared team context
 
+## Conversational interview update (2026-10-24)
+
+The default studio is now a back-and-forth conversation with spoken local English questions, automatic end-of-turn detection (5/7/10-second wait), optional adaptive follow-ups, and one continuous local video. Individual answer practice remains available. Whisper Base English replaces Tiny; multi-batch answers receive a guarded whole-answer refinement. Recent questions are suppressed in session memory and target-role practical questions take priority over unrelated resume skills.
+
+Free Gemini remains unpaid. A separate explicit fictional/non-sensitive answer opt-in enables /api/interview-turn; this sends question/transcript history (maximum four previous turns) and a broad role, never the actual resume, audio or frames. Personal answers remain local without this opt-in. No billing was enabled.
+
+The third displayed dimension is Knowledge / accuracy (the existing comprehension field in JSON). It scores only claims checked against a small supplied reference pack; unknown claims and personal stories remain unverified. No live web search is implemented. Cash-change arithmetic is deterministic and overrides contradictory AI prose. Video scores require eight usable samples and 70% coverage; movement is described without a penalty, and visual weights are reduced. Session clip ranges include each answer's global recording offset.
+
+
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
 Continuation snapshot: [docs/HANDOFF.md](docs/HANDOFF.md). Read it for the exact

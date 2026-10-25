@@ -1,4 +1,5 @@
 import { timedWords } from './recorded-delivery.mjs';
+import { preferRefinedWords } from './speech-refinement.mjs';
 export type SpeechWord = { text: string; start: number; end: number };
 export type AudioEvidence = { at: number; rms: number };
 export type VisionEvidence = { at: number; facing: boolean | null; shouldersVisible: boolean | null; bodyShift?: number | null };
@@ -17,6 +18,9 @@ export class RecordingCoach {
     private chunks: Float32Array[] = [];
     private samples = 0;
     private processed = 0;
+    private chunkStart = 0;
+    private listening = true;
+    private turnInferences = 0;
     private chain: Promise<void> = Promise.resolve();
     private active = false;
     private visionBusy = false;
@@ -30,7 +34,8 @@ export class RecordingCoach {
     audioEvidence: AudioEvidence[] = [];
     visionEvidence: VisionEvidence[] = [];
     get failed() { return this.failure !== null; }
-    constructor(private onText: (text: string) => void, private onStatus: (status: string) => void) {
+    get currentTime() { return this.samples / 16000; }
+    constructor(private onText: (text: string) => void, private onStatus: (status: string) => void, private onActivity?: (rms: number, at: number) => void) {
         this.speech.onmessage = ({ data }) => {
             if (data.type === 'progress') { this.onStatus(`Loading local speech model (${data.progress}% of current file)`); return; }
             const pending = this.pending.get(data.id);
@@ -69,7 +74,7 @@ export class RecordingCoach {
     }
     async start(stream: MediaStream, video: HTMLVideoElement | null) {
         this.generation++; this.failure = null; this.words = []; this.audioEvidence = []; this.visionEvidence = [];
-        this.chunks = []; this.samples = 0; this.processed = 0; this.lastAudioAt = -1; this.chain = Promise.resolve();
+        this.chunks = []; this.samples = 0; this.processed = 0; this.chunkStart = 0; this.listening = true; this.lastAudioAt = -1; this.chain = Promise.resolve();
         this.context = new AudioContext({ sampleRate: 16000 });
         if (this.context.sampleRate !== 16000) throw new Error('This browser cannot capture 16 kHz speech for local recognition. Try Chrome or Edge, or use text practice.');
         await this.context.audioWorklet.addModule('/audio-capture.worklet.js');
@@ -79,10 +84,14 @@ export class RecordingCoach {
         this.active = true; this.started = performance.now();
         this.node.port.onmessage = ({ data }: MessageEvent<Float32Array>) => {
             if (!this.active) return;
-            this.chunks.push(data); this.samples += data.length;
+            this.samples += data.length;
+            if (!this.listening) { this.chunks.push(new Float32Array(data.length)); return; }
+            this.chunks.push(data);
             const at = this.samples / 16000;
             if (at - this.lastAudioAt >= .1) {
-                this.audioEvidence.push({ at, rms: Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length) }); this.lastAudioAt = at;
+                const rms = Math.sqrt(data.reduce((sum, x) => sum + x * x, 0) / data.length);
+                this.audioEvidence.push({ at, rms }); this.lastAudioAt = at;
+                this.onActivity?.(rms, at);
             }
             if (this.samples - this.processed >= 12 * 16000) this.queueAudio(false);
         };
@@ -91,21 +100,21 @@ export class RecordingCoach {
         this.onStatus('Listening on this device · captions update in short batches');
     }
     private async sampleVideo(video: HTMLVideoElement) {
-        if (!this.active || !this.visionReady || this.visionBusy || !video.videoWidth) return;
+        if (!this.active || !this.listening || !this.visionReady || this.visionBusy || !video.videoWidth) return;
         this.visionBusy = true;
         try {
             const frame = await createImageBitmap(video, { resizeWidth: 384, resizeHeight: Math.round(video.videoHeight / video.videoWidth * 384) });
             if (!this.active) { frame.close(); this.visionBusy = false; return; }
-            this.vision?.postMessage({ type: 'frame', frame, at: (performance.now() - this.started) / 1000, timestamp: performance.now(), generation: this.generation }, [frame]);
+            this.vision?.postMessage({ type: 'frame', frame, at: this.currentTime, timestamp: performance.now(), generation: this.generation }, [frame]);
         } catch { this.visionBusy = false; }
     }
     private queueAudio(final: boolean) {
         const end = this.samples, from = this.processed;
         if (end <= from || (!final && end - from < 12 * 16000)) return;
-        const all = new Float32Array(end); let pos = 0;
+        const all = new Float32Array(end - this.chunkStart); let pos = 0;
         for (const chunk of this.chunks) { all.set(chunk, pos); pos += chunk.length; }
-        const audio = all.slice(Math.max(0, from - 16000), end);
-        const offset = Math.max(0, from - 16000) / 16000, generation = this.generation;
+        const audio = all.slice(Math.max(0, from - this.chunkStart - 16000));
+        const offset = Math.max(this.chunkStart, from - 16000) / 16000, generation = this.generation;
         this.processed = end;
         this.chain = this.chain.then(async () => {
             if (this.failure || generation !== this.generation) return;
@@ -114,9 +123,40 @@ export class RecordingCoach {
             const output = await this.request('transcribe', audio);
             if (generation !== this.generation) return;
             const words = timedWords(output.chunks, end / 16000, offset).filter((w: SpeechWord) => w.start >= from / 16000 - .15);
+            if(words.length)this.turnInferences++;
             this.words.push(...words);
             this.onText(this.words.map(w => w.text).join(' ').trim());
         }).catch(error => { if (generation !== this.generation) return; this.failure = error instanceof Error ? error : new Error('Transcription failed.'); this.onStatus(this.failure.message); });
+    }
+    // New turns release the previous PCM buffer. The recording stays continuous,
+    // while speech recognition excludes interviewer playback and thinking time.
+    beginTurn() {
+        this.listening = true; this.failure = null; this.chunks = []; this.turnInferences=0;
+        this.chunkStart = this.samples; this.processed = this.samples;
+        return this.currentTime;
+    }
+    setListening(value: boolean) { this.listening = value; }
+    async finishTurn(start: number): Promise<RecordingEvidence> {
+        this.listening = false; const end = this.currentTime;
+        this.queueAudio(true); await this.chain;
+        const audio = new Float32Array(Math.round((end-start)*16000)); let pos = 0;
+        for (const chunk of this.chunks) { if(pos>=audio.length)break;audio.set(chunk.subarray(0,audio.length-pos),pos); pos += chunk.length; }
+        if (!this.failure && this.turnInferences!==1 && audio.length && Math.sqrt(audio.reduce((s,x) => s+x*x,0)/audio.length) >= .004) {
+            this.onStatus('Refining the complete answer on this device…');
+            try {
+                // Exclude the automatic end-of-turn waiting silence from the
+                // refinement request, preserving the original time origin.
+                const lastVoice=this.audioEvidence.filter(s=>s.at>=start&&s.at<=end&&s.rms>=.008).at(-1)?.at??end;
+                const output = await this.request('transcribe', audio.slice(0,Math.min(audio.length,Math.ceil((lastVoice-start+.5)*16000))));
+                const refined=timedWords(output.chunks, end, start);
+                const live=this.words.filter(w=>w.start>=start);
+                this.words = [...this.words.filter(w => w.start < start), ...preferRefinedWords(live,refined)];
+            } catch (error) { this.onStatus('Final refinement unavailable; using live captions. Review recognition errors in the report.'); }
+        }
+        if (this.failure) throw this.failure;
+        const evidence = this.evidence();
+        const words = evidence.words.filter(w => w.start >= start && w.end <= end+.1).map(w => ({ ...w, start:w.start-start,end:w.end-start }));
+        return { words, transcript:words.map(w=>w.text).join(' ').trim(), audioEvidence:evidence.audioEvidence.filter(s=>s.at>=start&&s.at<=end).map(s=>({...s,at:s.at-start})),visionEvidence:evidence.visionEvidence.filter(s=>s.at>=start&&s.at<=end).map(s=>({...s,at:s.at-start})) };
     }
     async stop(): Promise<RecordingEvidence> {
         this.active = false;
@@ -124,7 +164,7 @@ export class RecordingCoach {
         this.visionTimer = null;
         this.source?.disconnect(); this.node?.disconnect();
         if (this.context?.state !== 'closed') await this.context?.close(); this.context = null;
-        this.queueAudio(true); await this.chain;
+        if (this.listening) this.queueAudio(true); await this.chain;
         if (this.failure) throw this.failure;
         this.onStatus('Transcript generated from recording audio · review optional corrections');
         return this.evidence();

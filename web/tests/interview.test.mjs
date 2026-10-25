@@ -18,7 +18,8 @@ test('all session lengths and focus choices return enough unique questions', () 
 });
 test('retrieval selects role-relevant technical questions', () => {
     const questions = retrieveQuestions(setupInput({ role: 'Machine learning engineer', type: 'Technical', count: 3 }));
-    assert.match(questions[0].prompt, /model/i);
+    assert.ok(questions.some(q=>/model|test set|dataset|retrieval/i.test(q.prompt)));
+    assert.ok(questions.every(q=>!/circuit|trading signal|product problem/i.test(q.prompt)));
 });
 test('invalid setup and unconsented PDF are rejected', () => {
     assert.throws(() => setupInput({ count: 100 }));

@@ -1,4 +1,6 @@
 import { InputError } from './interview.mjs';
+import { ROLE_FAMILIES, roleRule, relevantSkills } from './role-context.mjs';
+export { ROLE_FAMILIES } from './role-context.mjs';
 
 // These fixed labels are generic interview topics. Never send source excerpts,
 // contact information, employers, schools, project names, or arbitrary tags.
@@ -19,21 +21,19 @@ const TOPICS = [
     ['Algorithms', /\balgorithms?\b/i], ['Data structures', /\bdata structures?\b/i],
     ['Statistics', /\b(statistics|statistical)\b/i], ['Linear algebra', /\blinear algebra\b/i],
     ['Circuits', /\bcircuits?\b/i], ['Embedded systems', /\b(embedded|microcontroller)\b/i],
-    ['User research', /\buser research\b/i], ['Product design', /\bproduct design\b/i]
+    ['User research', /\buser research\b/i], ['Product design', /\bproduct design\b/i],
+    ['Customer service', /customer|cashier|retail|mcdonald|restaurant/i], ['Cash handling', /cash|payment|change|register/i],
+    ['Teamwork', /team|crew/i], ['Conflict resolution', /complaint|conflict/i], ['Reliability', /reliable|reliability|shift|punctual/i],
+    ['Food safety', /food|restaurant|mcdonald/i], ['Safety', /safety|warehouse/i], ['Inventory', /inventory|stock|warehouse/i]
 ];
 export const SKILL_NAMES = Object.freeze(TOPICS.map(([name]) => name));
-export const ROLE_FAMILIES = Object.freeze(['AI/ML engineering', 'Software engineering', 'Data science', 'Electrical engineering', 'Product management', 'General interview']);
 
 export function genericProfile(source, targetRole = '') {
     const value = typeof source === 'string' ? source : '';
     // The requested job takes precedence over a candidate's previous field.
     const roleText = typeof targetRole === 'string' && targetRole.trim() ? targetRole.trim() : value;
-    const roleFamily = /\b(machine learning|ai[ /-]*ml|ai|ml|pytorch|tensorflow|nlp)\b/i.test(roleText) ? ROLE_FAMILIES[0]
-        : /\b(data science|data scientist|data analyst)\b/i.test(roleText) ? ROLE_FAMILIES[2]
-        : /\b(electrical|circuits?|embedded)\b/i.test(roleText) ? ROLE_FAMILIES[3]
-        : /\b(product manager|product management|user research)\b/i.test(roleText) ? ROLE_FAMILIES[4]
-        : /\b(software|developer|python|javascript)\b/i.test(roleText) ? ROLE_FAMILIES[1] : ROLE_FAMILIES[5];
-    return { roleFamily, skills: TOPICS.filter(([, pattern]) => pattern.test(value)).map(([name]) => name) };
+    const roleFamily = roleRule(roleText).family;
+    return { roleFamily, skills: relevantSkills(TOPICS.filter(([, pattern]) => pattern.test(value)).map(([name]) => name), roleFamily) };
 }
 
 export function profileForInterview({ role = '', context = '', resume = '', source = 'prompt' }) {
@@ -52,15 +52,15 @@ export function validateGenericProfile(profile) {
     return { roleFamily: profile.roleFamily, skills: [...new Set(profile.skills)] };
 }
 
-export function personalQuestionRequest({ profile, count, type, level, provider, cloudConsent }) {
-    return { privacyMode: 'personal', profile: validateGenericProfile(profile), count, type, level, providerConsent: provider, cloudConsent: cloudConsent === true };
+export function personalQuestionRequest({ profile, count, type, level, provider, cloudConsent, variation }) {
+    return { privacyMode: 'personal', profile: validateGenericProfile(profile), count, type, level, providerConsent: provider, cloudConsent: cloudConsent === true, ...(variation ? { variation } : {}) };
 }
 
 export function personalQuestionSetup(body) {
-    const allowed = ['privacyMode', 'profile', 'count', 'type', 'level', 'providerConsent', 'cloudConsent'];
+    const allowed = ['privacyMode', 'profile', 'count', 'type', 'level', 'providerConsent', 'cloudConsent', 'variation'];
     if (Object.keys(body).some(key => !allowed.includes(key)))
         throw new InputError('Personal-resume questions accept generic topic labels only. Keep resume text, files, and answers in the browser.');
     const profile = validateGenericProfile(body.profile);
     return { role: profile.roleFamily, context: `Generic interview topics: ${profile.skills.join(', ') || 'general interview practice'}.`,
-        count: body.count, type: body.type, level: body.level, cloudConsent: body.cloudConsent };
+        count: body.count, type: body.type, level: body.level, cloudConsent: body.cloudConsent, variation: body.variation };
 }

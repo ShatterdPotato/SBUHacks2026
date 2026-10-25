@@ -1,5 +1,20 @@
 # Cadence architecture
 
+## Conversational flow (current default, 2026-10-24)
+
+ConversationStudio owns one continuous MediaRecorder, a RecordingCoach and turn state. Local speech synthesis asks each question; recognition is gated during interviewer playback. Microphone energy detects the end of a speaking turn after a configurable 5/7/10-second wait. Manual completion, interruption, pause, skip, text conversation and early finish remain available. The session is capped at twenty minutes, each turn at three minutes, and one adaptive follow-up is allowed per main topic. Early finish retains the in-progress transcript with local feedback. Device tracks and workers stop on finish/unmount.
+
+POST /api/interview-turn accepts question, answer (12,000 characters), broad role, up to four prior question/answer pairs, duration/recorded, provider/cloud consent, and explicit fictional/non-sensitive attestation for unpaid Gemini. It sends only text; resume/media fields are never forwarded. Server checks reject obvious contact details under unpaid policy, but these checks are not anonymization. Google free-tier terms still apply. Missing consent is rejected. Provider failures preserve the recording and produce visibly labeled local fallback feedback.
+
+Whisper Base English runs locally in the same-origin standalone worker. Live batches overlap; multi-batch turns receive a whole-answer pass trimmed after the last measured speech. A refinement losing over 20% of recognized words or over two seconds of recognized ending speech is rejected in favor of live captions. Each new turn releases the previous PCM buffer; paused/interviewer audio is replaced by silence in the ASR buffer to preserve the session clock.
+
+Knowledge / accuracy uses the existing scores.comprehension contract, now nullable unless reference checks cover a claim. knowledge includes exact quoted claims, supported/contradicted/unverified status, reference IDs, source links and coverage. References are a small versioned pack, not live web search. A model classification is provisional. Integer-cent change calculations override model claims/prose; personal stories remain unverified. Content evaluates clarity/reasoning separately. Corrected report transcripts can be rechecked locally; delivery/word alignment retain original recording evidence.
+
+Clip word times stay relative to each turn; recordingOffset converts selected excerpts to absolute session time. Clips share one Blob URL. Full-interview download appears once. Moment ranking combines content, transcript structure, measured delivery and matching contradicted-reference claims; ties explicitly say no clear difference was measured. Video measurement now uses higher detection thresholds, three-sample head-position smoothing, at least eight usable samples and 70% coverage before scoring. Base weights are pace .20, fillers/repetitions .10, pauses .15, head position .15, framing .10; available weights renormalize. Motion is an observation without a penalty. Pace excludes automatic end-of-turn waiting when word timestamps exist. No eye-contact or emotional inference.
+
+The older per-answer architecture below describes the retained individual practice mode; the current scoring/reference rules above supersede its historical comprehension and movement descriptions.
+
+
 ## Request and media flow
 
 The browser handles the resume/prompt form, permission prompts, MediaRecorder,
