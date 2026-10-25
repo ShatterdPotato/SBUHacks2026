@@ -1,3 +1,4 @@
+import { prepareClipRange } from './clip-playback.mjs';
 export async function exportClip(url: string, start: number, end: number): Promise<Blob> {
     if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start) throw new Error('Invalid clip range.');
     const video = document.createElement('video'); video.playsInline = true; video.preload = 'auto';
@@ -12,10 +13,7 @@ export async function exportClip(url: string, start: number, end: number): Promi
             video.onerror = () => { clearTimeout(watchdog); reject(new Error('Recording could not be opened for clipping.')); };
             video.src = url;
         });
-        if (start > 0) await new Promise<void>((resolve, reject) => {
-            const watchdog = setTimeout(() => reject(new Error('Could not seek to the selected moment. Download the full answer instead.')), 10000);
-            video.onseeked = () => { clearTimeout(watchdog); resolve(); }; video.currentTime = start;
-        });
+        const range = await prepareClipRange(video,start,end);
         const canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
         const drawing = canvas.getContext('2d'); if (!drawing || !canvas.captureStream) throw new Error('Clip export is unavailable in this browser. Download the full answer instead.');
         drawing.drawImage(video, 0, 0);
@@ -34,7 +32,7 @@ export async function exportClip(url: string, start: number, end: number): Promi
         activeRecorder.start(250);
         timer = setInterval(() => {
             drawing.drawImage(video, 0, 0);
-            if (video.currentTime >= end || video.ended) { video.pause(); if (activeRecorder.state === 'recording') activeRecorder.stop(); }
+            if (video.currentTime >= range.end || video.ended) { video.pause(); if (activeRecorder.state === 'recording') activeRecorder.stop(); }
         }, 33);
         video.onended = () => { if (activeRecorder.state === 'recording') activeRecorder.stop(); };
         await video.play();

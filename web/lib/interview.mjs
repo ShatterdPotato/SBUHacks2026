@@ -121,5 +121,7 @@ export function reportFor(answers) {
         const values=answers.filter(a=>questionKind(a.question??a.analysis.questionKind).category===category).map(a=>a.analysis.scores.content).filter(v=>typeof v==='number');
         return [category,values.length?Math.round(values.reduce((a,b)=>a+b,0)/values.length):null];
     }));
-    return { scores, categoryScores, overall: overallScore(scores), best: clips[0]?.index ?? null, worst: clips.length > 1 ? clips.at(-1).index : null, ranked };
+    const technical=answers.filter(a=>questionKind(a.question??a.analysis.questionKind).category==='Technical'&&(a.transcript===undefined||a.transcript.trim()));
+    const accuracyCoverage={answers:technical.length,checkedAnswers:technical.filter(a=>Number.isFinite(a.analysis.scores.comprehension)).length,claims:technical.reduce((n,a)=>n+(a.analysis.knowledge?.checks.filter(c=>c.status!=='unverified').length??0),0),localOnly:technical.filter(a=>a.analysis.knowledge?.accuracyStatus==='needs_ai').length,pending:technical.filter(a=>a.analysis.aiStatus==='provisional'||a.analysis.aiStatus==='failed'||a.analysis.aiStatus==='pending').length};
+    return { scores, categoryScores, accuracyCoverage, overall: overallScore(scores), best: clips[0]?.index ?? null, worst: clips.length > 1 ? clips.at(-1).index : null, ranked };
 }

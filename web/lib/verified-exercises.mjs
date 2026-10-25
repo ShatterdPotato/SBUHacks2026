@@ -79,6 +79,8 @@ export function checkAnswer(entry,answer) {
  if(!entry?.checker)return [];
  const c=entry.checker, expected=executeCheck(c);
  const matches=[...answer.matchAll(c.operation==='truth-table'?/Truth table:\s*([01]{4})\b/gi:/Final:\s*([-+]?\d+(?:\.\d+)?(?:\s*\/\s*[-+]?\d+(?:\.\d+)?)?)\s*(%?)/gi)];
+ // A bare result is unambiguous too; do not require a user to say "Final" aloud.
+ if(!matches.length){const bare=answer.trim().match(c.operation==='truth-table'?/^([01]{4})$/:/^([-+]?\d+(?:\.\d+)?(?:\s*\/\s*[-+]?\d+(?:\.\d+)?)?)$/);if(bare)matches.push(bare);}
  if(matches.length!==1||matches[0][2]==='%')return [];
  const m=matches[0]; const parts=m[1].split('/').map(Number);
  const value=c.operation==='truth-table'?m[1]:parts.length===2?parts[0]/parts[1]:parts[0];

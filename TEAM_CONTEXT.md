@@ -1,5 +1,7 @@
 # Cadence: shared team context
 
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](docs/qa/FACTUAL_REPLAY_2026-10-25.md).
+
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](docs/GEMINI_OPERATIONS.md) and [current QA](docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
 Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](docs/PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
@@ -126,7 +128,7 @@ work and again returned
 `Sites project not found`; remote settings/publication were not available.
 The handoff preserves all publication IDs.
 
-Current checks: **113 tests, TypeScript and production build pass**. The bank
+Current checks: **137 tests, TypeScript and production build pass**. The bank
 validator confirms 112 items in each of four tracks. Live synthetic-text checks
 passed planning, adaptive interviewing, grading, independent verification,
 regrading, reports, clips and drills. Browser QA verified mixed coverage,

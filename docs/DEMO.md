@@ -1,5 +1,7 @@
 # Cadence demo and verification
 
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
+
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
 All current Gemini operations request high thinking. Current verification: 113
@@ -109,7 +111,7 @@ settings and transport without exposing upstream bodies.
 
 ## Automated and synthetic coverage
 
-`pnpm test` runs the Node regression suite, currently **113 cases**: setup/retrieval, role
+`pnpm test` runs the Node regression suite, currently **137 cases**: setup/retrieval, role
 priority/variety, resume allowlists/text, consent/limits, both provider adapters,
 retry/error categories, reference filtering/arithmetic, speech-refinement retention,
 delivery coverage and excerpt offsets. New regressions cover opener-only setup,
@@ -140,6 +142,11 @@ Reusable browser fixtures require manual setup on the **actual Vinext origin**:
   full premium interview/review with mocked transport.
 - `web/tests/fixtures/clip-feedback-harness.tsx`: temporary `app/qa-clips/page.tsx`,
   fictional excerpts through live Gemini (consumes quota; no video upload).
+
+- `web/tests/fixtures/clip-replay-harness.tsx`: temporarily copy to
+  `app/qa-replay/page.tsx`. Generate moving canvas frames and a synthetic tone
+  through MediaRecorder, then verify early/later first play, repeated replay,
+  bounded stops and audible exports. No physical capture or provider upload.
 
 Run `node scripts/verify-question-bank.mjs` from `web/` for bank validation.
 Remove temporary routes/public fixture files before production builds.

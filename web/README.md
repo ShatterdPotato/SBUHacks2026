@@ -1,5 +1,7 @@
 # Cadence web app
 
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](../docs/qa/FACTUAL_REPLAY_2026-10-25.md).
+
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](../docs/GEMINI_OPERATIONS.md) and [current QA](../docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
 October 25 feedback update: behavioral questions have separate scoring and never receive probes. Clip captions cite their own speech, and Gemini grades with high thinking plus evidence-based justifications. See [QA](../docs/qa/FEEDBACK_GROUNDING_2026-10-25.md).

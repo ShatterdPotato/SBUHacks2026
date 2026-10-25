@@ -109,8 +109,8 @@ and [the audit](docs/REPOSITORY_AUDIT.md) for the earlier repository inventory.
 Current local source adds high-reasoning planning, separate interviewer/grader,
 independent verification, clip coaching, reports and targeted drills. The bank
 has **448 questions, 112 per track**, with explicit AI-reviewed versus executable
-provenance. **113 tests, TypeScript and production build pass**; live synthetic
-Gemini checks passed. See [current QA](docs/qa/PREMIUM_2026-10-25.md),
+provenance. **137 tests, TypeScript and production build pass**; live synthetic
+Gemini checks passed. See [current QA](docs/qa/FACTUAL_REPLAY_2026-10-25.md),
 [all API call sites](docs/GEMINI_OPERATIONS.md) and [the bank](web/data/question-bank/README.md).
 The last recorded private Site uses older source; current deployment remains
 blocked by original Site access. Physical-device and expert-review checks remain separate.

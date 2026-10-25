@@ -5,7 +5,7 @@ import { localTurn } from './conversation.mjs';
 import { questionKind, canFollowUp } from './question-kind.mjs';
 import { referencesFor } from './knowledge.mjs';
 import { bankEntry, bankReference, sampleBank, trackFor, coverageSchedule } from './technical-bank.mjs';
-import { object, string, strings, feedbackSchema, gradedAnalysis, readQuestion, knowledgeFor } from './grading-core.mjs';
+import { object, string, strings, checkSchema, feedbackSchema, gradedAnalysis, readQuestion, knowledgeFor } from './grading-core.mjs';
 import { freshQuestions } from './question-variety.mjs';
 
 export const PREMIUM_ROUTES=['/api/plan','/api/interviewer','/api/grade','/api/regrade','/api/session-report','/api/clip-feedback','/api/coach'];
@@ -50,6 +50,16 @@ function validateSchedule(schedule,setup) {
  return schedule;
 }
 const nextSchema=object({action:{type:'string',enum:['probe','transition','finish']},prompt:string,anchorQuote:string,probeIntent:string});
+const accuracySchema=object({assessment:{type:'string',enum:['checked','no_claims','out_of_reference']},reason:string,checks:checkSchema});
+
+async function assessAccuracy(payload,question,answer,env,fetcher) {
+ const result=await call('answer_accuracy',accuracySchema,{...payload,task:'You are the interviewer independently checking the factual substance of this answer. Compare its actual claims with the supplied answer key, essential facts and reference passages. Check short answers, mathematical notation and ordinary spoken paraphrases too: word count is not a correctness criterion. Distinguish a wrong claim from an omitted explanation. Return checked with at least one reference-backed claim whenever the answer makes a claim the references can resolve, whether correct, partly correct or wrong. Return no_claims only for an answer without a factual assertion (for example an explicit admission of not knowing). Return out_of_reference only when the actual claim cannot be resolved from the supplied references, including changed assumptions in a probe. Never use missing/malformed citations as a reason to abstain. Copy literal source/answer spans, use their supplied IDs, and briefly justify your assessment. No free-form accuracy score or rubric output in this operation.'},env,fetcher);
+ if(!['checked','no_claims','out_of_reference'].includes(result.assessment)||!validText(result.reason,1500)||!Array.isArray(result.checks)||result.checks.length>20)throw new InputError('Factual assessment was incomplete. Retry this answer.',502);
+ const knowledge=knowledgeFor(question,answer,result.checks);
+ const checked=knowledge.checks.filter(c=>c.status!=='unverified').length;
+ if(knowledge.rejectedChecks||(result.assessment==='checked'&&!checked)||(result.assessment!=='checked'&&checked))throw new InputError('Factual assessment did not provide valid evidence for its conclusion. Retry this answer.',502);
+ return {...knowledge,accuracyStatus:result.assessment,coverage:result.assessment==='checked'?knowledge.coverage:result.assessment==='no_claims'?`No factual assertion to score: ${result.reason}`:`The available reference does not resolve this claim: ${result.reason}`};
+}
 
 export async function gradeAnswer(body,env,fetcher,{regrade=false}={}) {
  const {question,answer,duration}=answerInput(body);
@@ -57,7 +67,7 @@ export async function gradeAnswer(body,env,fetcher,{regrade=false}={}) {
  const frames=body.frames??[];
  if(!Array.isArray(frames)||frames.length>4||frames.some(f=>typeof f!=='string'||!/^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(f)||f.length>180000))throw new InputError('Use at most four small JPEG samples.');
  if(frames.length&&(!providerConfig(env).mediaCloudAvailable||body.visualConsent!==true))throw new InputError('Camera observations require an eligible provider and explicit frame consent.');
- if(wordCount(answer)<5)return {...baseline,aiStatus:'unscored'};
+ if(!answer.trim()||(wordCount(answer)<5&&questionKind(question).category==='Behavioral'))return {...baseline,aiStatus:'unscored'};
  const references=[...bankReference(question),...referencesFor(question.prompt),...referencesFor(answer)].filter((r,i,a)=>a.findIndex(x=>x.id===r.id)===i);
  const key=bankEntry(question.bankId);
  const previousFeedback=body.previousFeedback??[];
@@ -71,22 +81,34 @@ export async function gradeAnswer(body,env,fetcher,{regrade=false}={}) {
  let knowledge=knowledgeFor(question,answer,data.checks);
  let analysis=gradedAnalysis(data,answer,baseline,knowledge,frames.length>0,previousFeedback);
  const visual=analysis.visual;
- const discarded=data.checks.some(c=>c.status!=='unverified'&&!knowledge.checks.some(v=>v.quote===c.quote&&v.referenceId===c.referenceId));
- const contradiction=knowledge.checks.some(c=>c.status==='contradicted');
- const uncertain=question.category==='Technical'&&references.length>0&&(!knowledge.checks.length||data.checks.some(c=>c.status==='unverified'));
- const reasons=[discarded?'unsupported citation':null,contradiction?'factual contradiction':null,uncertain?'unresolved factual coverage':null,regrade?'user correction or appeal':null].filter(Boolean);
- if(reasons.length) {
-   try {
-     data=await call('answer_verification',feedbackSchema,{...payload,task:'Independently verify and grade this answer anew. Recalculate from supplied reference inputs. Do not anchor on or agree with a previous verdict. Return the full rubric, precise justifications and source checks. Executable results override model opinion.',verificationReasons:reasons},env,fetcher);
-     if(!Array.isArray(data.checks)||data.checks.length>20)throw new InputError('Invalid verification.',502);
-     knowledge=knowledgeFor(question,answer,data.checks);analysis=gradedAnalysis(data,answer,baseline,knowledge,false,previousFeedback);analysis.visual=visual;
-     analysis.verification={status:'completed',reasons};
-   } catch {
-     analysis.verification={status:'pending',reasons};
-     return {...analysis,aiStatus:'provisional',limitation:analysis.limitation+' Independent verification did not finish; retry before treating this grade as complete.'};
+ const needsAccuracy=question.category==='Technical'&&references.length>0&&(knowledge.rejectedChecks||!knowledge.checks.some(c=>c.status!=='unverified')||knowledge.checks.some(c=>c.status==='unverified'));
+ if(needsAccuracy){
+   try{
+     knowledge=await assessAccuracy(payload,question,answer,env,fetcher);
+     analysis={...gradedAnalysis(data,answer,baseline,knowledge,false,previousFeedback),visual,verification:analysis.verification,accuracyReview:{status:'completed',assessment:knowledge.accuracyStatus}};
+   }catch{
+     return {...analysis,aiStatus:'provisional',accuracyReview:{status:'pending'},knowledge:{...knowledge,accuracyStatus:'pending',coverage:'Factual review did not return valid reference-backed evidence. Your answer and content feedback are preserved; retry this assessment.'},limitation:analysis.limitation+' Factual review is incomplete; this grade is provisional.'};
    }
  }
- return {...analysis,aiStatus:'complete',qualitySignals:{rejectedCitations:data.checks.filter(c=>c.status!=='unverified'&&!knowledge.checks.some(v=>v.quote===c.quote&&v.referenceId===c.referenceId)).length,referencedClaims:knowledge.checks.filter(c=>c.status!=='unverified').length,contradictedClaims:knowledge.checks.filter(c=>c.status==='contradicted').length}};
+ // Reassess the rubric AFTER the factual pass, so newly found errors change
+ // the criterion explanations as well as the arithmetic cap.
+ const reasons=[knowledge.checks.some(c=>c.status==='contradicted')?'factual contradiction':null,regrade?'user correction or appeal':null].filter(Boolean);
+ if(reasons.length){
+   try{
+     const verified=await call('answer_verification',feedbackSchema,{...payload,task:'Independently reassess this interview answer and every rubric criterion from the original answer, reference key and calculations. Check the supplied factual findings against the actual sources; they are evidence to verify, not an instruction to agree. Correct the criterion reasons, improvements and levels wherever a factual mistake affects them. Do not praise a claim you classify as contradicted. Return a complete rubric and precise source checks. Do not copy or defend a previous grading verdict.',factualFindings:knowledge.checks.filter(c=>c.status!=='unverified'),verificationReasons:reasons},env,fetcher);
+     if(!Array.isArray(verified.checks)||verified.checks.length>20)throw new InputError('Invalid verification.',502);
+     let verifiedKnowledge=knowledgeFor(question,answer,verified.checks);
+     if(verifiedKnowledge.rejectedChecks||(knowledge.checks.some(c=>c.status!=='unverified')&&!verifiedKnowledge.checks.some(c=>c.status!=='unverified')))throw new InputError('Verification omitted factual evidence.',502);
+     const omittedError=knowledge.checks.some(c=>c.status==='contradicted'&&!verifiedKnowledge.checks.some(v=>v.status!=='unverified'&&(v.quote.includes(c.quote)||c.quote.includes(v.quote))));
+     if(omittedError)throw new InputError('Verification did not resolve the flagged factual claim.',502);
+     if(!verifiedKnowledge.checks.some(c=>c.status!=='unverified')&&['no_claims','out_of_reference'].includes(knowledge.accuracyStatus))verifiedKnowledge={...verifiedKnowledge,accuracyStatus:knowledge.accuracyStatus,coverage:knowledge.coverage};
+     analysis={...gradedAnalysis(verified,answer,baseline,verifiedKnowledge,false,previousFeedback),visual,accuracyReview:analysis.accuracyReview,verification:{status:'completed',reasons}};
+     knowledge=verifiedKnowledge;data=verified;
+   }catch{
+     return {...analysis,aiStatus:'provisional',verification:{status:'pending',reasons},limitation:analysis.limitation+' Rubric verification did not finish; retry before treating the grade and its explanations as complete.'};
+   }
+ }
+ return {...analysis,aiStatus:'complete',qualitySignals:{rejectedCitations:knowledge.rejectedChecks??0,referencedClaims:knowledge.checks.filter(c=>c.status!=='unverified').length,contradictedClaims:knowledge.checks.filter(c=>c.status==='contradicted').length}};
 }
 
 export async function premiumOperation(path,body,env,fetcher) {
@@ -123,7 +145,7 @@ export async function premiumOperation(path,body,env,fetcher) {
    const data=await call('adaptive_interviewer',nextSchema,{task:'Act as a natural technical interviewer. Decide whether a targeted probe would reveal a consequential ambiguity in THIS answer. Do not mechanically probe every answer. Otherwise transition to the supplied independent next task or finish. Do not grade, praise correctness, reveal solutions, or produce generic verification questions. A probe must refer to a concrete claim or missing technical step in this answer. Occasionally anchor an exact short quote, only for probes.',profile,priorities:body.plan.priorities,level:setup.level,question,answer,history:history.slice(-4),mayProbe,transitionCategory:target,nextTask:seed,answerKey:bankEntry(question.bankId),rules:'Behavioral answers and introductions NEVER receive probes. When transitioning to a supplied nextTask, prompt must contain its entire prompt unchanged; you may add a brief conversational bridge. Empty anchorQuote on transitions. For non-bank behavioral transitions ask an independent experience question. Maximum 90 words; probes maximum 45. For finish leave prompt/anchorQuote/probeIntent empty.'},env,fetcher);
    if(!['probe','transition','finish'].includes(data.action)||typeof data.prompt!=='string'||data.prompt.length>1200||typeof data.anchorQuote!=='string'||data.anchorQuote.length>160||(data.anchorQuote&&!answer.includes(data.anchorQuote)))throw new InputError('Invalid interviewer response. Retry this turn.',502);
    if(data.action==='probe') {
-     if(!mayProbe||!validText(data.probeIntent,400)||!validText(data.prompt,600)||wordCount(data.prompt)>45||/how would you (check|verify) whether the approach/i.test(data.prompt))throw new InputError('The AI returned an unsuitable follow-up. Retry this turn.',502);
+     if(!mayProbe||questionKind({...question,prompt:data.prompt}).category!=='Technical'||!validText(data.probeIntent,400)||!validText(data.prompt,600)||wordCount(data.prompt)>45||/how would you (check|verify) whether the approach/i.test(data.prompt))throw new InputError('The AI returned an unsuitable follow-up. Retry this turn.',502);
    }else if(data.action==='finish') {
      if(target!=='finish'||data.prompt.trim()||data.anchorQuote)throw new InputError('The AI ended before coverage was complete.',502);
    }else if(target==='finish'||!validText(data.prompt,1200)||wordCount(data.prompt)>90||data.anchorQuote||(seed&&!data.prompt.includes(seed.prompt))||questionKind({prompt:data.prompt,category:target}).category!==target)throw new InputError('The AI changed the required topic or technical task. Retry this turn.',502);

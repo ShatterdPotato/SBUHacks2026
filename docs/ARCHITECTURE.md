@@ -1,5 +1,7 @@
 # Cadence architecture
 
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
+
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
 Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
@@ -164,10 +166,9 @@ current product display.
   contradicted receive 1/.5/0 credit with minor/major/critical weights 1/2/3.
   Unverified claims excluded; null without checks. Major/critical errors cap
   accuracy at 59/25. Model checks need exact answer and reference quotes; invalid
-  citations and duplicate/overlapping claim quotes are excluded. The built-in pack
-  contains cash arithmetic, US McDonald's allergen guidance, Python sequences and
-  scikit-learn leakage guidance. Local checking only handles constrained
-  cash-change answers with one unambiguous numeric amount. `/api/interview-turn`
+  citations and duplicate/overlapping claim quotes are excluded. The bank provides 448 authored keys, including 32 executable reference exercises,
+  alongside legacy references. Local checks accept an explicit result marker or an
+  unambiguous bare result; semantic checking needs consented AI. `/api/interview-turn`
   and `/api/analyze` add provisional AI classifications against supplied references.
   Neither accepts a free-form model accuracy score.
   Deterministic arithmetic overrides conflicting AI praise/prose. No live web
@@ -190,15 +191,18 @@ Up to three excerpts per category can come from one or several answers; categori
 do not duplicate the same excerpt. Without timing, whole-answer fallback remains.
 
 Word/evidence times are relative to each turn. `recordingOffset` converts clip
-ranges to the shared continuous Blob's clock. Playback seeks/pauses in that range.
+ranges to the shared continuous Blob's clock. Playback uses a shared asynchronous controller: discover missing WebM duration,
+wait for decoded seek readiness, ignore stale end events while seeking, and pause
+at the bounded end. Replay and export share preparation; loading/error/retry states
+are visible. No competing media-fragment seek is applied.
 Export re-encodes locally with canvas/Web Audio/MediaRecorder and takes roughly
 the excerpt duration; frame/word cuts are approximate. One full interview
 download is shown for conversation. JSON exports omit Blob URLs and raw sampled
 audio/vision arrays, but retain transcripts, timing and derived feedback.
 The top-level export `mode` tracks question generation; use per-answer
 `analysis.mode` and question `source` to understand mixed/local-fallback sessions.
-Report corrections recheck locally and replace old AI grading details while
-retaining original delivery/alignment. Feedback deduplication compares summaries,
+Report corrections first update local evidence, then regrade previously consented
+answers and invalidate derived conclusions while retaining original delivery/alignment. Feedback deduplication compares summaries,
 bullets and bounded previous feedback. Short key phrases use safe **bold**
 rendering, not HTML. The expandable rubric explains criteria/caps and shows a
 duplicate evidence quote once. Empty strengths are allowed.

@@ -1,5 +1,7 @@
 # Cadence continuation handoff
 
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
+
 Updated October 25, 2026. Read TEAM_CONTEXT.md first. Orchestrator: aiden.sol.
 Current work is on codex/adaptive-interview-rubric, based on c13107c.
 Prior repository/context and rubric work has been preserved. GitHub publication
@@ -45,7 +47,7 @@ See [every Gemini call](GEMINI_OPERATIONS.md), [current QA](qa/PREMIUM_2026-10-2
 
 ## Verification
 
-113 tests, TypeScript and production build pass. Bank validation confirms 112 per
+137 tests, TypeScript and production build pass. Bank validation confirms 112 per
 track, source/key integrity, unique prompts/IDs, difficulty coverage and all 32
 executable expected results. Temporary QA routes were removed before build.
 

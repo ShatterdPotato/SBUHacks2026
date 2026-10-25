@@ -24,7 +24,7 @@ export function localKnowledge(question, answer) {
         // are left for semantic review rather than selecting an arbitrary number.
         if (values.length === 1 && !/\b(not|wrong|incorrect|instead|isn't)\b/i.test(answer)) checks.push({ quote: values[0].quote, status: Math.abs(values[0].value-change.expected)<.001 ? 'supported' : 'contradicted', explanation: change.text, referenceId: change.id, referenceExcerpt: change.text, severity: 'critical' });
     }
-    const knowledge = { checks, references, coverage: checks.length ? 'Limited reference check; other claims remain unverified.' : 'No checkable claim found in the available reference pack. Personal stories and claimed results are unverified.' };
+    const knowledge = { checks, references, accuracyStatus: checks.length ? 'checked' : references.length ? 'needs_ai' : 'out_of_reference', coverage: checks.length ? 'Independent calculation checked the stated result; other claims remain unverified.' : references.length ? 'An answer key is available, but this local review has not compared the meaning of your answer with it. Enable consented AI feedback for semantic factual assessment; no accuracy score has been invented.' : 'No relevant answer key or reference is available for this answer. Factual accuracy is unavailable; personal stories and claimed results remain unverified.' };
     return knowledge;
 }
 export function knowledgeScore(knowledge) {
@@ -41,16 +41,32 @@ export function reviewKnowledge(question, answer, modelChecks = []) {
     const baseline = localKnowledge(question, answer);
     const references = [...baseline.references, ...referencesFor(answer)].filter((r,i,all) => all.findIndex(v => v.id === r.id) === i);
     const checks = [...baseline.checks];
+    let rejectedChecks = 0;
     for (const c of modelChecks) {
-        if (!c || typeof c.quote !== 'string' || !c.quote.trim() || c.quote.length > 400 || !answer.includes(c.quote) || !['supported','partially_supported','contradicted','unverified'].includes(c.status) || typeof c.explanation !== 'string' || !c.explanation.trim() || c.explanation.length > 1500) continue;
+        const quote = literalSpan(answer, c?.quote, 400);
+        if (!c || !quote || !['supported','partially_supported','contradicted','unverified'].includes(c.status) || typeof c.explanation !== 'string' || !c.explanation.trim() || c.explanation.length > 1500) { rejectedChecks++; continue; }
         const reference = references.find(r => r.id === c.referenceId);
-        if (c.status !== 'unverified' && (!reference || typeof c.referenceExcerpt !== 'string' || !c.referenceExcerpt.trim() || !reference.text.includes(c.referenceExcerpt) || !['minor','major','critical'].includes(c.severity))) continue;
+        const referenceExcerpt = reference ? literalSpan(reference.text, c.referenceExcerpt, 4000) : null;
+        if (c.status !== 'unverified' && (!referenceExcerpt || !['minor','major','critical'].includes(c.severity))) { rejectedChecks++; continue; }
         // Calculations and repeated/overlapping claim quotes cannot be outvoted.
-        if (baseline.checks.some(d => d.referenceId === c.referenceId) || checks.some(d => d.referenceId === c.referenceId && (d.quote.includes(c.quote) || c.quote.includes(d.quote)))) continue;
-        checks.push({ quote:c.quote, status:c.status, explanation:c.explanation, referenceId:reference?.id ?? '', referenceExcerpt:c.status === 'unverified' ? '' : c.referenceExcerpt, severity:['change','allergens'].includes(reference?.id) ? 'critical' : c.severity ?? 'major' });
+        const overlap = checks.findIndex(d => d.referenceId === (reference?.id ?? '') && (d.quote.includes(quote) || quote.includes(d.quote)));
+        if (overlap >= 0) {
+            if (checks[overlap].status !== 'unverified' || c.status === 'unverified') continue;
+            checks.splice(overlap, 1); // A real sourced check supersedes an earlier abstention.
+        }
+        checks.push({ quote, status:c.status, explanation:c.explanation, referenceId:reference?.id ?? '', referenceExcerpt:c.status === 'unverified' ? '' : referenceExcerpt, severity:['change','allergens'].includes(reference?.id) ? 'critical' : c.severity ?? 'major' });
     }
     const checked = checks.filter(c => c.status !== 'unverified').length;
-    return { references, checks, rubricVersion:CONTENT_RUBRIC.version, coverage:`${checked} referenced claim${checked === 1 ? '' : 's'} checked with the accuracy rubric. This is coverage of checked claims, not the whole answer. Other claims and personal stories remain unverified. AI classifications may be wrong; no live web search.` };
+    return { references, checks, rejectedChecks, accuracyStatus:checked ? 'checked' : references.length ? 'pending' : 'out_of_reference', rubricVersion:CONTENT_RUBRIC.version, coverage:checked ? `${checked} referenced claim${checked === 1 ? '' : 's'} checked with the accuracy rubric. This covers checked claims, not every statement. Other claims and personal stories remain unverified. AI classifications may be wrong.` : references.length ? 'Factual assessment has not produced a valid reference-backed check yet. The answer key is available; retry factual review rather than treating this as a completed accuracy assessment.' : 'No relevant answer key or reference covers this answer. Factual accuracy is unavailable.' };
+}
+// Accept harmless line-wrap differences, then retain the actual source substring.
+// No case folding, ellipses, paraphrase, reordered words or punctuation repair.
+export function literalSpan(source, excerpt, maxLength) {
+    if (typeof source !== 'string' || typeof excerpt !== 'string' || !excerpt.trim() || excerpt.length > maxLength) return null;
+    if (source.includes(excerpt)) return excerpt;
+    const escaped = excerpt.trim().split(/\s+/).map(part => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+');
+    const match = source.match(new RegExp(escaped));
+    return match && match[0].length <= maxLength ? match[0] : null;
 }
 export function withKnowledge(analysis, knowledge) {
     const errors=knowledge.checks.filter(c=>c.status==='contradicted');

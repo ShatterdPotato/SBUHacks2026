@@ -15,7 +15,8 @@ grades, and independent factual verification receives text only.
 | Build a cloud-enabled interview | `POST /api/plan` → `interview_plan` | `web/app/page.tsx` → `web/lib/premium-service.mjs` |
 | Submit a non-skipped conversational answer | `POST /api/interviewer` → `adaptive_interviewer` | `web/components/conversation-studio.tsx` → `web/lib/premium-service.mjs` |
 | Submit an eligible answer, in either mode | `POST /api/grade` → `answer_grade` | Conversation studio (background) or page (individual) → premium service |
-| Contradicted facts, unresolved referenced claims, rejected citations or an appeal/correction | internal `answer_verification` call after the grade | `gradeAnswer` in premium service; an independent assessment without the previous verdict |
+| Missing or invalid factual checks for a referenced technical answer | internal `answer_accuracy` call | Focused factual assessment with checked / no-claim / out-of-reference outcome; does not return content rubric fields |
+| Contradicted facts or an appeal/correction | internal `answer_verification` after factual assessment | Reassesses all rubric reasons/levels and the flagged claims; cannot erase an error by omitting it |
 | Correct a transcript, or regrade / appeal from the report | `POST /api/regrade` → `answer_regrade`, then `answer_verification` | `web/components/premium-review.tsx` → premium service |
 | Review a completed consented session | `POST /api/session-report` → `session_report` | PremiumReview; waits for completed grades; invalidated when evidence changes |
 | Review recorded excerpts | `POST /api/clip-feedback` → `clip_coaching` | PremiumReview; at most six locally selected timestamped transcript excerpts plus current answer/grading context; no uploaded video |
@@ -30,10 +31,20 @@ website uses the new split paths. `/api/transcribe` remains an eligible paid
 adapter (`transcription`); the current website transcribes locally and does not
 call it. `GET /api/health` checks configuration only and never calls Gemini.
 
-An answer with fewer than five words keeps its available deterministic checks
-but does not receive a speculative AI rubric grade. Skips, local-only practice,
+Nonempty technical answers receive AI grading even when shorter than five words;
+notation and concise factual results are valid interview answers. Short behavioral
+answers remain unscored. Missing factual evidence becomes provisional with retry,
+not a completed blank assessment. Local semantic review says AI is required rather
+than claiming there was no checkable fact. Bare unambiguous executable results
+can be checked locally without a spoken formatting prefix. Skips, local-only practice,
 recording, playback, speech recognition/synthesis, score arithmetic, truth-table
 and calculation checks, exports, and normal UI actions do not call Gemini.
+
+Every request receives the shared Cadence interviewer identity plus an operation-
+specific role from `interviewer-instructions.mjs`. Live questioning, assessments,
+report debriefs, authoring and transcription have distinct output duties. The full
+rubric remains injected, but criterion/version output is required only when the
+response schema actually contains a rubric. Transcription adds no dialogue.
 
 ## Request behavior
 
@@ -41,7 +52,9 @@ Question and grading requests start independently. The next question waits only
 for the interviewer. Final review waits for all background grades. Interviewer
 failures retain the submitted answer and offer retry or an explicit local-bank
 transition; grading failures appear in the report for regrading. Corrections
-invalidate generated report, clip feedback and drills before regrading.
+invalidate generated report, clip feedback and drills before regrading. A grade
+may require up to three sequential operations (grade, factual assessment, rubric
+verification); the browser allows 240 seconds while preserving the answer.
 
 Mixed coverage is enforced by a server-validated schedule. Introductions and
 probes are outside the main-topic quota. Only a substantive technical answer

@@ -1,7 +1,7 @@
 import type { RecordingEvidence } from './recording-coach';
 import type { recordedDelivery } from './recorded-delivery.mjs';
 export type Question = { id:string; prompt:string; category:string; focus:string[]; source:string; anchorQuote?:string; bankId?:string; purpose?:string; isFollowup?:boolean; answerFormat?:string; reviewStatus?:string };
-export type Knowledge = { checks:{quote:string;status:string;explanation:string;referenceId:string;referenceExcerpt?:string;severity?:string}[]; references:{id:string;title:string;text:string;url:string;furtherReading?:{title:string;url:string}[]}[];coverage:string;rubricVersion?:string };
+export type Knowledge = { checks:{quote:string;status:string;explanation:string;referenceId:string;referenceExcerpt?:string;severity?:string}[]; references:{id:string;title:string;text:string;url:string;furtherReading?:{title:string;url:string}[]}[];coverage:string;rubricVersion?:string;accuracyStatus?:'checked'|'needs_ai'|'pending'|'no_claims'|'out_of_reference';rejectedChecks?:number };
 export type Grading = {version:string;method:string;category?:string;purpose?:string;score:number;uncappedScore:number;criteria:{id:string;label:string;weight:number;level:number;evidence:string;reason:string;improvement?:string}[];accuracyScope:string};
 export type Usage = {operation:string;model:string;status:string;attempts:number;latencyMs:number;inputTokens:number|null;outputTokens:number|null;thoughtTokens:number|null;totalTokens:number|null;incomplete:boolean};
 export type InterviewPlan = {schedule:string[];priorities:string[];profile:{roleFamily:string;skills:string[]};type:string;level:string;count:number};

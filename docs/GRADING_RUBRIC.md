@@ -58,10 +58,21 @@ Unverified claims do not count as false or correct; no checked claims means null
 The report explicitly states how many claims were checked. A 100 on one claim
 is not proof that the whole answer is correct.
 
-Local constrained cash calculations override model classifications and prose.
-The built-in reference pack remains small: cash change, US McDonald's allergen
-guidance, Python sequence mutability and scikit-learn leakage guidance. There is
-no live fact search. Personal achievements and out-of-pack facts stay unverified.
+The bank supplies 448 answer keys, including 32 executable reference exercises;
+legacy cash/allergen/Python/leakage references remain. Executable results override
+model classifications of the same claim, without suppressing unrelated checks.
+A valid sourced check replaces an earlier abstention. Harmless whitespace-only
+line wraps are resolved back to actual source substrings; paraphrases and invented
+citations remain invalid. No live fact search or personal-achievement certification.
+
+Nonempty technical answers are eligible regardless of word count. If the first
+grade has no usable factual checks, a focused high-thinking assessment must return
+checked claims or explicitly justify no_claims/out_of_reference. Invalid evidence
+leaves the grade provisional and retryable. Any factual contradiction triggers
+full criterion reassessment so explanations and scores agree. Verification must
+address each flagged claim; it may reverse a finding with valid evidence, but
+cannot silently omit the error. Local-only reviews explain that semantic grading
+has not run, rather than presenting a fabricated score or saying no claim exists.
 The rubric makes the grading procedure consistent and auditable; AI semantic
 judgments remain provisional and are not universal fact verification.
 

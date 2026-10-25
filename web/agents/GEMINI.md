@@ -1,5 +1,22 @@
 # Gemini interview and grading agent
 
+Every provider request now loads an operation-specific interviewer system role
+from `../lib/interviewer-instructions.mjs`. Live question turns speak directly to
+the candidate, respond to actual technical claims and avoid canned praise, tutor
+answers and assistant meta-commentary. Grading, factual checks, clips and reports
+use the interviewer's candid, evidence-based assessment voice; they must not start
+another question. Requested post-interview coaching may explain worked solutions.
+Offline bank authoring/review remain internal interviewer duties. The retained
+transcription adapter knows the interview context but must reproduce only audible
+speech, never add interviewer dialogue or assessment.
+
+The full rubric is still injected into every assessment request, including
+`answer_accuracy`. Only schemas containing a rubric field require criterion/version
+output. Reports, clip coaching, factual-only checks, drills, bank review and the
+calibration benchmark consult the rubric without being told to emit forbidden
+rubric fields. This removes the previous conflict between the shared grading
+instructions and those operations' JSON schemas. High thinking is preserved.
+
 Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](../../docs/GEMINI_OPERATIONS.md) and [current QA](../../docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
 Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](../../docs/PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
