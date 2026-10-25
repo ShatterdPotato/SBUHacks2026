@@ -2,6 +2,14 @@
 
 ## Montasir continuation — October 25
 
+Hosted voice correction: the user-authorized `ELEVENLABS_API_KEY` was added as a
+redacted Site secret. Environment revision **4** is live after successful redeploy
+of version 7 (`appgdep_6addd0eafd488191b29e157525e1121f`). A real ElevenLabs preview
+completed; production logs confirm `POST /api/speech` HTTP 200. No source-code or
+local-secret changes were needed. The current interview can retry question voice
+without discarding its answers. This supersedes earlier missing/unverified voice
+configuration notes. No secret values appear in Git or the handoff.
+
 Current branch: `codex/montasir-eye-contact`, based on the latest unmerged Gearwell
 source `d954c59`, preserving PR #14. The supplied gaze patch is integrated into the
 shared worker with optional local estimates in both modes, coverage/unavailable
