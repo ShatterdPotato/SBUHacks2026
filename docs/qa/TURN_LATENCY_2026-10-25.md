@@ -66,3 +66,7 @@ could rerun the complete answer. Those waits were sequential.
   cloud follow-ups and TTS add network/provider time; no zero-latency claim is made.
 
 Final type/build and hosted verification/publication results are in HANDOFF.md.
+
+## Hosted confirmation
+
+Saved version 8 deployed successfully with environment revision 4 and existing secrets/audience. Live fictional HTTP checks: technical-bank transitions 1139/826/48 ms, scheduled finish 42 ms, actual adaptive Gemini response 3383 ms (all HTTP 200). All three main topics completed. Flash v2.5 speech returned HTTP 200, audio/mpeg, 60,647 bytes in 603 ms. No personal data or media was sent. Single-request timings include network and do not establish general latency.

@@ -2,6 +2,13 @@
 
 ## October 25 turn speed and premature-finish fix
 
+Final verification: **178 tests, TypeScript and production build pass**. Temporary routes and generated audio were removed. Implementation commit: e377300, pushed to draft PR #15 (same Gearwell base; no main merge). Matching Sites source: 1f5e29cafb4f6a9882175e5fc4d7ffe195aeb487. Saved version **8**: appgprj_6adcd46ff0dc8191943fd596d01bba52~appgver_9d080e80a8e88191825594ed051a6e36. Deployment **appgdep_6adddb09131081919f7367daf0ce96d3 succeeded**, environment revision 4; audience and secrets preserved.
+
+Live fictional smoke checks: all three main topics completed with no early finish. Bank transitions took 1139/826/48 ms including network; scheduled completion 42 ms. A real adaptive Gemini transition returned HTTP 200 in 3383 ms. ElevenLabs Flash v2.5 returned HTTP 200, audio/mpeg, 60,647 bytes in 603 ms. These are individual observations, not a service guarantee. Synthetic local speech transition measured 2762 ms versus Base/12-second-batch comparison at 11038 ms; both excluded cloud AI/TTS and already used the faster pause. See the QA ledger for scope.
+
+Manual handoff: montasir -> aiden.sol. Review PR #15; validate recognition on real devices/accents/noise and compare quick/extra-accuracy modes. Save or download an existing session before refreshing to load new client code; browser-memory recordings would otherwise be lost. Existing sessions can retry the server question route without resetting. No physical media, billing/data policy or key changes occurred.
+
+
 User reported slow answer transitions and “The AI ended before coverage was complete.” Production logs showed adaptive questions at 2.5–5.0 seconds, voice at 1.4–3.5 seconds, plus a five-second silence timer and local speech/refinement.
 
 Implemented: two-second default pause; local Whisper Tiny English/six-second batches for quick conversation; optional Base/full-answer accuracy mode; silence trimming and avoiding duplicate final inference; no model rewrite of fixed bank transitions; schedule-constrained action schema and canonical recovery from a premature finish. High-thinking Gemini and post-interview grading remain. ElevenLabs defaults to Flash v2.5 using the existing hosted secret, fixed voice and 1.25x rate.
