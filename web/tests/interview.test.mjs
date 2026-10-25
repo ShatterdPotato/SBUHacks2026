@@ -1,3 +1,4 @@
+import { rubricFixture } from './fixtures/grading.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setupInput, retrieveQuestions, rubricAnalysis, deliveryMetrics, reportFor } from '../lib/interview.mjs';
@@ -18,7 +19,7 @@ test('all session lengths and focus choices return enough unique questions', () 
 });
 test('retrieval selects role-relevant technical questions', () => {
     const questions = retrieveQuestions(setupInput({ role: 'Machine learning engineer', type: 'Technical', count: 3 }));
-    assert.ok(questions.some(q=>/model|test set|dataset|retrieval/i.test(q.prompt)));
+    assert.ok(questions.every(q=>q.track==='ai-ml'&&q.bankId));
     assert.ok(questions.every(q=>!/circuit|trading signal|product problem/i.test(q.prompt)));
 });
 test('invalid setup and unconsented PDF are rejected', () => {
@@ -68,13 +69,13 @@ test('live question request uses strict structured output and store:false', asyn
     assert.match(sent.instructions, /untrusted data/);
 });
 test('live feedback filters invented evidence and unobserved visuals', async () => {
-    const fetcher = async () => mockOutput({ content: 80, comprehension: 75, summary: 'Specific example', strengths: ['Concrete measurement'], improvements: ['Explain the baseline'], evidence: ['I built a project', 'I launched a spaceship'], visual: ['Invented image observation'] });
+    const fetcher = async () => mockOutput({ content: 80, comprehension: 75, summary: 'Specific example', strengths: ['Concrete measurement'], improvements: ['Explain the baseline'], evidence: ['I built a project', 'I launched a spaceship'], visual: ['Invented image observation'], rubric:rubricFixture('I built a project'), checks:[] });
     const response = await handleApi(req('analyze', { answer, question, mode: 'live', cloudConsent: true, duration: 60, recorded: true }), { OPENAI_API_KEY: 'test' }, fetcher);
     const data = await response.json();
     assert.equal(data.mode, 'live');
     assert.deepEqual(data.evidence, ['I built a project']);
     assert.deepEqual(data.visual, []);
-    assert.equal(data.scores.content, 80);
+    assert.equal(data.scores.content, 75);
 });
 test('provider errors stay errors rather than silently fabricating AI results', async () => {
     const response = await handleApi(req('questions', { count: 3, cloudConsent: true }), { OPENAI_API_KEY: 'test' }, async () => new Response('private upstream details', { status: 429 }));

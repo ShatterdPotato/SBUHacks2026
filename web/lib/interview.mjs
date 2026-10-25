@@ -2,6 +2,9 @@
 import { roleRule } from './role-context.mjs';
 import { roleQuestions } from './role-questions.mjs';
 import { shuffled, freshQuestions } from './question-variety.mjs';
+import { sampleBank, trackFor } from './technical-bank.mjs';
+import { secureRandom } from './question-variety.mjs';
+import { questionKind } from './question-kind.mjs';
 export class InputError extends Error {
     constructor(message, status = 400) { super(message); this.status = status; }
 }
@@ -42,6 +45,8 @@ export function setupInput(body) {
     const level = text(body.level, 'Experience level', 30, 'Internship');
     if (!['Internship', 'Entry level', 'Experienced'].includes(level))
         throw new InputError('Choose a valid experience level.');
+    const format = body.format ?? 'individual';
+    if (!['conversation', 'individual'].includes(format)) throw new InputError('Choose a valid interview format.');
     let resume;
     if (body.resume != null) {
         if (typeof body.resume !== 'object' || typeof body.resume.data !== 'string' ||
@@ -53,15 +58,17 @@ export function setupInput(body) {
     }
     const variation = body.variation ?? crypto.randomUUID();
     if (typeof variation !== 'string' || !/^[a-zA-Z0-9-]{8,80}$/.test(variation)) throw new InputError('Invalid interview variation.');
-    return { role, context, type, count, level, resume, variation, cloudConsent: body.cloudConsent === true };
+    return { role, context, type, count, level, format, resume, variation, cloudConsent: body.cloudConsent === true };
 }
 /** @param {any} setup @param {{previous?:string[],random?:()=>number}} options */
-export function retrieveQuestions(setup, { previous = [], random = Math.random } = {}) {
+export function retrieveQuestions(setup, { previous = [], random = secureRandom } = {}) {
     const family = roleRule(setup.role).family;
     const query = (family === 'General interview' && setup.role === 'General interview' ? `${setup.role} ${setup.context}` : setup.role).toLowerCase();
     const ranked = BANK.map((q, i) => ({ ...q, id: `bank-${i + 1}`, source: 'curated', relevance: q.tags.reduce((n, tag) => n + (new RegExp(`\\b${tag}\\b`, 'i').test(query) ? (tag.includes(" ") ? 3 : tag === "engineer" ? .25 : 1) : 0), 0) }));
     const relevant = ranked.filter(q => q.category === 'Behavioral' || (['AI/ML engineering','Data science'].includes(family) ? q.tags.some(tag=>['machine learning','ml','ai','model','data'].includes(tag)) : q.relevance > 0 || (q.tags.length === 0 && !roleRule(setup.role).topics)));
-    const eligible = [...roleQuestions(setup.role), ...relevant].filter(q => setup.type === 'Mixed' || q.category === setup.type);
+    const technical = sampleBank(setup.role,setup.level,setup.count,previous,[],random);
+    const base = trackFor(setup.role) ? [...technical,...relevant.filter(q=>q.category==='Behavioral')] : [...roleQuestions(setup.role),...relevant];
+    const eligible = base.filter(q => setup.type === 'Mixed' || q.category === setup.type);
     const unseen = freshQuestions(shuffled(eligible, random), previous);
     // Mixed sessions may exhaust one category before the other. Keep seen
     // fallback questions at the end so the requested category counts survive.
@@ -105,10 +112,16 @@ export function overallScore(scores) {
 }
 export function reportFor(answers) {
     const scores = Object.fromEntries(['confidence', 'content', 'comprehension'].map(key => {
-        const values = answers.map(a => a.analysis.scores[key]).filter(v => typeof v === 'number');
+        const values = answers.filter(a=>key!=='comprehension'||questionKind(a.question??a.analysis.questionKind).category==='Technical').map(a => a.analysis.scores[key]).filter(v => typeof v === 'number');
         return [key, values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : null];
     }));
     const ranked = answers.map((a, index) => ({ index, score: overallScore(a.analysis.scores) })).filter(a => a.score !== null).sort((a, b) => b.score - a.score);
     const clips = ranked.filter(a => answers[a.index].hasRecording);
-    return { scores, overall: overallScore(scores), best: clips[0]?.index ?? null, worst: clips.length > 1 ? clips.at(-1).index : null, ranked };
+    const categoryScores = Object.fromEntries(['Technical','Behavioral'].map(category=>{
+        const values=answers.filter(a=>questionKind(a.question??a.analysis.questionKind).category===category).map(a=>a.analysis.scores.content).filter(v=>typeof v==='number');
+        return [category,values.length?Math.round(values.reduce((a,b)=>a+b,0)/values.length):null];
+    }));
+    const technical=answers.filter(a=>questionKind(a.question??a.analysis.questionKind).category==='Technical'&&(a.transcript===undefined||a.transcript.trim()));
+    const accuracyCoverage={answers:technical.length,checkedAnswers:technical.filter(a=>Number.isFinite(a.analysis.scores.comprehension)).length,claims:technical.reduce((n,a)=>n+(a.analysis.knowledge?.checks.filter(c=>c.status!=='unverified').length??0),0),localOnly:technical.filter(a=>a.analysis.knowledge?.accuracyStatus==='needs_ai').length,pending:technical.filter(a=>a.analysis.aiStatus==='provisional'||a.analysis.aiStatus==='failed'||a.analysis.aiStatus==='pending').length};
+    return { scores, categoryScores, accuracyCoverage, overall: overallScore(scores), best: clips[0]?.index ?? null, worst: clips.length > 1 ? clips.at(-1).index : null, ranked };
 }

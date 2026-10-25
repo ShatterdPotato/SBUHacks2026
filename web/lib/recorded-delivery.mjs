@@ -1,4 +1,25 @@
-import { deliveryMetrics, overallScore } from './interview.mjs';
+import { deliveryMetrics } from './interview.mjs';
+import { localTurn } from './conversation.mjs';
+
+const normalized = text => (text??'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+function momentFeedback(take, transcript, delivery) {
+    const contains = quote => quote && normalized(transcript).includes(normalized(quote));
+    const matched = (take.analysis.grading?.criteria??[]).filter(c=>contains(c.evidence));
+    const local = localTurn(take.question,transcript,0,false);
+    const criteria = matched.length ? matched : local.grading?.criteria??[];
+    const strongest = [...criteria].filter(c=>c.level>=3&&c.evidence).sort((a,b)=>b.level-a.level)[0];
+    const weakest = [...criteria].filter(c=>c.level<4).sort((a,b)=>(4-b.level)*b.weight-(4-a.level)*a.weight)[0];
+    const checks=(take.analysis.knowledge?.checks??[]).filter(c=>contains(c.quote)&&c.status==='contradicted');
+    const weight=criteria.reduce((sum,c)=>sum+c.weight,0);
+    let score=weight?Math.round(criteria.reduce((sum,c)=>sum+c.level/4*c.weight,0)/weight):0;
+    if(checks.length)score=Math.min(score,25);
+    const source=matched.length?(take.analysis.grading?.method==='ai-rubric'?'AI rubric evidence':'Local heuristic evidence'):'Local excerpt heuristic';
+    const cue=delivery?.components?.length?[...delivery.components].sort((a,b)=>a.score-b.score)[0]:null;
+    const cueText=cue?` Delivery observation: ${cue.evidence}.`:'';
+    const positiveReason=strongest?`**${strongest.label}:** “${strongest.evidence}” — ${strongest.reason}`:`**No supported content strength identified:** “${transcript.slice(0,180)}” does not have a positively graded evidence span. Treat this as a replay, not proof of a strong answer.`;
+    const improvementReason=checks.length?`**Incorrect claim:** “${checks[0].quote}” — ${checks[0].explanation}`:weakest?`**${weakest.label}:** ${weakest.evidence?`“${weakest.evidence}” — `:''}${weakest.reason} ${weakest.improvement}`:`**No specific content gap identified in this excerpt.** “${transcript.slice(0,180)}” supports the reviewed criteria; compare it with the full question before revising.`;
+    return {score,positiveReason:`${positiveReason} (${source}; this excerpt only.)${cueText}`,improvementReason:`${improvementReason} (${source}; this excerpt only.)${cueText}`};
+}
 
 const clamp = n => Math.max(0, Math.min(100, n));
 const average = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
@@ -74,28 +95,23 @@ export function answerMoments(take, answerIndex) {
             words: g.map(w => ({ ...w, start: w.start - start, end: w.end - start })),
             audio: (take.audioEvidence ?? []).filter(s => s.at >= start && s.at <= end).map(s => ({ ...s, at: s.at - start })),
             vision: (take.visionEvidence ?? []).filter(s => s.at >= start && s.at <= end).map(s => ({ ...s, at: s.at - start })) });
-        const focus = (take.question.focus ?? []).filter(f => transcript.toLowerCase().includes(f.toLowerCase())).length;
-        const specificity = Math.min(100, 45 + (/\b(tested|measured|verified|checked|because)\b/i.test(transcript) ? 25 : 0) + Math.min(30, focus * 10));
-        const checks=(take.analysis.knowledge?.checks??[]).filter(c=>c.quote&&transcript.includes(c.quote));
-        const contradicted=checks.some(c=>c.status==='contradicted');
-        const content=take.analysis.scores.content??specificity;
-        const score = Math.round(Math.max(0,(delivery.score ?? specificity) * .5 + specificity * .2 + content * .3 - (contradicted?30:0)));
-        return { id: `${answerIndex}-${segmentIndex}`, answerIndex, start:start+(take.recordingOffset??0), end:end+(take.recordingOffset??0), transcript, score,
-            reason: `${take.analysis.mode==='live'?'Provisional AI content feedback':'Local content heuristic'}, transcript structure and available delivery cues.${contradicted?' Contains a claim contradicted by the reference check.':''} This excerpt estimate does not verify other claims.`,
+        const feedback=momentFeedback(take,transcript,delivery);
+        return { id: `${answerIndex}-${segmentIndex}`, answerIndex, start:start+(take.recordingOffset??0), end:end+(take.recordingOffset??0), transcript, ...feedback, reason:feedback.positiveReason,
             url: take.url, mime: take.mime };
     });
 }
 export function selectMoments(answers, limit = 3) {
     const candidates = answers.flatMap(answerMoments).sort((a, b) => b.score - a.score || a.answerIndex - b.answerIndex || a.start - b.start);
-    if(candidates.length>1&&candidates[0].score===candidates.at(-1).score)for(const c of candidates)c.reason+=' These excerpts are tied; no clear strength difference was measured.';
+    const tied=candidates.length>1&&candidates[0].score===candidates.at(-1).score;
+    const present=(m,kind)=>({...m,reason:(kind==='best'?m.positiveReason:m.improvementReason)+(tied?' These excerpts are tied; no clear strength difference was measured.':'')});
     if (candidates.length < 2) {
         // Whole-answer fallback still offers both categories when two recordings exist.
-        const whole = answers.map((a, answerIndex) => ({ a, answerIndex, score: overallScore(a.analysis.scores) })).filter(x => x.a.hasRecording && x.a.url && x.score !== null)
-            .map(x => ({ id: `whole-${x.answerIndex}`, answerIndex: x.answerIndex, start: x.a.recordingOffset??0, end: (x.a.recordingOffset??0)+x.a.duration, transcript: x.a.transcript, score: x.score,
-                reason: 'Whole answer: finer speech timestamps unavailable.', url: x.a.url, mime: x.a.mime })).sort((a, b) => b.score - a.score);
-        if (whole.length >= 2) return { best: [whole[0]], worst: [whole.at(-1)] };
-        if (whole.length === 1 && candidates.length === 0) return { best: whole, worst: [] };
+        const whole = answers.map((a, answerIndex) => ({ a, answerIndex })).filter(x => x.a.hasRecording && x.a.url && x.a.transcript?.trim())
+            .map(x => ({ id: `whole-${x.answerIndex}`, answerIndex: x.answerIndex, start: x.a.recordingOffset??0, end: (x.a.recordingOffset??0)+x.a.duration, transcript: x.a.transcript, ...momentFeedback(x.a,x.a.transcript,null),
+                url: x.a.url, mime: x.a.mime })).sort((a, b) => b.score - a.score);
+        if (whole.length >= 2) return { best: [present(whole[0],'best')], worst: [present(whole.at(-1),'worst')] };
+        if (whole.length === 1 && candidates.length === 0) return { best: [present(whole[0],'best')], worst: [] };
     }
     const count = Math.min(limit, Math.floor(candidates.length / 2));
-    return { best: candidates.slice(0, count || 1), worst: count ? candidates.slice(-count).reverse() : [] };
+    return { best: candidates.slice(0, count || 1).map(m=>present(m,'best')), worst: count ? candidates.slice(-count).reverse().map(m=>present(m,'worst')) : [] };
 }

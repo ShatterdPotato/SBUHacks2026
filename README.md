@@ -1,15 +1,15 @@
 # Cadence
 
-**Continuing this project? Start with [the complete handoff](docs/HANDOFF.md)
-and [feature inventory](docs/FEATURE_STATUS.md).** Fictional test resumes are in
-[examples/](examples/README.md).
+October 25 feedback update: behavioral questions have separate scoring and never receive probes. Clip captions cite their own speech, and Gemini grades with high thinking plus evidence-based justifications. See [QA](docs/qa/FEEDBACK_GROUNDING_2026-10-25.md).
 
-**Your interview, rehearsed.** An AI interview practice service for SBUHacks 2026,
-built by Aiden Li Productions. Upload a resume or describe a role, practice an
-interview, and leave with useful feedback and recordings worth revisiting.
+**Your interview, rehearsed.** A voluntary AI interview practice service for
+SBUHacks 2026, built by Aiden Li Productions. Upload a resume or describe a role,
+practice a conversation, then review your words, feedback and recorded moments.
 
-The team pivoted from XTrain due to hardware limitations. Rover and old mailbox
-files have been removed; earlier versions remain in Git history.
+Continuing development? Read [TEAM_CONTEXT.md](TEAM_CONTEXT.md), the
+[handoff](docs/HANDOFF.md), [feature inventory](docs/FEATURE_STATUS.md) and
+[repository audit](docs/REPOSITORY_AUDIT.md). XTrain and the rover mailbox are
+retired; their earlier code remains in Git history.
 
 ## Run locally
 
@@ -17,69 +17,84 @@ Requires Node.js 22.13+ and pnpm 11.25.0. From PowerShell:
 
 ```powershell
 cd web
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open `http://localhost:5173`. The default practice mode needs no API key:
-curated questions, optional webcam/microphone recording, manually entered
-transcripts, clearly labeled heuristic feedback, and actual answer clips.
+Open `http://localhost:5173`. Practice mode needs no API key. It includes curated
+questions, text conversation, local follow-ups, optional recording, on-device
+English transcription, labeled delivery estimates and excerpt downloads.
+First-use speech/landmark model downloads require network access.
 
-For live AI, copy `web/.dev.vars.example` to `web/.dev.vars` and set a server-side
-`GEMINI_API_KEY` and `AI_PROVIDER=gemini`, then restart the server. Never put keys
-in browser code or Git. For Sites production, configure the same secret in the
-Site runtime and deploy. API usage is independent of Codex or ChatGPT usage.
-OpenAI remains an optional adapter using `AI_PROVIDER=openai` and `OPENAI_API_KEY`.
+For authorized live AI setup, copy `web/.dev.vars.example` to ignored
+`web/.dev.vars` and configure a server-side key. The user subsequently authorized
+local Gemini setup, and live opener/rubric smoke checks passed. The key stays in
+ignored server configuration. Never put keys in browser code, Git or chat.
+The optional providers are Gemini Interactions and OpenAI Responses; configuration
+defaults and consent boundaries are in [architecture](docs/ARCHITECTURE.md).
+API use is separate from Codex/ChatGPT subscriptions.
 
-Gemini defaults to `gemini-3.5-flash-lite` and `GEMINI_DATA_POLICY=unpaid`. Free Gemini
-practice accepts personal PDF/TXT resumes in the browser. Personal mode keeps
-resume text and interview answers on the device; optional AI questions use only
-reviewed, fixed generic skill tags and a broad role. Personal answer feedback is a
-labeled browser heuristic rubric. Fictional sample mode can send extracted text
-and typed fictional answers to Gemini with consent. Google may use free-tier
-inputs/outputs to improve products and for human review. Original PDF/audio/camera
-uploads are blocked server-side. Free quotas may limit availability. See
-[Google's API terms](https://ai.google.dev/gemini-api/terms).
-Only configure `GEMINI_DATA_POLICY=paid` after arranging appropriate Google billing
-and data handling; the flag does not activate billing. No billing is enabled here.
+## Practice flow
 
-## Interview flow
+1. Enter a target role and optional background, or upload PDF/TXT. Review the
+   browser-extracted text. Choose 3–6 main topics, focus and experience level. Conversation setup writes
+   one opener; later AI questions are generated after each response.
+   The target role takes priority over unrelated resume skills.
+2. The default conversation asks questions aloud using an available local English
+   system voice, then listens or accepts typed answers. Optional camera/microphone
+   recording requires explicit consent and a start click.
+3. With recording, Whisper Base English generates local captions in roughly
+   twelve-second batches. Turns advance after a configurable 5/7/10-second pause
+   or manual completion. Pause listening, interrupt, skip or finish early.
+   Listening pauses keep the continuous recording running.
+4. Local follow-ups can ask one extra question after each substantive main answer.
+   A separate studio opt-in enables adaptive provider questions for both probes
+   and new topics, with occasional exact response quotations, plus rubric-based
+   feedback. Unpaid Gemini accepts fictional, non-sensitive transcripts only.
+5. Review Content quality, Factual accuracy and Confidence / delivery. AI grading
+   shows weighted criteria, specific criticism and **bold** key corrections. Correct
+   recognition errors locally, replay strong/improvement excerpts, download their
+   video/audio ranges, the full recording and the JSON report.
 
-1. Add the role, experience, resume (TXT/PDF), or a custom prompt. Choose focus
-   and 3–6 questions. PDF text extraction runs in a bundled browser worker and
-   needs no AI key or cloud opt-in. Review and edit the extracted text.
-2. Choose text practice or consent to camera/microphone recording. Each answer
-   is recorded separately; a three-minute limit keeps clips manageable.
-3. When cloud media is available, recorded audio is transcribed. Review/edit the
-   transcript before submitting. Free Gemini and practice mode use typed text.
-4. Receive content and comprehension feedback plus a pace/filler-based delivery
-   proxy labeled confidence. Replay/download the strongest and weakest answers,
-   inspect individual feedback, and export the JSON report.
+Individual answer practice remains available, with separate recordings,
+stop/retake and local transcription retry. Recorded answers/turns cap at three
+minutes; the conversation has a twenty-minute session limit. Text turns are
+submitted manually.
 
-Camera observations are optional in AI mode: framing, visible posture/gestures,
-head orientation, and face/mouth visibility. They do not affect scores. This
-service does not identify faces, read emotions, or make hiring decisions.
+## Privacy and evidence
 
-## Data and limitations
+Unpaid Gemini personal mode reads resumes locally. Optional AI questions receive
+only reviewed, fixed generic skill labels and a broad role. Personal answer
+feedback stays local unless the user separately opts into conversational AI and
+uses fictional, non-sensitive answers. Fictional setup mode can send invented
+resume/context text and answer transcripts with provider consent. Raw PDFs,
+audio and frames are blocked on unpaid cloud routes. No billing is enabled.
 
-Recordings remain in browser memory and disappear on page close unless downloaded.
-No server recording storage or account history is implemented. A separate cloud
-opt-in sends context/resume, transcripts, audio, and optionally up to four camera
-frames per answer to the selected provider when its configured data policy permits.
-Provider data policies apply; `store:false` is used for Responses and Interactions
-calls. Free personal mode sends only fixed generic topic labels for questions;
-fictional mode can send made-up resume and answer text. Personal resumes/answers
-remain in browser memory. PDF uploads are limited to 2 MB and ten pages; scanned
-or password-protected files need a text/unlocked copy. Both providers share `web/lib/interviewer-instructions.mjs`; this
-is a versioned coaching prompt, not access to a live Codex conversation or account.
+The current UI transcribes audio locally. Conversation AI sends only question/
+answer text, a broad role, approved skill topics, focus/level and up to four prior
+turns with bounded feedback. Eligible individual-answer
+cloud observations can send up to four separately consented JPEG frames.
+Provider policies apply; structured Responses/Interactions calls use `store:false`.
+See [credential handling](docs/CREDENTIALS.md) before configuring a provider.
 
-Practice scores use approximate lexical heuristics and do not establish technical
-correctness or actual comprehension. Live AI feedback is also fallible. Missing
-evidence is unavailable. Best/worst moments are whole answer clips; word-aligned
-subclips, adaptive follow-ups, lip tracking, and detailed pose tracking are not
-implemented. Live API and physical media checks require separate verification.
+Recordings and interview state remain in browser memory and are lost on reload,
+reset or page close unless downloaded. There is no durable account/session store.
+PDFs are limited to 2 MiB, ten pages, 18,000 extracted characters and thirty
+seconds of parsing; scans need OCR and encrypted files need an unlocked copy.
+[Fictional PDF/TXT fixtures](examples/README.md) are included.
 
-## Verify
+The [Gemini grading agent](web/agents/GEMINI.md) injects the complete
+[versioned rubric](docs/GRADING_RUBRIC.md) into every grading request; the server
+validates its version/evidence and computes weighted content scores.
+Content and delivery scores are provisional coaching estimates. Accuracy scores
+cover claims checked against supplied answer keys and reference results; personal stories
+and other unsupported claims stay unverified. There is no live fact search.
+Delivery uses measured pace, pauses, possible repetitions and sufficiently covered
+head-position/framing samples. Ordinary movement has no penalty. No face identity,
+feelings, personality, eye-contact certainty or hiring fitness is inferred.
+Word timestamps and clip boundaries are approximate.
+
+## Verification and hosting
 
 ```powershell
 cd web
@@ -88,11 +103,14 @@ pnpm exec tsc --noEmit
 pnpm build
 ```
 
-Start every AI session with [TEAM_CONTEXT.md](TEAM_CONTEXT.md). See
-[architecture](docs/ARCHITECTURE.md) and the [demo checklist](docs/DEMO.md).
+See [the demo checklist](docs/DEMO.md) for both practice formats and consent paths,
+and [the audit](docs/REPOSITORY_AUDIT.md) for the earlier repository inventory.
 
-Latest checkpoint: [resume/browser audit](docs/qa/RESUME_BROWSER_AUDIT_2026-10-24.md),
-125 manual scenarios, 44 automated tests passing, live PDF questions verified.
-See [HANDOFF.md](docs/HANDOFF.md) for exact deployment and remaining verification.
-Transient provider failures receive one bounded retry; GEMINI_FALLBACK_MODEL can
-select gemini-3.1-flash-lite for that attempt. Free quotas still apply.
+Current local source adds high-reasoning planning, separate interviewer/grader,
+independent verification, clip coaching, reports and targeted drills. The bank
+has **448 questions, 112 per track**, with explicit AI-reviewed versus executable
+provenance. **137 tests, TypeScript and production build pass**; live synthetic
+Gemini checks passed. See [current QA](docs/qa/FACTUAL_REPLAY_2026-10-25.md),
+[all API call sites](docs/GEMINI_OPERATIONS.md) and [the bank](web/data/question-bank/README.md).
+The last recorded private Site uses older source; current deployment remains
+blocked by original Site access. Physical-device and expert-review checks remain separate.

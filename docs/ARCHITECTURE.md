@@ -1,175 +1,261 @@
 # Cadence architecture
 
-## Conversational flow (current default, 2026-10-24)
+October 25 follow-up: factual grading now handles concise technical answers, retries missing/invalid checks with a focused high-thinking factual pass, and reassesses rubric explanations after factual findings. Reports expose per-answer accuracy and coverage. Replay waits for decoded seeks and WebM duration discovery, with retryable failures. Every Gemini operation now receives an explicit interviewer role matched to its output schema. See [follow-up QA](qa/FACTUAL_REPLAY_2026-10-25.md).
 
-ConversationStudio owns one continuous MediaRecorder, a RecordingCoach and turn state. Local speech synthesis asks each question; recognition is gated during interviewer playback. Microphone energy detects the end of a speaking turn after a configurable 5/7/10-second wait. Manual completion, interruption, pause, skip, text conversation and early finish remain available. The session is capped at twenty minutes, each turn at three minutes, and one adaptive follow-up is allowed per main topic. Early finish retains the in-progress transcript with local feedback. Device tracks and workers stop on finish/unmount.
+Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
-POST /api/interview-turn accepts question, answer (12,000 characters), broad role, up to four prior question/answer pairs, duration/recorded, provider/cloud consent, and explicit fictional/non-sensitive attestation for unpaid Gemini. It sends only text; resume/media fields are never forwarded. Server checks reject obvious contact details under unpaid policy, but these checks are not anonymization. Google free-tier terms still apply. Missing consent is rejected. Provider failures preserve the recording and produce visibly labeled local fallback feedback.
-
-Whisper Base English runs locally in the same-origin standalone worker. Live batches overlap; multi-batch turns receive a whole-answer pass trimmed after the last measured speech. A refinement losing over 20% of recognized words or over two seconds of recognized ending speech is rejected in favor of live captions. Each new turn releases the previous PCM buffer; paused/interviewer audio is replaced by silence in the ASR buffer to preserve the session clock.
-
-Knowledge / accuracy uses the existing scores.comprehension contract, now nullable unless reference checks cover a claim. knowledge includes exact quoted claims, supported/contradicted/unverified status, reference IDs, source links and coverage. References are a small versioned pack, not live web search. A model classification is provisional. Integer-cent change calculations override model claims/prose; personal stories remain unverified. Content evaluates clarity/reasoning separately. Corrected report transcripts can be rechecked locally; delivery/word alignment retain original recording evidence.
-
-Clip word times stay relative to each turn; recordingOffset converts selected excerpts to absolute session time. Clips share one Blob URL. Full-interview download appears once. Moment ranking combines content, transcript structure, measured delivery and matching contradicted-reference claims; ties explicitly say no clear difference was measured. Video measurement now uses higher detection thresholds, three-sample head-position smoothing, at least eight usable samples and 70% coverage before scoring. Base weights are pace .20, fillers/repetitions .10, pauses .15, head position .15, framing .10; available weights renormalize. Motion is an observation without a penalty. Pace excludes automatic end-of-turn waiting when word timestamps exist. No eye-contact or emotional inference.
-
-The older per-answer architecture below describes the retained individual practice mode; the current scoring/reference rules above supersede its historical comprehension and movement descriptions.
+Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
 
 
-## Request and media flow
+## October 25 scoring and question contract
 
-The browser handles the resume/prompt form, permission prompts, MediaRecorder,
-editable transcripts, reports, and Blob URLs. The Worker intercepts `/api/*`
-before the Vinext page handler and calls `lib/service.mjs`. Provider credentials
-exist only in Worker environment bindings. Business logic is separately testable.
+`question-kind.mjs` preserves question category and detects common introductions independently of session focus. Both grading routes retain this classification. `nextTurnAction` allows one probe only for substantive technical answers; the server also converts behavioral probes to transitions/finish and rejects obvious disguised probes/quotes after behavior. Mixed transitions after behavior require an independent technical topic.
 
-Sites provides private access control; preserve that boundary when configuring
-paid API credentials. If deploying elsewhere or making the Site public, add
-authentication, per-user quotas, and abuse controls before exposing paid endpoints.
-The application is a single-session MVP; there is no durable session store.
+`local-grading.mjs` supplies conservative category-specific cue estimates. AI v3 selects technical or behavioral anchors, validates literal evidence and required improvements, and generates visible feedback from those same scored criteria. `reportFor.categoryScores` separately averages Technical and Behavioral content; behavioral answers are excluded from factual accuracy. Answer headers show content only; session overall retains available delivery and content/technical-accuracy dimensions. Every current Gemini request uses high thinking. Current ceilings are 8,192 for questions/transcription and 16,384 for grading, verification and synthesis.
 
-| Endpoint | Input | Output |
+Clip rankings use matching criterion evidence or a labeled local excerpt estimate. Reasons quote the excerpt and explain a strength or concrete revision. Whole-answer and delivery scores do not inflate clip content rankings; measured delivery is described separately. No new media upload or persistence is introduced.
+
+Source contract updated October 24, 2026: `c13107c` plus local adaptive/rubric
+implementation on `codex/adaptive-interview-rubric`. This describes current
+application source; publication and dated verification are in [HANDOFF](HANDOFF.md)
+and [DEMO](DEMO.md). See [the repository audit](REPOSITORY_AUDIT.md) for tooling
+and scaffolding that is present but unused by the product.
+
+## Runtime and module boundaries
+
+The React 19 client is served by Vinext/Vite with a Cloudflare Worker.
+`worker/index.ts` intercepts every `/api/*` request and calls `lib/service.mjs`
+before the page handler. Secrets exist only in Worker environment bindings.
+The API/business modules are independently exercised by Node's test runner.
+
+| Area | Owned source |
+| --- | --- |
+| Setup, individual practice, report/export | `app/page.tsx`, `app/globals.css`, `app/layout.tsx` |
+| Default conversation | `components/conversation-studio.tsx`, `lib/conversation.mjs` |
+| Questions and input validation | `lib/interview.mjs`, `role-context.mjs`, `role-questions.mjs`, `question-variety.mjs` |
+| Resume reading/privacy profiles | `lib/pdf-resume.ts`, `resume-text.mjs`, `resume-profile.mjs` |
+| Provider API and consent | `lib/service.mjs`, `provider.mjs`, `interviewer-instructions.mjs` |
+| Premium API and report UI | `lib/premium-service.mjs`, `lib/grading-core.mjs`, `lib/ai-client.ts`, `components/premium-review.tsx` |
+| Knowledge/reference checks | `lib/knowledge.mjs`, `technical-bank.mjs`, `verified-exercises.mjs`, `data/question-bank/` |
+| Mandatory grading agent/rubric | `agents/GEMINI.md`, `agents/interview-grader.mjs`, `lib/content-rubric.mjs`; report `components/feedback-text.tsx`, `grading-breakdown.tsx` |
+| Shared client contracts | `lib/interview-types.ts`, `recorded-delivery.d.mts` |
+| Speech/audio/vision | `lib/recording-coach.ts`, `speech.worker.ts`, `speech-refinement.mjs`, `public/audio-capture.worklet.js`, `public/vision-capture.worker.js` |
+| Delivery and clips | `lib/recorded-delivery.mjs`, `components/moment-clip.tsx`, `lib/export-clip.ts` |
+
+Sites' last-recorded private access boundary protects the hosted MVP. There is no
+custom API authentication, per-user quota or abuse-control implementation.
+A supplied foreign Origin is rejected; missing Origin is accepted. This does not
+replace authentication. Before a public or different-host deployment, implement
+the needed access/usage controls.
+
+## API contract
+
+Responses use `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`.
+Twelve routes include health, seven premium routes and four compatibility adapters.
+The current UI uses the premium routes; `/api/transcribe` remains a retained adapter.
+See [the complete call map](GEMINI_OPERATIONS.md). Recognized mutation routes require POST and reject a supplied foreign Origin.
+JSON bodies must be `application/json` and are bounded to **4,000,000 bytes**,
+including streamed bodies. Errors return safe `error` text and optional `code`.
+
+| Endpoint | Accepted input / consent | Result |
 | --- | --- | --- |
-| `GET /api/health` | none | mode, cloudAvailable, provider, providerLabel, model, demoDataOnly, mediaCloudAvailable, pdfCloudAvailable |
-| `POST /api/questions` | role, context, type, level, count, optional PDF data URL, cloudConsent, providerConsent, demoDataOnly | mode, provider when live, questions with id/prompt/category/focus/source |
-| `POST /api/analyze` | question, answer, duration in seconds, recorded, mode, cloudConsent, providerConsent, demoDataOnly, optional JPEG frames | scores, metrics, summary, strengths, improvements, evidence, visual, limitation |
-| `POST /api/transcribe` | multipart file + cloudConsent=true + providerConsent | text |
+| `GET /api/health` | none | `mode`, provider/label/model, `cloudAvailable`, `demoDataOnly`, `mediaCloudAvailable`, `pdfCloudAvailable`. Availability is configuration/key presence, not a live provider probe. |
+| `POST /api/plan` | Generic allowlisted profile, focus/level, count 3–6, explicit provider consent | Randomized category schedule, competency priorities and behavioral opener |
+| `POST /api/interviewer` | Validated plan, current question/answer, up to 13 history entries and 300 seen IDs; explicit text consent | Independent adaptive probe, canonical-bank transition or finish; last four turns reach Gemini |
+| `POST /api/grade`, `/api/regrade` | Question/key binding, answer ≤20,000 chars, duration 0–600, optional appeal ≤1,500; explicit text consent. Optional ≤4 JPEGs ≤180,000 chars require separate visual consent and eligible provider. | Rubric-derived analysis; optional independent verification; pending/provisional/completed state and usage. Text-only verification; visual notes never affect scores. |
+| `POST /api/session-report`, `/api/coach` | Up to 13 consented answers with validated criterion evidence; coach request ≤1,500 chars | Quoted patterns/priorities or explanation/drills; no generated numeric scores |
+| `POST /api/clip-feedback` | 1–6 timestamped transcript excerpts ≤6,000 chars, full answer context ≤20,000 and validated grading; explicit text consent | Literal excerpt quote, distinct strength/correction, justification and replay category; no media or generated score |
+| `POST /api/questions` | role ≤160 chars, context ≤20,000, type Mixed/Behavioral/Technical, level Internship/Entry level/Experienced, integer count 3–6, format conversation/individual, optional variation token; cloud/provider consent for live calls. Unpaid personal mode instead requires an allowlisted profile-only request. | `mode`, optional provider and questions with id/prompt/category/focus/source. Conversation returns one opener; individual returns count questions. No cloud opt-in/key uses curated retrieval. |
+| `POST /api/analyze` | question prompt ≤1,200, focus ≤12 strings, answer ≤20,000, duration 0–600, recorded/mode; matching cloud/provider consent for live feedback. Unpaid personal analysis rejected. Optional ≤4 small JPEG data URLs, each ≤180,000 chars, under eligible media policy. | Analysis: nullable confidence/content/comprehension, metrics, summary, strengths/improvements, literal evidence, visual notes, knowledge, versioned criterion grading and limitations. |
+| `POST /api/interview-turn` | question prompt ≤1,200, answer ≤12,000, role ≤150, ≤4 prior question/answer pairs with the same text bounds and optional ≤4 feedback strings ≤1,000 chars each per prior turn; interview settings allow only profile, type, level, topicIndex, targetTopics (3–6), nextAction (probe/transition/finish); duration 0–600, recorded and matching cloud/provider consent. Unpaid additionally needs `privacyMode:fictional`, `demoDataOnly:true`, `nonSensitiveConsent:true` and an allowlisted broad role. | `{ analysis, nextQuestion, followup }` (`followup` is a compatibility alias of nextQuestion.prompt). Next question ≤45 words, valid focus/category and optional exact current-answer anchorQuote ≤160 chars; finish permits an empty prompt. Requires a configured provider; the browser handles failure with labeled local feedback. Resume/media fields are not forwarded. |
+| `POST /api/transcribe` | multipart, `cloudConsent=true`, matching `providerConsent`, eligible media policy; nonempty supported audio file ≤20,000,000 bytes; total body ≤22,000,000 bytes. | `{ text }`. Retained cloud adapter; current UI does not call it. |
 
-JSON requests are capped at 4 MB, PDF resumes at 2 MB, audio at 20 MB, and camera
-analysis at four small JPEG frames per answer. Input lengths and types are checked
-server-side. Mutations reject a foreign Origin. Provider calls time out after
-60 seconds; user-safe errors do not expose keys, personal data, or upstream bodies.
+Legacy direct `/api/questions` PDF data URLs are bounded to 2,800,000 characters
+and need cloud consent plus an eligible provider. The current UI extracts text
+locally and never sends the original PDF. The browser's PDF/TXT size cap is
+**2 MiB**; PDF parsing additionally limits ten pages, 18,000 extracted characters
+and thirty seconds. Scans need OCR; password-protected PDFs need an unlocked copy.
+PDF.js worker/fonts/CMaps are served from the same origin.
 
-## Modes and scoring
+Provider outputs use JSON schemas plus runtime validation. Evidence quotes must
+occur literally in the answer. Conversation checks also require valid status and
+known reference IDs for supported/contradicted claims. Resumes, transcripts,
+history and prompts are untrusted data within the shared coaching instructions.
 
-No key or no cloud opt-in uses curated retrieval and a labeled approximate rubric.
-The browser extracts PDF text locally in a bundled PDF.js worker, with a 2 MB,
-ten-page, 18,000-character, 30-second limit. Users can review/edit the extracted
-text. Empty/scanned, encrypted, or invalid files get actionable errors. The
-original PDF never leaves the browser through the current UI. Legacy direct
-API PDF attachments still require a media-capable provider and cloud consent.
-Provider errors remain errors and preserve the local answer for retry. Generated
-questions and feedback use strict JSON schemas plus runtime checks. Resumes,
-prompts, and transcripts are untrusted data within developer instructions.
+## Question preparation
 
-Content measures relevant specifics, reasoning, and results; comprehension means
-addressing the question. Recorded answers automatically provide a transcript
-from their audio. Optional recognition corrections feed content/comprehension;
-delivery retains the original recognition and measured recording cues. Personal
-free/practice feedback still uses a labeled browser rubric; fictional consented
-cloud feedback uses the same transcript with the configured provider.
+An explicit role takes priority over recognizable context role and resume
+background. Local banks include practical cashier/customer-service scenarios and
+AI/ML/data-science questions plus generic role questions. Broad families and fixed
+skill labels are shared by local detection and server validation.
 
-Confidence is a labeled delivery heuristic. Base weights: speaking pace 20%,
-fillers/possible repeated words 10%, interior low-volume gaps 15%, approximately
-camera-facing head position 25%, upper-body framing 20%, shoulder-center movement
-10%. At least five seconds, fifteen recognized words and two available components
-are needed. Missing components are excluded and remaining weights renormalize;
-weights and observations appear in the report. No universal delivery style is
-established by these thresholds. Noise, ASR errors, camera setup and movement
-affect measurements. This does not diagnose stuttering or infer emotional
-confidence. Content/comprehension remain text dimensions. Overall averages the
-three available dimensions and ignores nulls.
+Local retrieval shuffles and filters similar/recent prompts, preserving mixed
+category counts with seen-question fallback when necessary. Browser module memory
+keeps the last 36 questions per normalized role; reload resets it. Generated
+sets are checked for internal repetition. The client filters them against recent
+questions and fills gaps with curated questions. A session marked `live` can contain generated and curated sources. Conversation
+keeps one opener from setup with a separate target topic count. Every later
+consented AI question is generated after the response using the broad role,
+approved topic labels, focus/level, progress, current answer and up to four prior
+turns/feedback. Main transitions are generated too. The server checks recent
+questions; the client checks the whole session. Local fallback is labeled.
+Highlighted anchor quotes must occur literally in the latest answer.
 
-Cloud visual notes do not affect scores. Separate on-device landmarks contribute
-observable head-position, framing and movement cues to delivery. They do not
-measure eye contact, identify faces, infer emotion/traits, lip-read, or rate hiring fit.
-This is voluntary self-practice, not employment screening.
+## Conversation and individual media lifecycle
 
-## Media lifecycle
+Conversation owns one MediaRecorder, RecordingCoach and turn state. A selected
+local English system voice reads each question when available; otherwise the
+question remains readable with a clear fallback message. Recognition is gated
+during interviewer playback and thinking time. A microphone-energy threshold
+ends a voiced turn after a configured 5/7/10-second wait. Manual completion,
+interrupt, skip, text conversation and early finish are available. One follow-up
+may follow a technical answer with at least ten recognized words.
 
-Camera and microphone require explicit checkbox consent followed by a button and
-the native permission dialog. Each answer uses video+audio MediaRecorder and a
-separate audio-only recorder. Video is kept locally as a real downloadable clip;
-the audio is transcribed locally by `recording-coach.ts` and `speech.worker.ts`
-using quantized English Whisper in a worker. An AudioWorklet captures mono 16 kHz
-PCM; captions update in approximately twelve-second batches and finalize on stop.
-Silence-only batches are rejected before ASR. Word timestamps are approximate.
-Speech and vision models download on first use and may be cached; recordings
-are not cached. Original audio/video never goes to a model download host.
-The old cloud transcription endpoint remains for eligible API clients but the UI
-uses local transcription, including retries. Sampled cloud frames still require
-their additional opt-in and an eligible provider. Text answers need no device
-access. Local microphones remain on during the visible camera preview.
+Media capture needs explicit local-processing consent and a start click.
+Camera and microphone stay active throughout the continuous recording, including
+interviewer playback and **Pause listening**. Pause only gates recognition;
+finish stops recording/devices. Limits are three minutes per recorded turn and
+twenty minutes per session, subject to turn/finalization work. Text turns submit
+manually. Early finish preserves an
+in-progress recognized transcript with local feedback. Provider failures preserve
+recording evidence and visibly use local fallback analysis.
 
-On stop, both recorders finalize before feedback. The user reviews the transcript;
-network errors preserve the clip for retry. Retake revokes its old Blob URL.
-Finishing the session/unmount stops all tracks and closes the level meter. Reset
-revokes all clips. A page-unload warning reminds users to download recordings.
-Original videos are never uploaded or stored by Cadence. There is no browser
-IndexedDB/localStorage history. Each provider has its own data policies.
+Individual practice retains separate video+audio and audio-only recorders per
+answer, preview/meter, three-minute cap, stop, retake and local recognition retry.
+Stopping an answer does not turn off preview devices; explicit device-off or
+session completion does. The audio-only Blob supports local retry and is not
+uploaded by the UI. Eligible optional cloud JPEG notes exist only in this mode.
 
-Strong and improvement moments are distinct variable-length speech excerpts,
-split on sentence/gap boundaries, with a clause/midpoint split for one long span.
-Local delivery and transcript-specificity/keyword heuristics rank excerpts; this
-does not establish semantic correctness. Up to three of each category can span
-one or several answers. Too little evidence yields an explicit empty state;
-the same excerpt is not duplicated into both categories. With missing timestamps,
-two scored recordings can fall back to separate whole answers.
-Playback seeks/pauses within the chosen range. Download re-encodes that range
-locally with canvas, Web Audio and MediaRecorder; it takes approximately the
-clip's duration. Audio and video are retained; exact frame/word cuts and a full
-session editor remain outside scope. Reports export ranges and evidence without
-Blob URLs or raw sampled audio/landmark arrays.
+`RecordingCoach` captures mono 16 kHz PCM through an AudioWorklet. Quantized
+`Xenova/whisper-base.en` runs as WASM in a dedicated worker, with approximately
+twelve-second batches and one-second overlap; silence-only chunks are rejected.
+Word timestamps are approximate. Conversational multi-batch turns may receive a
+whole-answer pass, trimmed after measured speech. Refinement losing more than
+20% of recognized words or over two seconds of recognized ending speech is
+discarded. Each new turn releases the prior PCM buffer; gated audio is replaced
+with silence to preserve the session clock. Recognition errors can require retry
+or transcript corrections.
 
-## Models and deployment
+The local classic vision worker samples about twice a second, uses MediaPipe
+face/pose models and three-sample head-position smoothing. Speech/vision model
+weights download from Hugging Face/Google; inference is local and recordings are
+not sent to those download hosts. Models may cache; session media is not
+intentionally persisted. First use is not an offline flow.
 
-`AI_PROVIDER=gemini` selects server-only `GEMINI_API_KEY`. Gemini uses native HTTPS
-Interactions with `store:false`, structured JSON schema, and runtime validation;
-default model `gemini-3.5-flash-lite`. REST text is extracted only from model_output
-steps, never thought steps. Keys travel in headers, never query strings.
+Workers/AudioContexts/tracks close on finish/unmount or individual device-off.
+Reset/retake revoke relevant Blob URLs; unload warnings remind users to download.
+All session state and videos are memory-only. No IndexedDB/localStorage session
+history, server recording database or background upload is implemented.
 
-Gemini defaults to `GEMINI_DATA_POLICY=unpaid` with two explicit session choices:
+## Scoring and clip contracts
 
-- Personal: PDF/TXT resumes, prompts, and answers remain in browser memory. With
-  cloud consent, `/api/questions` accepts `privacyMode:personal` and a `profile`
-  containing a broad `roleFamily` and fixed `skills` labels. The server rejects
-  every other source field and validates both allowlists before constructing a
-  generic prompt. This is topic selection, not anonymized resume transmission.
-  Personal answer feedback uses the pure browser rubric; `/api/analyze` rejects
-  personal mode under this provider policy. No answer API call is made by the UI.
-- Fictional sample: the explicit choice supplies `demoDataOnly:true`. With
-  provider-specific consent, extracted fictional resume text and typed fictional
-  answers can be sent for full AI feedback. No original PDFs are uploaded.
+`Analysis.scores` retains `confidence`, `content` and `comprehension`, each
+nullable. Reports average available dimensions and exclude missing scores.
+Skipped/empty answers have no scores. `localTurn` wraps the lexical rubric with
+reference checks. Its old internal comprehension heuristic is replaced before
+current product display.
 
-Without cloud opt-in, question retrieval and all feedback run in the browser.
-Raw PDFs, audio, and sampled frames remain rejected on unpaid cloud routes.
-Free-tier cloud data may improve Google products and undergo human review.
-Rate-limit failures remain visible errors. A source-reading worker is bundled
-and served from the same origin, with no third-party PDF parsing service.
+- **Content quality:** local lexical heuristic or mandatory `cadence-content-v3`
+  AI rubric. Anchored 0–4 levels: relevance 25%, reasoning 30%, specific support
+  25%, completeness 20%. Every grading request embeds the entire current rubric
+  through the agent on both providers/routes and retries. Response version, IDs,
+  levels and literal evidence are validated; the server computes weighted totals.
+  Missing/stale rubric evidence fails with a safe 502. Relevance 0 caps content
+  at 20; major/critical factual errors cap it at 59/25. See [rubric](GRADING_RUBRIC.md).
+- **Factual accuracy:** existing `comprehension` field; supported/partial/
+  contradicted receive 1/.5/0 credit with minor/major/critical weights 1/2/3.
+  Unverified claims excluded; null without checks. Major/critical errors cap
+  accuracy at 59/25. Model checks need exact answer and reference quotes; invalid
+  citations and duplicate/overlapping claim quotes are excluded. The bank provides 448 authored keys, including 32 executable reference exercises,
+  alongside legacy references. Local checks accept an explicit result marker or an
+  unambiguous bare result; semantic checking needs consented AI. `/api/interview-turn`
+  and `/api/analyze` add provisional AI classifications against supplied references.
+  Neither accepts a free-form model accuracy score.
+  Deterministic arithmetic overrides conflicting AI praise/prose. No live web
+  search or certification of personal achievements occurs.
+- **Confidence / delivery:** the current UI replaces the legacy API pace/filler
+  proxy with measured `recordedDelivery`. Base weights: pace .20, fillers/possible
+  repetitions .10, pauses .15, head position .15, framing .10. Available weights
+  renormalize. At least five seconds, fifteen recognized words and two components
+  are needed. Each visual component needs eight usable samples and 70% coverage.
+  Pace uses first-to-last word timing when available. Movement is described
+  without a penalty. Cloud visual notes never affect scores.
 
-`GEMINI_DATA_POLICY=paid` permits media only after the owner arranges appropriate
-Google billing/data handling. This is an operator declaration, not billing setup
-or proof of entitlement. No billing is enabled by this project. Media adapters
-use inline document/image/audio content. They require separate live verification.
+There is no face identification, lip-reading, emotion/personality/protected-trait
+inference, stuttering diagnosis, eye-contact certainty or hiring-fitness scoring.
+These are voluntary coaching heuristics affected by noise, ASR and camera setup.
 
-`AI_PROVIDER=openai` selects server-only `OPENAI_API_KEY`. Default Responses model:
-`gpt-4.1-mini`; default transcription:
-`gpt-4o-mini-transcribe`. Both are configurable. Consult current provider
-documentation before changing models or deploying after deprecation dates. As of
-2026-10-24 the legacy transcription endpoint is scheduled to shut down in February
-2027; migrate that adapter before then.
+Speech excerpts split on gaps/sentence boundaries with a clause/midpoint fallback.
+Ranking uses matching criterion evidence or a local excerpt estimate, with referenced-error caps. Delivery remains a separate observation. Ties say no clear difference was measured.
+Up to three excerpts per category can come from one or several answers; categories
+do not duplicate the same excerpt. Without timing, whole-answer fallback remains.
 
-`web/.openai/hosting.json` owns the Site identity. Keep its current access private
-when adding API secrets. Source is also published to the team's GitHub project.
-No training pipeline or GPU is required. The current backend uses HTTPS provider
-APIs and the browser's media APIs.
+Word/evidence times are relative to each turn. `recordingOffset` converts clip
+ranges to the shared continuous Blob's clock. Playback uses a shared asynchronous controller: discover missing WebM duration,
+wait for decoded seek readiness, ignore stale end events while seeking, and pause
+at the bounded end. Replay and export share preparation; loading/error/retry states
+are visible. No competing media-fragment seek is applied.
+Export re-encodes locally with canvas/Web Audio/MediaRecorder and takes roughly
+the excerpt duration; frame/word cuts are approximate. One full interview
+download is shown for conversation. JSON exports omit Blob URLs and raw sampled
+audio/vision arrays, but retain transcripts, timing and derived feedback.
+The top-level export `mode` tracks question generation; use per-answer
+`analysis.mode` and question `source` to understand mixed/local-fallback sessions.
+Report corrections first update local evidence, then regrade previously consented
+answers and invalidate derived conclusions while retaining original delivery/alignment. Feedback deduplication compares summaries,
+bullets and bounded previous feedback. Short key phrases use safe **bold**
+rendering, not HTML. The expandable rubric explains criteria/caps and shows a
+duplicate evidence quote once. Empty strengths are allowed.
 
-Both providers use the versioned `lib/interviewer-instructions.mjs` coaching
-contract. Visitor requests never access this Codex chat, a developer's Codex
-subscription, or a coding-agent session. Provider-specific consent must match
-the active provider; stale consent fails rather than silently changing recipients.
+## Provider policy and reliability
 
-Official integration references:
-- [Gemini Interactions](https://ai.google.dev/gemini-api/docs/interactions)
-- [Gemini REST schema](https://ai.google.dev/api/interactions-api)
-- [Google data terms](https://ai.google.dev/gemini-api/terms)
-- [Structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
-- [File inputs](https://developers.openai.com/api/docs/guides/file-inputs)
-- [File transcription](https://developers.openai.com/api/docs/guides/speech-to-text)
+`AI_PROVIDER` selects Gemini or OpenAI; absent that, a Gemini key selects Gemini,
+otherwise OpenAI. Missing keys leave practice mode available. Code defaults are
+`gemini-3.5-flash-lite`, `gpt-4.1-mini` and
+`gpt-4o-mini-transcribe`; they are configuration defaults, not guarantees of
+current provider availability. Verify official provider support before changes.
 
-Reliability update: provider transport and HTTP 408/500/502/503/504 failures
-receive at most one retry within 60 seconds. The first attempt has a 30-second
-limit. Optional GEMINI_FALLBACK_MODEL changes only the second Gemini attempt.
-Credentials, quota, and invalid-request failures are not retried. API errors
-include a fixed safe code; raw upstream bodies are neither returned nor logged.
-Selected resume source determines context and generic topics; switching sources
-resets cloud consent. Explicit role/context target takes priority over background.
+Gemini uses HTTPS Interactions with `x-goog-api-key` header authentication;
+OpenAI uses Responses and optional audio transcription with bearer headers.
+Structured calls use `store:false`. Gemini text is extracted only from model
+output steps. Both structured adapters share `interviewer-instructions.mjs`.
+They do not access this Codex chat, a coding-agent session or subscriptions.
+
+Unpaid Gemini is the default unless `GEMINI_DATA_POLICY=paid` is explicitly set:
+
+- Personal question requests allow only validated broad role/skill labels and
+  settings/consent/variation fields. Other source fields are rejected.
+- Fictional setup plus provider consent permits invented extracted text/answers.
+- Conversation has an independent studio opt-in. Under unpaid policy it requires
+  fictional/non-sensitive attestation, a matching broad-role/allowlisted skill profile, focus/level and bounded
+  transcript/feedback history. Unknown history fields are projected away. Obvious
+  email/phone matches in question, answers/history are rejected. This is
+  partial validation, not anonymization or a guarantee that text lacks personal data.
+- Original PDFs, audio and frames are rejected on unpaid cloud routes.
+
+Paid Gemini policy is an operator declaration after appropriate owner-authorized
+billing/data handling, not billing activation. Eligible paid Gemini/OpenAI adapters
+support media but require separate live verification.
+
+Transport errors and HTTP 408/500/502/503/504 get at most one retry within a
+sixty-second deadline; the first attempt is capped at thirty seconds. Optional
+`GEMINI_FALLBACK_MODEL` replaces the model only for attempt two. Credentials,
+quota and invalid requests are not retried. Logs/errors expose fixed categories,
+not upstream bodies or credentials. Individual-answer failures retain inputs for
+retry; conversational failure is explicitly labeled local fallback.
+
+## Build and deployment
+
+`pnpm dev/build` invokes `scripts/run-cadence.mjs`: copy PDF.js/MediaPipe assets,
+bundle speech separately without Vinext page/HMR transforms, then run the
+framework. The worker is served at `/vendor/speech/speech.worker.js`; generated
+public vendor directories are ignored. Restart dev after speech-worker changes.
+Portable execution uses the Vinext CLI; a checkout-local managed Linux profile
+uses its dedicated wrappers. `pnpm start` serves built Worker output locally.
+
+`web/.openai/hosting.json` preserves the Site identity; D1/R2 are null.
+Database tables/migrations are empty and the notes API lives only in examples.
+Sites auth/connector helpers and preview infrastructure are retained scaffolding;
+the interview flow does not invoke connected services. They are unrelated to the
+retired rover mailbox. See [HANDOFF](HANDOFF.md) for the last recorded deployment
+and access blocker; this architecture does not establish a new publication.

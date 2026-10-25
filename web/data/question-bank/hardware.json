@@ -1,0 +1,3932 @@
+[
+  {
+    "prompt": "In RISC-V RV32I, what is the 32-bit sign-extended immediate value generated for the I-type instruction `addi x5, x0, -2048`?",
+    "level": "Internship",
+    "answerKey": "-2048 (represented as 0xFFFFF800 in 32-bit hex).",
+    "essentialFacts": [
+      "I-type instructions use a 12-bit immediate field.",
+      "The immediate value is sign-extended to 32 bits before being added to the base register.",
+      "-2048 in 12-bit two's complement is 0x800, which sign-extends to 0xFFFFF800."
+    ],
+    "acceptableAlternatives": [
+      "0xFFFFF800",
+      "Decimal -2048 or hex 0xFFFFF800"
+    ],
+    "partialCredit": [
+      "Identifies that it is a 12-bit immediate but misses the sign-extension behavior.",
+      "Correctly identifies sign-extension but makes an arithmetic error on the hex conversion."
+    ],
+    "misconceptions": [
+      "Believing I-type immediates are zero-extended by default for `addi`.",
+      "Confusing I-type immediate width with S-type or B-type layouts."
+    ],
+    "probes": [
+      "How does the processor handle the sign bit of the 12-bit immediate when expanding to 32 bits?",
+      "What is the range of immediate values supported by an I-type instruction in RV32I?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-001",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Which RISC-V 32-bit instruction format uses a 20-bit immediate shifted left by 12 bits, and what is its primary use case?",
+    "level": "Internship",
+    "answerKey": "U-type format; used for loading upper immediate values into registers (e.g., `lui` or `auipc`).",
+    "essentialFacts": [
+      "U-type instructions contain a 20-bit immediate in bits [31:12].",
+      "The immediate is placed in the upper 20 bits with the lower 12 bits set to zero.",
+      "Primary instructions using this format are `lui` and `auipc`."
+    ],
+    "acceptableAlternatives": [
+      "U-format",
+      "Upper immediate format (`lui` / `auipc`)"
+    ],
+    "partialCredit": [
+      "Names the U-type format correctly but cannot state the instructions that use it.",
+      "Describes the shift behavior but misidentifies the format name."
+    ],
+    "misconceptions": [
+      "Confusing U-type with J-type jump offsets.",
+      "Assuming the 20-bit immediate is unshifted."
+    ],
+    "probes": [
+      "How do `lui` and `auipc` differ in where they source their base address before adding the shifted immediate?",
+      "Why is a 20-bit upper immediate shift necessary for 32-bit constant loading in RISC-V?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-002",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A RISC-V B-type branch instruction has an offset field representing `-8` bytes relative to the current PC. What is the value encoded in the 12-bit immediate field before left-shifting?",
+    "level": "Entry level",
+    "answerKey": "-4 (encoded in 12-bit two's complement as 0xFFC).",
+    "essentialFacts": [
+      "B-type branch offsets are measured in bytes and are multiples of 2, so the lowest bit (bit 0) is implicitly 0 and omitted from the instruction encoding.",
+      "To jump -8 bytes, the byte offset is divided by 2, yielding -4.",
+      "-4 in 12-bit two's complement is 0xFFC."
+    ],
+    "acceptableAlternatives": [
+      "0xFFC",
+      "Hex 0xFFC or decimal -4"
+    ],
+    "partialCredit": [
+      "Correctly identifies the -8 byte offset but forgets to divide by 2 for the shifted encoding.",
+      "Divides by 2 correctly but errors on the 12-bit two's complement hex representation."
+    ],
+    "misconceptions": [
+      "Assuming B-type instructions encode byte offsets directly without scaling by 2.",
+      "Confusing B-type immediate field bit shuffling with standard linear two's complement."
+    ],
+    "probes": [
+      "Why does RISC-V scale branch and jump offsets by 2?",
+      "How are the bits of the 12-bit B-type immediate scattered across the 32-bit instruction word?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-003",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given the RISC-V instruction hex `0x005282b3` (`add x5, x5, x5`), what are the extracted values for the `funct3` and `opcode` fields?",
+    "level": "Entry level",
+    "answerKey": "`funct3` = `000` (0), `opcode` = `0110011` (`0x33`).",
+    "essentialFacts": [
+      "In R-type instructions, `funct3` occupies bits [14:12].",
+      "`opcode` occupies the lowest 7 bits [6:0].",
+      "For `0x005282b3`, bits [14:12] evaluate to 0 and bits [6:0] evaluate to 0x33 (0110011)."
+    ],
+    "acceptableAlternatives": [
+      "`funct3` = 0, `opcode` = 0x33",
+      "`funct3` is 3'b000, `opcode` is 7'b0110011"
+    ],
+    "partialCredit": [
+      "Correctly extracts `opcode` but misidentifies `funct3` bit ranges.",
+      "Correctly identifies `funct3` but gets the `opcode` bits wrong."
+    ],
+    "misconceptions": [
+      "Confusing R-type field positions with I-type or S-type formats.",
+      "Reading bit indices from left to right instead of right to left."
+    ],
+    "probes": [
+      "Which field distinguishes an `add` instruction from a `sub` instruction in RV32I given that both share the same opcode and funct3?",
+      "Where is `funct7` located in this instruction word?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-004",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Executing `lbu x5, 1(x6)` reads a byte from memory. If the byte at address `x6 + 1` contains `0xFE`, what value is placed in register `x5`?",
+    "level": "Entry level",
+    "answerKey": "`0x000000FE` (decimal 254).",
+    "essentialFacts": [
+      "`lbu` stands for Load Byte Unsigned.",
+      "It loads an 8-bit value from memory and zero-extends it to 32 bits.",
+      "The upper 24 bits of the destination register are set to 0, regardless of the sign bit of the loaded byte."
+    ],
+    "acceptableAlternatives": [
+      "254",
+      "0x000000FE",
+      "Decimal 254 or hex 000000FE"
+    ],
+    "partialCredit": [
+      "Recognizes that a byte is loaded but incorrectly applies sign extension, returning 0xFFFFFFFE.",
+      "Correctly identifies zero extension but makes an arithmetic conversion error."
+    ],
+    "misconceptions": [
+      "Assuming all load instructions perform sign extension by default.",
+      "Confusing `lbu` with `lb`."
+    ],
+    "probes": [
+      "How would the result change if the instruction was `lb x5, 1(x6)` instead of `lbu`?",
+      "How does RV32I handle unaligned byte loads?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-005",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the maximum forward branch target range in bytes relative to the PC for a RISC-V J-type `jal` instruction?",
+    "level": "Experienced",
+    "answerKey": "+1,048,574 bytes (or $+1\\text{ MiB} - 2$ bytes, corresponding to a 20-bit signed immediate shifted left by 1).",
+    "essentialFacts": [
+      "J-type instructions use a 20-bit immediate field for jump offsets.",
+      "The offset is multiplied by 2 (shifted left by 1) because instructions are 16/32-bit aligned.",
+      "The maximum positive signed value for a 20-bit field is $2^{19} - 1$, which when multiplied by 2 gives $2^{20} - 2$ bytes (+1,048,574 bytes)."
+    ],
+    "acceptableAlternatives": [
+      "+1 MiB minus 2 bytes",
+      "+1048574 bytes",
+      "$2^{20}-2$ bytes"
+    ],
+    "partialCredit": [
+      "Identifies the 20-bit immediate but forgets to multiply by 2 (yielding $\\pm 512$ KB).",
+      "Calculates total span ($\\pm 1\\text{ MiB}$) instead of maximum forward range or forgets the -2 offset."
+    ],
+    "misconceptions": [
+      "Assuming J-type offsets are unscaled byte addresses.",
+      "Confusing J-type range with B-type range (which uses a 12-bit immediate)."
+    ],
+    "probes": [
+      "How does the J-type immediate bit layout rearrange the 20 bits before sign extension?",
+      "What happens if a jump target exceeds this offset range?"
+    ],
+    "sourceIds": [
+      "riscv"
+    ],
+    "id": "hardware-006",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When adding a custom R-type instruction to RV32I, why must the `opcode` field remain compatible with standard base decoders, and how does `funct7` assist instruction decoding?",
+    "level": "Experienced",
+    "answerKey": "Custom opcodes must use designated custom opcode spaces (e.g., custom-0/1) to prevent conflicts with standard ISA instructions; `funct7` provides 7 additional sub-decoding bits within that opcode space to differentiate multiple custom variants.",
+    "essentialFacts": [
+      "RISC-V defines specific unassigned opcode spaces (CUSTOM-0, CUSTOM-1, etc.) for user-defined extensions.",
+      "Using standard opcodes would break decoding for existing base ISA instructions.",
+      "`funct7` (bits [31:25]) allows multiplexing up to 128 different custom operations under a single custom opcode."
+    ],
+    "acceptableAlternatives": [
+      "Custom opcodes prevent decoder collisions; funct7 expands operation selection within the custom opcode space.",
+      "Must use reserved custom opcodes to avoid breaking standard decoding; funct7 provides sub-operation bits."
+    ],
+    "partialCredit": [
+      "Explains why custom opcodes are needed but omits the role of `funct7` in sub-decoding.",
+      "Identifies `funct7` role but does not mention standard decoder compatibility constraints."
+    ],
+    "misconceptions": [
+      "Assuming any unused bit pattern can be used as a custom opcode without architectural reservation.",
+      "Believing `funct7` is only used for shift instructions in the base ISA."
+    ],
+    "probes": [
+      "How do custom coprocessors signal illegal instructions if an unsupported custom function is encountered?",
+      "Can custom instructions modify control/status registers (CSRs), and how is that encoded?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-007",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 5-stage RISC-V pipeline, a `lw` instruction at the Memory stage feeds a dependency into an immediately following `add` instruction in the Decode stage. How many stall cycles are required?",
+    "level": "Experienced",
+    "answerKey": "1 stall cycle (load-use data hazard).",
+    "essentialFacts": [
+      "A load instruction (`lw`) does not have its data available until the end of the Memory (MEM) stage.",
+      "The dependent `add` instruction requires the data at the beginning of its Execute (EX) stage.",
+      "Even with forwarding from MEM/WB pipeline registers, data from a load cannot be forwarded in time to the EX stage of the immediately following instruction without at least 1 stall cycle, because the data is loaded from memory during MEM, whereas EX happens earlier than MEM finishes."
+    ],
+    "acceptableAlternatives": [
+      "1 cycle",
+      "One clock cycle stall"
+    ],
+    "partialCredit": [
+      "States 0 cycles assuming full forwarding can magically bypass memory latency.",
+      "States 2 cycles due to miscalculating pipeline stage alignments."
+    ],
+    "misconceptions": [
+      "Assuming forwarding completely eliminates all load-use hazards in a standard 5-stage pipeline.",
+      "Confusing register-register hazards (which can be fully bypassed with 0 stalls) with load-memory hazards."
+    ],
+    "probes": [
+      "Where in the pipeline does hazard detection take place, and which signals does it assert to insert a stall?",
+      "How does dynamic instruction scheduling or out-of-order execution mitigate load-use stalls?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-008",
+    "track": "hardware",
+    "competency": "instruction sets and representation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a standard 5-stage RISC-V pipeline with EX-to-EX forwarding, an ALU instruction immediately followed by a dependent ALU instruction requires how many stall cycles?",
+    "level": "Internship",
+    "answerKey": "Zero stall cycles. Forwarding logic routes the ALU result from the EX/MEM pipeline register directly back to the input multiplexers of the EX stage.",
+    "essentialFacts": [
+      "EX-to-EX forwarding path is present",
+      "Dependent ALU instructions require 0 stall cycles",
+      "Result is bypassed without waiting for memory or writeback"
+    ],
+    "acceptableAlternatives": [
+      "0 cycles",
+      "Zero cycles because data is bypassed"
+    ],
+    "partialCredit": [
+      "1 cycle if assuming forwarding is absent",
+      "Incorrect answer stating 2 cycles"
+    ],
+    "misconceptions": [
+      "Believing that all data dependencies require stall cycles",
+      "Confusing ALU-to-ALU dependencies with load-use dependencies"
+    ],
+    "probes": [
+      "What happens to the CPI if EX-to-EX forwarding is disabled?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-009",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does a load instruction followed immediately by a dependent instruction cause a one-cycle load-use hazard in a classic 5-stage RISC-V pipeline even with full forwarding?",
+    "level": "Internship",
+    "answerKey": "Data from memory is only available at the end of the MEM stage, whereas the dependent instruction requires it at the start of the EX stage, creating a one-cycle timing mismatch.",
+    "essentialFacts": [
+      "Memory read completes at the end of the MEM stage",
+      "EX stage requires the data at its beginning",
+      "A 1-cycle stall is mandatory because memory latency cannot be bypassed in the same cycle"
+    ],
+    "acceptableAlternatives": [
+      "Memory access latency prevents immediate EX-to-EX bypassing",
+      "Data is not ready in time for the ALU execution phase"
+    ],
+    "partialCredit": [
+      "Mentions memory delay without explaining the specific stage timing mismatch"
+    ],
+    "misconceptions": [
+      "Assuming load-use hazards can be completely resolved with zero stalls via forwarding"
+    ],
+    "probes": [
+      "How does a dynamic branch predictor affect this load-use penalty?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-010",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Calculate the total stall penalty for a program with 20% conditional branches, where 40% of those branches are taken and mispredicted, assuming a 2-cycle branch penalty resolved in the decode stage.",
+    "level": "Entry level",
+    "answerKey": "Total penalty = 0.20 (branch frequency) * 0.40 (misprediction rate) * 2 cycles = 0.16 cycles per instruction (CPI increase of 0.16).",
+    "essentialFacts": [
+      "Branch frequency is 0.20",
+      "Misprediction rate of branches is 0.40",
+      "Branch penalty is 2 cycles",
+      "Calculation yields 0.16 cycles per instruction"
+    ],
+    "acceptableAlternatives": [
+      "0.16 cycles per instruction",
+      "16% CPI overhead"
+    ],
+    "partialCredit": [
+      "Correct formula setup but arithmetic error",
+      "Multiplies branch frequency by taken rate instead of misprediction rate"
+    ],
+    "misconceptions": [
+      "Using the taken rate instead of the misprediction rate for penalty calculations",
+      "Confusing branch frequency with total instruction count scaling"
+    ],
+    "probes": [
+      "What if branch resolution is moved to the execute stage, increasing the penalty to 3 cycles?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-011",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a pipeline with structural hazards on a single-ported data memory, if a load/store instruction and an instruction fetch occur simultaneously, which instruction must stall and why?",
+    "level": "Entry level",
+    "answerKey": "The instruction fetch must stall because the memory has only a single port, and data memory access takes precedence to complete the ongoing pipeline operation.",
+    "essentialFacts": [
+      "Single-ported memory allows only one access per cycle",
+      "Concurrent instruction fetch and data memory access collide",
+      "Instruction fetch is stalled to resolve the port contention"
+    ],
+    "acceptableAlternatives": [
+      "Fetch stalls to allow the data memory access to complete",
+      "Memory port conflict stalls the instruction fetch stage"
+    ],
+    "partialCredit": [
+      "Stalling data memory instead of instruction fetch without architectural justification"
+    ],
+    "misconceptions": [
+      "Assuming modern Von Neumann architectures handle simultaneous fetches and data accesses without structural penalties"
+    ],
+    "probes": [
+      "How does splitting into separate L1 instruction and data caches eliminate this structural hazard?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-012",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Trace a RAW hazard where instruction 1 writes `x5` in the WB stage and instruction 2 reads `x5` in the EX stage. Without forwarding, how many stall cycles are inserted?",
+    "level": "Entry level",
+    "answerKey": "2 stall cycles are inserted, because instruction 1 writes back at the end of WB, while instruction 2 needs the operand at the start of EX.",
+    "essentialFacts": [
+      "Instruction 1 in WB stage, instruction 2 in EX stage",
+      "Without forwarding, data is unavailable until register file write is complete",
+      "Requires 2 bubble/stall cycles to bridge the timing gap"
+    ],
+    "acceptableAlternatives": [
+      "Two stalls",
+      "2-cycle delay"
+    ],
+    "partialCredit": [
+      "Stating 1 stall due to confusion with register file internal write-read timing"
+    ],
+    "misconceptions": [
+      "Assuming register file internal forwarding (writing first half, reading second half) eliminates multi-stage pipeline RAW hazards without explicit bypass logic"
+    ],
+    "probes": [
+      "How does register-file bypassing reduce this penalty to 1 cycle?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-013",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a control hazard mitigation logic for a branch resolved in the EX stage with a 3-cycle penalty. If a branch is taken, how many instruction slots must be flushed?",
+    "level": "Experienced",
+    "answerKey": "3 instruction slots must be flushed, corresponding to the instructions currently in the Fetch, Decode, and Execute stages behind the resolved branch.",
+    "essentialFacts": [
+      "Penalty is 3 cycles",
+      "Instructions currently in flight behind the branch must be converted to bubbles",
+      "Total of 3 instructions are flushed"
+    ],
+    "acceptableAlternatives": [
+      "Flush 3 instructions",
+      "3 pipeline stages cleared"
+    ],
+    "partialCredit": [
+      "Flushing 2 or 4 instructions due to off-by-one errors in stage counting"
+    ],
+    "misconceptions": [
+      "Assuming only the immediately following instruction needs to be flushed regardless of resolution stage"
+    ],
+    "probes": [
+      "How does a Branch Target Buffer (BTB) reduce this flush penalty to zero when hitting?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "riscv"
+    ],
+    "id": "hardware-014",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Analyze a pipeline where a multi-cycle floating-point multiplier (4 execution cycles, non-pipelined) causes structural hazards. How do you prevent structural hazards on the writeback port if two instructions finish simultaneously?",
+    "level": "Experienced",
+    "answerKey": "Implement an interlock mechanism or scoreboard that stalls the second-completing instruction or arbitrates the shared writeback port, holding results in temporary staging registers.",
+    "essentialFacts": [
+      "Shared writeback port contention occurs with multi-cycle units",
+      "Non-pipelined functional units can produce simultaneous completion requests",
+      "Arbitration or structural stall logic is required to prevent port collisions"
+    ],
+    "acceptableAlternatives": [
+      "Use writeback arbitration logic",
+      "Stall issuing instructions via a scoreboard"
+    ],
+    "partialCredit": [
+      "Mentioning stalls without identifying writeback port contention"
+    ],
+    "misconceptions": [
+      "Assuming functional unit latency alone dictates pipeline throughput without accounting for writeback port limits"
+    ],
+    "probes": [
+      "What is the hardware area penalty of making the multiplier fully pipelined instead?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-015",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Debug a hazard detection unit where a load-use stall fails to assert when `id_ex_mem_read` is high and `id_ex_rd == if_id_rs1`. What missing condition on source registers causes this bug?",
+    "level": "Experienced",
+    "answerKey": "The check must also compare `id_ex_rd` against `if_id_rs2` because an instruction can source its dependent operand from `rs2` instead of `rs1`.",
+    "essentialFacts": [
+      "Missing check for `rs2` source register",
+      "Instructions can source operands from either `rs1` or `rs2`",
+      "Hazard detection requires checking equality for both source address fields"
+    ],
+    "acceptableAlternatives": [
+      "Must check `rs2` in addition to `rs1`",
+      "Omission of `if_id_rs2` comparison"
+    ],
+    "partialCredit": [
+      "Noting register comparison failure without specifying `rs2`"
+    ],
+    "misconceptions": [
+      "Assuming all dependent instructions only consume operands through `rs1`"
+    ],
+    "probes": [
+      "How would immediate instructions affect this condition since they use an immediate instead of `rs2`?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-016",
+    "track": "hardware",
+    "competency": "pipeline hazards",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 2-bit saturating counter branch predictor starts in state Weakly Taken. The actual branch outcome is Not Taken. What is the new state, and what prediction would it make for the subsequent branch instruction?",
+    "level": "Internship",
+    "answerKey": "The new state is Weakly Not Taken (01), and the prediction for the subsequent branch is Not Taken because the most significant bit is 0.",
+    "essentialFacts": [
+      "State transitions from Weakly Taken to Weakly Not Taken upon a Not Taken outcome",
+      "Next prediction is Not Taken due to MSB being 0"
+    ],
+    "acceptableAlternatives": [
+      "Transitions to state 01; predicts Not Taken"
+    ],
+    "partialCredit": [
+      "Correct state transition identified but incorrect next prediction"
+    ],
+    "misconceptions": [
+      "Assuming a 1-bit predictor behavior or believing the state resets completely to strongly untaken"
+    ],
+    "probes": [
+      "How does a 2-bit predictor differ from a 1-bit predictor when handling a single alternating loop exit?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-017",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A pipeline incurs a 3-cycle misprediction penalty. If 15% of instructions are conditional branches, and 20% of those branches are mispredicted, what is the branch misprediction CPI penalty added to the base CPI?",
+    "level": "Internship",
+    "answerKey": "Penalty = (Branch Frequency) * (Misprediction Rate) * (Penalty Cycles) = 0.15 * 0.20 * 3 = 0.09 cycles per instruction.",
+    "essentialFacts": [
+      "Formula multiplies branch frequency, misprediction rate, and penalty cycles",
+      "Calculated added CPI penalty equals 0.09"
+    ],
+    "acceptableAlternatives": [
+      "9% of a cycle or 0.09"
+    ],
+    "partialCredit": [
+      "Correct formula setup but arithmetic calculation error"
+    ],
+    "misconceptions": [
+      "Multiplying by total instruction count instead of branch frequency"
+    ],
+    "probes": [
+      "How would increasing the branch penalty to 5 cycles affect the CPI addition?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-018",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A gshare branch predictor uses a 4-bit global branch history register with value 1010 and the lower 4 bits of a branch PC 0110. What is the 4-bit PHT index produced by the XOR operation?",
+    "level": "Entry level",
+    "answerKey": "XOR of GBHR 1010 and PC bits 0110: 1^0=1, 0^1=1, 1^1=0, 0^0=0, resulting in 1100 (decimal 12).",
+    "essentialFacts": [
+      "Performs bitwise XOR between global branch history and PC bits",
+      "Resulting 4-bit index is 1100"
+    ],
+    "acceptableAlternatives": [
+      "Decimal 12",
+      "Binary 1100"
+    ],
+    "partialCredit": [
+      "Arithmetic addition instead of XOR or single bit inversion error"
+    ],
+    "misconceptions": [
+      "Assuming gshare concatenates history and PC bits instead of XORing them"
+    ],
+    "probes": [
+      "Why does gshare XOR history with the PC address rather than concatenating them?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-019",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A direct-mapped BTB has 64 entries and uses PC bits [7:2] for indexing. If a non-branch instruction maps to index 001011 but its tag doesn't match the upper PC bits, what does the fetch stage predict?",
+    "level": "Entry level",
+    "answerKey": "The fetch stage predicts no branch (falls through) because a tag mismatch indicates an entry collision, invalidating the stored target address.",
+    "essentialFacts": [
+      "Tag mismatch invalidates BTB hit",
+      "Predicts fall-through / no branch taken"
+    ],
+    "acceptableAlternatives": [
+      "Default next PC (PC + 4)"
+    ],
+    "partialCredit": [
+      "Recognizes tag check occurs but misses that default PC is used"
+    ],
+    "misconceptions": [
+      "Assuming any entry at the index is used regardless of the tag check"
+    ],
+    "probes": [
+      "What is the consequence if the BTB lacks a valid tag field entirely?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-020",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A hardware Return Address Stack has a depth of 4 entries. If 5 nested function calls occur without a return, what happens to the oldest return address stored in the RAS?",
+    "level": "Entry level",
+    "answerKey": "The oldest return address is overwritten due to circular buffer overflow, leading to a misprediction when that function eventually returns.",
+    "essentialFacts": [
+      "Overwrites or drops the oldest entry",
+      "Causes a return misprediction upon popping"
+    ],
+    "acceptableAlternatives": [
+      "FIFO overflow and eviction of bottom entry"
+    ],
+    "partialCredit": [
+      "Mentions buffer overflow but does not explain the functional impact on returns"
+    ],
+    "misconceptions": [
+      "Assuming the RAS throws an exception or dynamically expands in hardware"
+    ],
+    "probes": [
+      "How does an underflow occur in a Return Address Stack?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-021",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A tournament branch predictor uses a meta-predictor to choose between local and global history predictors. When both predictors are correct, but the meta-predictor points to the local predictor, does the meta-counter update?",
+    "level": "Experienced",
+    "answerKey": "No, the meta-counter does not update because both predictors yielded the correct outcome, meaning neither proved superior for this branch instance.",
+    "essentialFacts": [
+      "Meta-counter only updates when one predictor is correct and the other is incorrect",
+      "No update occurs if both predictions match the actual outcome"
+    ],
+    "acceptableAlternatives": [
+      "Counter remains unchanged"
+    ],
+    "partialCredit": [
+      "Acknowledges predictions match but incorrectly assumes a bias adjustment"
+    ],
+    "misconceptions": [
+      "Assuming the meta-predictor updates on every branch regardless of relative accuracy"
+    ],
+    "probes": [
+      "Under what exact condition does the meta-predictor increment or decrement?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-022",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a design where the BTB provides the target address in Cycle 1, but the branch direction is resolved by a PHT lookup in Cycle 2, can a zero-cycle penalty be achieved for taken branches? Explain.",
+    "level": "Experienced",
+    "answerKey": "No, zero-cycle penalty cannot be achieved because the direction is only known in Cycle 2. The pipeline must wait for Cycle 2's direction to avoid fetching the wrong path, resulting in at least a 1-cycle penalty.",
+    "essentialFacts": [
+      "Direction is resolved in Cycle 2 while target is ready in Cycle 1",
+      "Results in a 1-cycle bubble because direction is unknown in Cycle 1"
+    ],
+    "acceptableAlternatives": [
+      "Minimum 1-cycle branch penalty"
+    ],
+    "partialCredit": [
+      "Recognizes the timing mismatch between target and direction but miscalculates bubble size"
+    ],
+    "misconceptions": [
+      "Assuming having the target address in Cycle 1 is sufficient for zero-cycle taken branch execution"
+    ],
+    "probes": [
+      "How does a combined BTB and direction predictor in the fetch stage eliminate this cycle penalty?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-023",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Two independent conditional branches hash to the same index in a direct-mapped Pattern History Table, causing destructive aliasing. How does this affect prediction accuracy, and what structural modification mitigates this?",
+    "level": "Experienced",
+    "answerKey": "Destructive aliasing causes one branch's history to corrupt the 2-bit counter state used by the other, reducing prediction accuracy. Mitigation includes increasing PHT size, using gshare to scatter indices, or adding tag checks.",
+    "essentialFacts": [
+      "Corrupts counter states leading to lower prediction accuracy",
+      "Mitigated by gshare hashing, larger PHT capacity, or tagged predictors"
+    ],
+    "acceptableAlternatives": [
+      "Indexed hashing or increased capacity"
+    ],
+    "partialCredit": [
+      "Identifies performance degradation from aliasing but misses mitigation strategies"
+    ],
+    "misconceptions": [
+      "Assuming aliasing only affects branch target addresses rather than direction history states"
+    ],
+    "probes": [
+      "How do tagged geometric history length predictors solve the aliasing problem?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-024",
+    "track": "hardware",
+    "competency": "branch prediction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a 16 KB direct-mapped cache with 64-byte blocks and a 32-bit address space, how many bits are used for the block offset and the index?",
+    "level": "Internship",
+    "answerKey": "Block offset = log2(64) = 6 bits. Total blocks = 16 KB / 64 B = 256 blocks. Index bits = log2(256) = 8 bits.",
+    "essentialFacts": [
+      "Block offset requires 6 bits since block size is 64 bytes.",
+      "Number of blocks is 256 (16384 bytes / 64 bytes).",
+      "Index requires 8 bits to address 256 blocks."
+    ],
+    "acceptableAlternatives": [
+      "Expressing calculations in powers of two (e.g., 2^14 bytes cache, 2^6 bytes block)."
+    ],
+    "partialCredit": [
+      "Correctly calculates block offset (6 bits) but fails on index bit calculation."
+    ],
+    "misconceptions": [
+      "Using total cache size directly in bytes instead of calculating the number of blocks for the index bits."
+    ],
+    "probes": [
+      "How would the number of index bits change if the cache associativity was increased to 4-way set-associative?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-025",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 32 KB, 2-way set-associative cache with 32-byte blocks and a 32-bit address, how many tag bits are required per line?",
+    "level": "Internship",
+    "answerKey": "Block offset = log2(32) = 5 bits. Number of sets = 32 KB / (32 B * 2-way) = 512 sets. Index bits = log2(512) = 9 bits. Tag bits = 32 - (9 + 5) = 18 bits.",
+    "essentialFacts": [
+      "Block offset is 5 bits based on 32-byte block size.",
+      "Number of sets is 512, requiring 9 index bits.",
+      "Tag bits equal address width minus index and offset bits (18 bits)."
+    ],
+    "acceptableAlternatives": [
+      "Step-by-step mathematical breakdown resulting in 18 bits."
+    ],
+    "partialCredit": [
+      "Correctly finds offset and index bits but subtracts incorrectly from the 32-bit address."
+    ],
+    "misconceptions": [
+      "Treating the cache as direct-mapped when computing the number of sets, forgetting to divide by the 2-way associativity."
+    ],
+    "probes": [
+      "What happens to the tag size if we double the associativity while keeping the cache size constant?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-026",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 4-block direct-mapped cache starts empty with 4-byte blocks. Trace hits and misses for byte addresses: 0, 4, 16, 0. Assume byte addressing.",
+    "level": "Entry level",
+    "answerKey": "Block size = 4 bytes. Block index = (address / 4) % 4. Address 0: block 0 (Miss). Address 4: block 1 (Miss). Address 16: block 4 -> block 0 (Miss, replaces address 0). Address 0: block 0 (Miss, conflict miss). Result: Miss, Miss, Miss, Miss.",
+    "essentialFacts": [
+      "Block size of 4 bytes divides addresses to get block numbers.",
+      "Modulo 4 mapping places addresses 0 and 16 into index 0, causing a conflict miss.",
+      "All four accesses result in misses due to cold and conflict behavior."
+    ],
+    "acceptableAlternatives": [
+      "Tracing using binary bit representations for index selection."
+    ],
+    "partialCredit": [
+      "Identifies the first three as cold misses but incorrectly assumes address 0 hits on the repeat access."
+    ],
+    "misconceptions": [
+      "Assuming that repeating an address immediately after a conflict miss will result in a cache hit without reloading."
+    ],
+    "probes": [
+      "How would changing the cache to 2-way set-associative alter the outcome for the second access to address 0?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-027",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Calculate the total hardware storage bit overhead (tags and valid bits) for a 64 KB data cache with 64-byte blocks, 32-bit addresses, and direct mapping.",
+    "level": "Entry level",
+    "answerKey": "Number of blocks = 64 KB / 64 B = 1024 blocks. Offset = 6 bits, index = 10 bits. Tag bits per block = 32 - 10 - 6 = 16 bits. Valid bit = 1. Overhead per block = 17 bits. Total overhead = 1024 * 17 = 17,408 bits.",
+    "essentialFacts": [
+      "Total number of blocks is 1024.",
+      "Tag size per block is 16 bits.",
+      "Valid bit adds 1 bit per block, resulting in 17 bits overhead per block."
+    ],
+    "acceptableAlternatives": [
+      "Expressing final answer in bytes (2176 bytes) or kilobits."
+    ],
+    "partialCredit": [
+      "Correctly calculates tag and valid bits per block but miscalculates the total block count."
+    ],
+    "misconceptions": [
+      "Including the data payload size in the overhead calculation instead of focusing purely on metadata (tags and valid bits)."
+    ],
+    "probes": [
+      "How does adding a dirty bit per block change the overhead calculation for a write-back cache?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-028",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why write-back caches typically pair with write-allocate policies, whereas write-through caches pair with non-write-allocate policies in standard processor designs.",
+    "level": "Entry level",
+    "answerKey": "Write-back modifies data only in the cache, requiring the block to be loaded first (write-allocate) so future writes hit. Write-through updates memory immediately, so writing to an unallocated block directly in memory (no-write-allocate) avoids cache pollution.",
+    "essentialFacts": [
+      "Write-back requires cache line allocation to store modified data locally.",
+      "Write-through updates lower-level memory directly, making cache line allocation on write misses unnecessary (no-write-allocate).",
+      "Pairing write-through with write-allocate wastes cache capacity on write-only streams."
+    ],
+    "acceptableAlternatives": [
+      "Explaining trade-offs around cache pollution and bus traffic minimization."
+    ],
+    "partialCredit": [
+      "Explains write-allocate correctly but fails to link non-write-allocate to write-through memory synchronization."
+    ],
+    "misconceptions": [
+      "Believing that write-through caches cannot technically use write-allocate (they can, but it is architecturally inefficient)."
+    ],
+    "probes": [
+      "What traffic impact does a write-allocate policy have on lower-level memory during a write miss compared to non-write-allocate?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-029",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a multi-level cache hierarchy with L1 and L2, explain the strict inclusion property and how an L1 replacement eviction affects the L2 cache state.",
+    "level": "Experienced",
+    "answerKey": "Strict inclusion requires all L1 blocks to be present in L2. When an L1 block is evicted due to replacement, L2 does not evict that block (L2 remains a superset). However, if L2 evicts or invalidates a block, it must invalidate it in L1.",
+    "essentialFacts": [
+      "Strict inclusion dictates that the L1 cache contents are a strict subset of L2.",
+      "L1 replacement evictions do not trigger L2 evictions.",
+      "L2 invalidations or evictions force corresponding invalidations in L1 to maintain inclusion."
+    ],
+    "acceptableAlternatives": [
+      "Discussing inclusive vs exclusive cache hierarchy allocation policies."
+    ],
+    "partialCredit": [
+      "Correctly defines inclusion but reverses the eviction dependency (believing L1 eviction forces L2 eviction)."
+    ],
+    "misconceptions": [
+      "Assuming inclusive hierarchies require synchronization where removing a block from L1 immediately removes it from L2."
+    ],
+    "probes": [
+      "How does an exclusive cache hierarchy differ in block placement between L1 and L2 when a miss occurs?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-030",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Analyze how increasing cache associativity from direct-mapped to 4-way set-associative affects conflict misses and hit time, detailing the hardware timing trade-off in the tag comparison logic.",
+    "level": "Experienced",
+    "answerKey": "Increasing associativity reduces conflict misses by allowing multiple blocks to share set indices. Hit time increases because tag checks occur in parallel across all ways, followed by a multiplexer delay to select the matching data.",
+    "essentialFacts": [
+      "Higher associativity reduces conflict misses.",
+      "Hit time increases due to multiplexing delays needed to select data among multiple ways.",
+      "Tag checks happen in parallel, but way selection happens downstream."
+    ],
+    "acceptableAlternatives": [
+      "Explaining the timing impact on critical path and clock frequency."
+    ],
+    "partialCredit": [
+      "Mentions reduced conflict misses but omits the multiplexer hardware trade-off affecting hit latency."
+    ],
+    "misconceptions": [
+      "Assuming that higher associativity reduces compulsory or capacity misses."
+    ],
+    "probes": [
+      "Why might a large direct-mapped cache have a higher miss rate than a smaller fully associative cache for certain cyclic access patterns?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-031",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why virtually-indexed virtually-tagged (VIVT) caches suffer from the synonym problem when multiple virtual addresses map to the same physical address, and how virtually-indexed physically-tagged (VIPT) caches resolve this.",
+    "level": "Experienced",
+    "answerKey": "VIVT caches store identical physical data in separate cache lines if virtual addresses differ, causing aliasing. VIPT uses virtual index bits within the page offset (invariant under translation) to access the cache in parallel with TLB lookup, allowing physical tags to detect synonyms.",
+    "essentialFacts": [
+      "VIVT creates multiple copies of identical physical data (synonyms), causing coherence failures.",
+      "VIPT uses page-offset virtual index bits so the cache index is identical for virtual aliases sharing a physical page.",
+      "Physical tags catch conflicts during comparison."
+    ],
+    "acceptableAlternatives": [
+      "Explaining page coloring techniques to prevent virtual aliasing."
+    ],
+    "partialCredit": [
+      "Explains the synonym issue in VIVT but fails to explain how VIPT leverages page offsets for indexing."
+    ],
+    "misconceptions": [
+      "Confusing synonyms (multiple virtual addresses mapping to one physical address) with homonyms (one virtual address mapping to multiple physical addresses across processes)."
+    ],
+    "probes": [
+      "What constraint does a VIPT cache place on cache size relative to the page size to prevent index bits from overlapping virtual-to-physical translation bits?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-032",
+    "track": "hardware",
+    "competency": "cache organization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a system with 4 KB pages and a 32-bit virtual address space, a two-level page table splits the 20-bit VPN evenly into two 10-bit indices. How many page table entries are in each second-level page table?",
+    "level": "Internship",
+    "answerKey": "With a 10-bit index for the second-level page table, there are 2^10 = 1024 entries in each second-level page table.",
+    "essentialFacts": [
+      "A 10-bit index addresses 2^10 entries.",
+      "Each second-level table corresponds to one entry in the first level.",
+      "With 4 KB pages and a 32-bit address, the VPN is 20 bits."
+    ],
+    "acceptableAlternatives": [
+      "1024 entries",
+      "2^10 entries"
+    ],
+    "partialCredit": [
+      "Identifies the index bit width as 10 but calculates an incorrect exponent.",
+      "Correctly states 1024 but confuses first- and second-level table sizes."
+    ],
+    "misconceptions": [
+      "Assuming the page size dictates the number of entries instead of the index bit width.",
+      "Confusing page offset bits with page table index bits."
+    ],
+    "probes": [
+      "How many bytes does a single second-level page table consume if each entry is 4 bytes?",
+      "What happens to the number of entries if the page size increases to 8 KB?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-033",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A processor has a 1-cycle TLB hit time and a 30-cycle page table walk penalty on a TLB miss. If the TLB hit rate is 98%, what is the effective memory management lookup latency?",
+    "level": "Entry level",
+    "answerKey": "Effective Latency = Hit Time + (Miss Rate * Miss Penalty) = 1 + (0.02 * 30) = 1 + 0.6 = 1.6 cycles.",
+    "essentialFacts": [
+      "Effective latency formula incorporates hit time, miss rate, and miss penalty.",
+      "Miss rate is 1 - hit rate (0.02).",
+      "Calculation yields 1.6 cycles."
+    ],
+    "acceptableAlternatives": [
+      "1.6 cycles",
+      "1.6"
+    ],
+    "partialCredit": [
+      "Correct formula setup but arithmetic error in multiplication or addition.",
+      "Uses miss rate of 0.98 instead of 0.02."
+    ],
+    "misconceptions": [
+      "Multiplying hit rate by miss penalty instead of miss rate.",
+      "Ignoring the base TLB hit time in the calculation."
+    ],
+    "probes": [
+      "How does the effective latency change if the hit rate increases to 99.5%?",
+      "Does this latency include the subsequent data cache access time?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-034",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 32 KB, 4-way set-associative VIPT cache has 64-byte blocks. What is the maximum page size that avoids index aliasing issues without requiring hardware synonym checks during virtual-to-physical translation?",
+    "level": "Experienced",
+    "answerKey": "Cache size per way = 32 KB / 4 = 8 KB. Number of sets = 8 KB / 64 B = 128 sets. Index bits = log2(128) = 7 bits. Offset bits = log2(64) = 6 bits. Index + offset = 13 bits, meaning an 8 KB page size is the maximum threshold where virtual index bits do not overlap with physical tag bits.",
+    "essentialFacts": [
+      "Cache size per way is 8 KB (32 KB / 4).",
+      "Number of sets is 128, requiring 7 index bits and 6 offset bits.",
+      "Index + offset = 13 bits, establishing an 8 KB page size threshold to prevent aliasing."
+    ],
+    "acceptableAlternatives": [
+      "8 KB",
+      "8000 bytes",
+      "8192 bytes"
+    ],
+    "partialCredit": [
+      "Calculates total cache size instead of cache size per way.",
+      "Correctly computes index and offset bits but miscalculates the power of two."
+    ],
+    "misconceptions": [
+      "Assuming total cache size determines the page size limit rather than cache size per way.",
+      "Confusing tag bits with index bits when analyzing virtual indexing."
+    ],
+    "probes": [
+      "What happens if the operating system uses 4 KB pages with this cache configuration?",
+      "How does OS page coloring mitigate VIPT aliasing when the page size is smaller than the cache way size?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-035",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 32-bit RISC-V system uses Sv32 paging with 4 KB pages. If a PTE has the Valid bit set to 1, User bit set to 0, and a user-mode instruction attempts a store, what exception occurs?",
+    "level": "Internship",
+    "answerKey": "A store page fault (or access/permission fault) occurs because user-mode software cannot access a page where the User (U) bit is 0.",
+    "essentialFacts": [
+      "Valid bit = 1 means the mapping exists.",
+      "U bit = 0 means supervisor-only access.",
+      "A user-mode store violates permission, triggering a store page fault."
+    ],
+    "acceptableAlternatives": [
+      "Store page fault",
+      "Page fault",
+      "Access fault",
+      "Permission fault"
+    ],
+    "partialCredit": [
+      "Identifies that a page fault occurs but fails to specify it is a store/permission fault.",
+      "Assumes valid bit = 1 means no fault occurs."
+    ],
+    "misconceptions": [
+      "Believing user mode can access supervisor pages if the valid bit is set.",
+      "Confusing translation faults (V=0) with permission faults (U=0 or W=0)."
+    ],
+    "probes": [
+      "What additional PTE bit must be set to allow store operations on this page?",
+      "How would the exception code differ if this were an instruction fetch instead of a store?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-036",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare handling a TLB miss in hardware vs software: if a software-managed TLB miss takes 15 cycles of trap overhead plus 3 memory accesses, why might hardware-managed tables still be preferred in high-performance processors?",
+    "level": "Entry level",
+    "answerKey": "Hardware-managed TLB misses avoid expensive trap handling overhead (such as context switches and register saving) and execute page table walks in dedicated state machines, yielding significantly lower latency per miss.",
+    "essentialFacts": [
+      "Software handlers incur OS trap and context-switch overhead.",
+      "Hardware walkers execute state machines directly without software intervention.",
+      "Lower miss penalty directly improves performance in memory-intensive workloads."
+    ],
+    "acceptableAlternatives": [
+      "Avoids software trap and context switch overhead",
+      "Hardware walks are faster and avoid pipeline flushes"
+    ],
+    "partialCredit": [
+      "Mentions speed difference but omits context switching or trap overhead.",
+      "Focuses only on memory access count without considering OS intervention cost."
+    ],
+    "misconceptions": [
+      "Assuming software-managed TLBs require no page table walk memory accesses.",
+      "Believing hardware-managed TLBs cannot support custom page table formats."
+    ],
+    "probes": [
+      "What is a primary advantage of a software-managed TLB despite its higher miss latency?",
+      "How does a pipeline handle the instruction flow during a hardware page table walk?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-037",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When a core unmaps a shared virtual page, it issues an IPI for a TLB shootdown. Explain the race condition where a remote core accesses the stale translation before acknowledging the shootdown, and how hardware fences prevent it.",
+    "level": "Experienced",
+    "answerKey": "If a remote core continues executing using its local TLB entry before receiving the IPI and invalidating it, it may access stale physical memory. Hardware fences (like SFENCE.VMA) ensure local and remote TLB invalidations complete globally before execution proceeds.",
+    "essentialFacts": [
+      "Stale TLB entries cause use-after-free or data corruption during unmapping.",
+      "Asynchronous IPI delivery creates a temporal window of vulnerability.",
+      "Invalidation instructions/fences synchronize TLB state across cores."
+    ],
+    "acceptableAlternatives": [
+      "Remote core accesses old mapping before invalidation; hardware sync instructions enforce completion",
+      "Race condition between page table modification and remote TLB flush"
+    ],
+    "partialCredit": [
+      "Identifies stale TLB usage but omits the role of synchronization fences.",
+      "Describes IPI overhead without explaining the specific memory safety race condition."
+    ],
+    "misconceptions": [
+      "Assuming local TLB invalidation automatically flushes remote core TLBs instantly without signaling.",
+      "Believing page table invalidation alone without an explicit fence ensures immediate hardware consistency."
+    ],
+    "probes": [
+      "Why are TLB shootdowns considered a major scalability bottleneck in many-core systems?",
+      "What is an ASID (Address Space Identifier) and how does it reduce the frequency of TLB shootdowns?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "riscv"
+    ],
+    "id": "hardware-038",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A TLB has 64 entries supporting 4 KB pages, giving a 256 KB reach. If the OS configures 2 MB superpages, how many 2 MB superpages can the same TLB map to cover 128 MB of memory?",
+    "level": "Internship",
+    "answerKey": "To cover 128 MB of memory using 2 MB superpages, the number of pages required is 128 MB / 2 MB = 64 superpages, which exactly matches the 64 entries in the TLB.",
+    "essentialFacts": [
+      "Calculation divides total memory (128 MB) by superpage size (2 MB).",
+      "Result is 64 superpages.",
+      "Since TLB capacity is 64 entries, all 128 MB fits within the TLB reach."
+    ],
+    "acceptableAlternatives": [
+      "64 superpages",
+      "64 entries"
+    ],
+    "partialCredit": [
+      "Correctly calculates 64 superpages but misinterprets TLB capacity constraint.",
+      "Arithmetic error when dividing 128 by 2."
+    ],
+    "misconceptions": [
+      "Assuming superpages reduce the number of TLB entries needed below 1 if total memory exceeds page size.",
+      "Confusing page size with TLB entry count."
+    ],
+    "probes": [
+      "What is the total TLB reach when all 64 entries map 2 MB superpages?",
+      "Why do larger superpages significantly reduce TLB miss rates for large working sets?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-039",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An inverted page table uses a hash function mapping virtual page numbers to table frames to save memory. In the event of a hash collision during a TLB miss, how does the hardware or OS resolve it?",
+    "level": "Experienced",
+    "answerKey": "Inverted page tables resolve hash collisions using collision chains (linked lists of PTEs stored in overflow areas or chaining pointers within table entries) until the matching virtual page number and process ID are found.",
+    "essentialFacts": [
+      "Inverted page tables hash the VPN (and PID).",
+      "Hash collisions occur when distinct VPNs map to the same hash index.",
+      "Chain pointers or rehash probes traverse colliding entries to locate the correct entry."
+    ],
+    "acceptableAlternatives": [
+      "Collision chains",
+      "Linked list traversal using pointer fields",
+      "Overflow chaining"
+    ],
+    "partialCredit": [
+      "Mentions that a collision happens but fails to describe how entries are linked or traversed.",
+      "Confuses inverted page table collision resolution with cache replacement policies."
+    ],
+    "misconceptions": [
+      "Assuming inverted page tables eliminate collisions entirely by design.",
+      "Believing hardware discards the colliding page rather than traversing a chain."
+    ],
+    "probes": [
+      "What is the performance drawback of hash collisions during a software TLB miss handler in an inverted page table system?",
+      "How does an inverted page table scale with physical memory size versus virtual address space size?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-040",
+    "track": "hardware",
+    "competency": "virtual memory and TLBs",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A processor has an L1 cache with a 1-ns hit time, a 5% miss rate, and a 20-ns miss penalty. What is the Average Memory Access Time in nanoseconds?",
+    "level": "Internship",
+    "answerKey": "AMAT = Hit Time + (Miss Rate * Miss Penalty) = 1 + (0.05 * 20) = 1 + 1.0 = 2.0 ns.",
+    "essentialFacts": [
+      "AMAT equation is Hit Time + (Miss Rate * Miss Penalty)",
+      "Miss penalty contribution is 0.05 * 20 = 1 ns",
+      "Total AMAT is 2.0 ns"
+    ],
+    "acceptableAlternatives": [
+      "2 ns",
+      "2.0"
+    ],
+    "partialCredit": [
+      "Calculates 1 + 0.05 = 1.05",
+      "Multiplies miss rate by penalty correctly (1.0 ns) but forgets to add hit time"
+    ],
+    "misconceptions": [
+      "Adding hit time and miss penalty before multiplying by miss rate",
+      "Treating miss rate as a percentage directly without converting to decimal"
+    ],
+    "probes": [
+      "What happens to AMAT if the miss rate drops to 2%?",
+      "Why is miss penalty weighted by the miss rate instead of the hit rate?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-041",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 64-bit wide memory bus operates at a clock frequency of 1600 MHz with double data rate (DDR). Calculate the peak theoretical memory bandwidth in gigabytes per second.",
+    "level": "Internship",
+    "answerKey": "Bus width = 8 bytes. Frequency = 1.6 GHz. DDR transfers twice per cycle. Peak bandwidth = 8 bytes * 1.6 GHz * 2 = 25.6 GB/s.",
+    "essentialFacts": [
+      "Convert 64 bits to 8 bytes",
+      "Account for DDR by multiplying transfers per cycle by 2",
+      "Multiply bus width, frequency, and transfer rate to get 25.6 GB/s"
+    ],
+    "acceptableAlternatives": [
+      "25,600 MB/s",
+      "25.6 gigabytes per second"
+    ],
+    "partialCredit": [
+      "Correctly calculates single data rate bandwidth (12.8 GB/s) by omitting DDR factor",
+      "Makes a bit/byte conversion error"
+    ],
+    "misconceptions": [
+      "Confusing bits and bytes in bandwidth calculations",
+      "Assuming DDR means four transfers per cycle"
+    ],
+    "probes": [
+      "How would quad data rate (QDR) change the resulting bandwidth?",
+      "What factors prevent real applications from reaching this peak theoretical bandwidth?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-042",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A DRAM bank has tRP = 6 ns, tRCD = 6 ns, and tCL = 2 ns. If an access causes a row buffer miss, what is the total access latency in nanoseconds?",
+    "level": "Entry level",
+    "answerKey": "A row buffer miss requires precharging the old row (tRP), activating the new row (tRCD), and reading the column (tCL). Total latency = 6 + 6 + 2 = 14 ns.",
+    "essentialFacts": [
+      "Row buffer miss requires tRP, tRCD, and tCL",
+      "Summing the three timing parameters yields 6 + 6 + 2 = 14 ns"
+    ],
+    "acceptableAlternatives": [
+      "14",
+      "14 nanoseconds"
+    ],
+    "partialCredit": [
+      "Sums only tRCD and tCL assuming a closed page policy where precharge is implicit",
+      "Omits tCL"
+    ],
+    "misconceptions": [
+      "Assuming row buffer misses only incur tRCD latency",
+      "Treating tRP as part of the column access rather than precharge"
+    ],
+    "probes": [
+      "How does a row buffer hit differ in latency from this miss?",
+      "What is the purpose of tRCD in DRAM operation?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-043",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If main memory has a 10-cycle initial latency and transfers 16 bytes per cycle, calculate the miss penalty in cycles for a 64-byte cache block.",
+    "level": "Entry level",
+    "answerKey": "Number of bus transfers = 64 / 16 = 4 cycles. Total miss penalty = initial latency + transfer cycles = 10 + 4 = 14 cycles.",
+    "essentialFacts": [
+      "Divide block size by transfer width to get transfer cycles (4 cycles)",
+      "Add initial memory access latency (10 cycles) to transfer cycles",
+      "Total miss penalty is 14 cycles"
+    ],
+    "acceptableAlternatives": [
+      "14",
+      "14 cycles"
+    ],
+    "partialCredit": [
+      "Calculates transfer cycles correctly (4) but forgets to add initial latency",
+      "Inverts block size and transfer width division"
+    ],
+    "misconceptions": [
+      "Assuming miss penalty equals only the initial memory latency",
+      "Multiplying initial latency by transfer cycles instead of adding"
+    ],
+    "probes": [
+      "How would doubling the bus transfer width to 32 bytes affect the miss penalty?",
+      "Why does block transfer time scale with block size?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-044",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A processor with a 4-entry write buffer executes 5 consecutive stores while memory is busy. If buffering takes 1 cycle and each memory write takes 4 cycles, how many stall cycles occur?",
+    "level": "Entry level",
+    "answerKey": "The first 4 stores fill the write buffer without stalling (taking 4 cycles). The 5th store arrives when the buffer is full and 0 entries have drained (since memory takes 4 cycles per write). The 5th store stalls for 4 cycles until the first write completes.",
+    "essentialFacts": [
+      "Write buffer absorbs up to its 4 entries without stalling",
+      "5th store arrives when buffer is full and stalls",
+      "Stall duration equals memory write time of 4 cycles"
+    ],
+    "acceptableAlternatives": [
+      "4",
+      "4 cycles"
+    ],
+    "partialCredit": [
+      "Calculates 5 stores * 4 cycles without accounting for write buffer capacity",
+      "Assumes write buffer drains immediately on every store"
+    ],
+    "misconceptions": [
+      "Assuming write buffers eliminate store stalls entirely regardless of burst length",
+      "Believing stores stall immediately on the first instruction if memory is busy"
+    ],
+    "probes": [
+      "What happens to the stall count if the write buffer size is increased to 8 entries?",
+      "Why do write buffers improve processor performance?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-045",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A non-blocking cache supports up to 4 outstanding misses using Miss Status Holding Registers (MSHRs). If 4 primary misses occur in quick succession, what happens when a 5th primary miss arrives before any previous miss completes?",
+    "level": "Experienced",
+    "answerKey": "The 5th primary miss cannot be allocated an MSHR because all 4 are occupied. The cache must stall the processor pipeline until at least one outstanding miss completes and frees an MSHR entry.",
+    "essentialFacts": [
+      "MSHRs limit maximum concurrent outstanding misses",
+      "Arrival of a miss when MSHRs are exhausted causes a pipeline stall",
+      "Stall persists until an outstanding miss resolves"
+    ],
+    "acceptableAlternatives": [
+      "Pipeline stalls until an MSHR frees up",
+      "Cache stalls waiting for an MSHR entry"
+    ],
+    "partialCredit": [
+      "Identifies MSHR exhaustion but fails to state that the pipeline stalls",
+      "Confuses primary and secondary misses"
+    ],
+    "misconceptions": [
+      "Assuming non-blocking caches can handle an infinite number of misses without MSHRs",
+      "Believing secondary misses count toward primary MSHR allocation limits"
+    ],
+    "probes": [
+      "How do secondary misses differ from primary misses in an MSHR-based cache?",
+      "What design tradeoffs are involved in scaling MSHR count?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-046",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A memory controller uses 4 independent banks with 4-cycle bank cycle time. If a stream of requests targets Bank 0 on cycles 0, 4, and 8, what is the effective request throughput in requests per cycle?",
+    "level": "Experienced",
+    "answerKey": "All requests target Bank 0, and bank cycle time is 4 cycles. The request at cycle 4 must wait until cycle 4 (when Bank 0 is free), but since requests happen at cycles 0, 4, and 8, each request is spaced by 4 cycles. Thus, throughput is 1 request / 4 cycles = 0.25 requests per cycle.",
+    "essentialFacts": [
+      "Targeting the same bank creates bank conflicts and serialization",
+      "Bank cycle time of 4 cycles limits access frequency to once every 4 cycles per bank",
+      "Effective throughput is 0.25 requests per cycle"
+    ],
+    "acceptableAlternatives": [
+      "0.25",
+      "1/4 request per cycle"
+    ],
+    "partialCredit": [
+      "Calculates throughput assuming banks can be accessed every cycle despite hitting the same bank",
+      "Confuses bank count with bank availability"
+    ],
+    "misconceptions": [
+      "Assuming independent banks prevent conflicts even when all addresses hash to the same bank",
+      "Ignoring bank cycle time constraints"
+    ],
+    "probes": [
+      "How would spreading the address stream across all 4 banks change the throughput?",
+      "What address interleaving technique prevents bank conflicts for strided memory access?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-047",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A hardware stream buffer prefetches sequential cache lines ahead of a working set. If a prefetch hits in the stream buffer, what is the access latency in cycles compared to a main memory fetch?",
+    "level": "Experienced",
+    "answerKey": "Stream buffer hits return data from local buffers in typically 1 cycle (matching fast cache/buffer hit latency), entirely bypassing main memory and hiding hundreds of cycles of main memory latency.",
+    "essentialFacts": [
+      "Stream buffer provides fast local access (approx. 1 cycle)",
+      "Bypasses main memory latency for prefetched data",
+      "Hides memory latency for sequential access patterns"
+    ],
+    "acceptableAlternatives": [
+      "1 cycle",
+      "Fast internal buffer latency (~1 cycle)"
+    ],
+    "partialCredit": [
+      "States latency is reduced but does not quantify or contrast with main memory",
+      "Assumes stream buffer hits still require main memory access"
+    ],
+    "misconceptions": [
+      "Believing prefetch buffers require a full bus access upon a hit",
+      "Assuming stream buffers work well for random access patterns"
+    ],
+    "probes": [
+      "What happens to stream buffer efficiency if the application exhibits highly random pointer-chasing behavior?",
+      "How do stream buffers differ from traditional cache prefetching?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-048",
+    "track": "hardware",
+    "competency": "memory bandwidth and latency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an APB transfer, when does the slave assert PREADY, and which clock edge samples the read data when PSEL is high and PENABLE goes high?",
+    "level": "Internship",
+    "answerKey": "The slave asserts PREADY during the Access phase (when PSEL and PENABLE are both active). The read data is sampled on the rising clock edge at the end of the Access phase when PREADY is high.",
+    "essentialFacts": [
+      "Slave asserts PREADY during Access phase",
+      "Data is sampled on the rising clock edge when PREADY is high"
+    ],
+    "acceptableAlternatives": [
+      "Sampled on the rising edge where PENABLE and PREADY are both high"
+    ],
+    "partialCredit": [
+      "Identifies PENABLE state but misses clock edge timing or PREADY condition."
+    ],
+    "misconceptions": [
+      "Assuming data is sampled during the Setup phase (PSEL high, PENABLE low)."
+    ],
+    "probes": [
+      "What happens if the slave holds PREADY low across multiple clock cycles in the Access phase?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-049",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A source asserts VALID and data 0xAB on cycle 0, but the destination keeps READY low until cycle 2. On which cycle is the transfer completed?",
+    "level": "Internship",
+    "answerKey": "The transfer is completed on cycle 2, because both VALID and READY are simultaneously high on that cycle's clock edge.",
+    "essentialFacts": [
+      "Transfer requires both VALID and READY to be high",
+      "Completed on cycle 2"
+    ],
+    "acceptableAlternatives": [
+      "Cycle 2",
+      "Clock edge at cycle 2"
+    ],
+    "partialCredit": [
+      "States cycle 2 for READY asserting, but confuses whether the transfer happens on cycle 1 or 2."
+    ],
+    "misconceptions": [
+      "Assuming data is latched on cycle 0 when VALID goes high regardless of READY."
+    ],
+    "probes": [
+      "What happens to the data if the source changes it on cycle 1 while READY is still low?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-050",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An AHB master initiates a single read transfer. The slave drives HREADY low for 2 cycles, then high with HRESP='OKAY' on the 3rd cycle. Total wait states?",
+    "level": "Entry level",
+    "answerKey": "There are 2 wait states, as HREADY is held low for two clock cycles before the transfer completes on the third cycle.",
+    "essentialFacts": [
+      "HREADY low indicates wait states",
+      "2 wait states corresponding to the 2 cycles HREADY is low"
+    ],
+    "acceptableAlternatives": [
+      "2 wait states"
+    ],
+    "partialCredit": [
+      "Counts the final completion cycle as a wait state (stating 3)."
+    ],
+    "misconceptions": [
+      "Confusing HRESP response cycles with wait states."
+    ],
+    "probes": [
+      "How does the master extend the address phase if the slave needs more time before starting data phase?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-051",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An AXI4 write burst has AxLEN = 3 (4 beats), AxSIZE = 2 (4 bytes/beat), and AxADDR = 0x100. What is the address of the 4th beat for an INCR burst?",
+    "level": "Entry level",
+    "answerKey": "The address of the 4th beat is 0x10C. Calculated as Start Address + (Beat Index * Size) -> 0x100 + (3 * 4) = 0x100 + 0xC = 0x10C.",
+    "essentialFacts": [
+      "Beat index for 4th beat is 3",
+      "Size is 4 bytes",
+      "INCR address formula: Start + index * size = 0x10C"
+    ],
+    "acceptableAlternatives": [
+      "0x10C",
+      "Hex 0x10C"
+    ],
+    "partialCredit": [
+      "Calculates 3 beats instead of 4 (using index 4 instead of 3, yielding 0x110) or arithmetic error."
+    ],
+    "misconceptions": [
+      "Treating AxLEN as the number of bytes instead of number of transfers minus one."
+    ],
+    "probes": [
+      "How would the address calculation change if this were a WRAP burst instead of INCR?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-052",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Four masters request a shared bus simultaneously under a 4-cycle round-robin arbiter starting with Master 0. How many total cycles pass before Master 3 is granted the bus?",
+    "level": "Entry level",
+    "answerKey": "9 total cycles pass. Master 0 gets cycles 0-2, Master 1 gets cycles 3-5, Master 2 gets cycles 6-8, and Master 3 is granted on cycle 9.",
+    "essentialFacts": [
+      "Round-robin order: M0, M1, M2, M3",
+      "Each master holds the bus for 4 cycles",
+      "Master 3 is granted at the start of the 4th interval (cycle 9)"
+    ],
+    "acceptableAlternatives": [
+      "9 cycles",
+      "9"
+    ],
+    "partialCredit": [
+      "Calculates 3 intervals of 3 cycles incorrectly without accounting for 0-indexed timing."
+    ],
+    "misconceptions": [
+      "Assuming 1 cycle per master in round-robin regardless of allocation granularity."
+    ],
+    "probes": [
+      "What happens to the arbiter pointer if Master 1 withdraws its request during its allocated window?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-053",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A master conditions its AWVALID on the slave's AWREADY, while the slave conditions its WREADY on the master's WVALID. Explain why this creates a deadlock.",
+    "level": "Experienced",
+    "answerKey": "This creates a combinational cycle / circular dependency where Master waits for AWREADY to assert AWVALID, but Slave waits for WVALID, preventing either handshake from initiating.",
+    "essentialFacts": [
+      "Combinational circular dependency between valid and ready signals",
+      "Neither handshake can initiate because each side waits for the other's handshake signal"
+    ],
+    "acceptableAlternatives": [
+      "Valid-ready dependency deadlock",
+      "Circular combinational wait loop"
+    ],
+    "partialCredit": [
+      "Identifies a timing issue but fails to explain the exact combinational circular dependency between channels."
+    ],
+    "misconceptions": [
+      "Believing valid signals can safely depend on ready signals without breaking handshaking rules."
+    ],
+    "probes": [
+      "According to the AXI specification, which handshake signal combinations are strictly prohibited to avoid this deadlock?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-054",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An AXI interconnect supports 4 outstanding transaction IDs. If two masters interleave reads with IDs 0, 1, 0, 2, what minimum reorder buffer depth per master is required?",
+    "level": "Experienced",
+    "answerKey": "A depth of 2 is required because ID 0 has 2 outstanding overlapping transactions that must be ordered correctly relative to each other, while other IDs have at most 1.",
+    "essentialFacts": [
+      "Must track outstanding transactions per ID",
+      "ID 0 appears twice, requiring buffering for reordering within that ID group"
+    ],
+    "acceptableAlternatives": [
+      "2 entries",
+      "Depth of 2"
+    ],
+    "partialCredit": [
+      "Calculates total outstanding requests (4) rather than per-ID maximum overlapping requests."
+    ],
+    "misconceptions": [
+      "Assuming buffer depth must equal the maximum total outstanding IDs supported by the interconnect regardless of traffic pattern."
+    ],
+    "probes": [
+      "How does the AXI RLAST signal assist the reorder buffer in identifying the final beat of a burst?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-055",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A shared tristate data bus switches from Master A writing to Master B writing. If propagation delay is 2ns and clock period is 10ns, how many turnaround cycles are needed?",
+    "level": "Experienced",
+    "answerKey": "1 turnaround (dead) cycle is needed because the propagation delay (2ns) is less than the clock period (10ns), so a single cycle is sufficient to prevent bus contention.",
+    "essentialFacts": [
+      "Turnaround cycle prevents bus contention when switching drivers",
+      "Propagation delay < clock period means 1 clock cycle is sufficient"
+    ],
+    "acceptableAlternatives": [
+      "1 cycle",
+      "One turnaround cycle"
+    ],
+    "partialCredit": [
+      "States 0 cycles assuming immediate switching, or calculates multiple cycles incorrectly."
+    ],
+    "misconceptions": [
+      "Believing turnaround cycles depend solely on propagation delay magnitude without comparing to clock period."
+    ],
+    "probes": [
+      "How do modern point-to-point interconnects avoid tristate bus turnaround penalties entirely?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-056",
+    "track": "hardware",
+    "competency": "bus protocols and arbitration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a Verilog always @(*) block, an asynchronous reset sets q <= 0, but the data assignment is written as q = d;. What synthesis hazard or tool warning does Yosys typically generate for this mixed assignment style?",
+    "level": "Internship",
+    "answerKey": "Yosys generates a warning about mixed blocking (=) and non-blocking (<=) assignments in the same procedural block. This creates a simulation-synthesis mismatch because blocking assignments evaluate immediately while non-blocking assignments queue updates in the NBA region.",
+    "essentialFacts": [
+      "Mixed blocking and non-blocking assignments in the same procedural block",
+      "Causes simulation-synthesis mismatch",
+      "Yosys emits a specific warning about mixing assignment styles"
+    ],
+    "acceptableAlternatives": [
+      "Simulation-synthesis race condition",
+      "Mixed assignment style warning"
+    ],
+    "partialCredit": [
+      "Identifies that mixing blocking and non-blocking assignments is bad practice without explaining the Yosys warning or mismatch."
+    ],
+    "misconceptions": [
+      "Believing mixed assignment styles are safely resolved by the synthesizer without side effects."
+    ],
+    "probes": [
+      "How does a non-blocking assignment differ from a blocking assignment regarding delta cycles during simulation?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "hardware-057",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 4-bit variable reg [3:0] val; is assigned in an incomplete case statement without a default clause. According to Yosys synthesis rules, what hardware structure does the synthesizer infer, and what tool warning flags this?",
+    "level": "Internship",
+    "answerKey": "Yosys infers a transparent latch to hold the previous value for unassigned cases, and generates an inferred latch warning indicating incomplete combinational assignments.",
+    "essentialFacts": [
+      "Incomplete conditional branches infer storage (latches)",
+      "Yosys or Verilator issues an inferred latch warning"
+    ],
+    "acceptableAlternatives": [
+      "A transparent latch and latch inference warning"
+    ],
+    "partialCredit": [
+      "Identifies latch inference but omits the tool warning aspect."
+    ],
+    "misconceptions": [
+      "Assuming unassigned case values default to zero combinational logic without storage elements."
+    ],
+    "probes": [
+      "How can you modify the case statement or add a directive to prevent unintended latch inference?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-058",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Consider always_ff @(posedge clk) q <= a & b;. If a is a 4-bit vector and b is a 2-bit vector, what is the resulting bit-width of the RHS expression under Verilog expression rules before assignment?",
+    "level": "Entry level",
+    "answerKey": "The expression width is 4 bits. Under Verilog self-determined and context-determined rules, bitwise operations take the maximum operand width, so the 2-bit vector 'b' is implicitly zero-extended to 4 bits.",
+    "essentialFacts": [
+      "Bitwise operation width equals the maximum width of its operands",
+      "Max(4, 2) = 4 bits",
+      "Shorter operands are zero-extended to match"
+    ],
+    "acceptableAlternatives": [
+      "4 bits",
+      "4-bit width"
+    ],
+    "partialCredit": [
+      "States it is 4 bits but fails to explain the zero-extension or max-width rule."
+    ],
+    "misconceptions": [
+      "Assuming expressions truncate to the smaller operand width or take the LHS assignment width for internal calculations."
+    ],
+    "probes": [
+      "What warning does Verilator issue when assignment LHS width differs from RHS expression width?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "hdlbits"
+    ],
+    "id": "hardware-059",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does writing always @(posedge clk) without checking areset in an async reset flip-flop cause a functional bug in simulation even if synthesis succeeds? Explain using Verilog event queue semantics.",
+    "level": "Entry level",
+    "answerKey": "Omitting the reset edge from the sensitivity list means the procedural block will not trigger when 'areset' asserts asynchronously in simulation. Synthesis may still infer an async reset based on coding template matching despite the omission.",
+    "essentialFacts": [
+      "Sensitivity list must include the reset edge (e.g., negedge areset)",
+      "Missing it prevents simulation blocks from triggering on asynchronous reset edges",
+      "Synthesis template matching can infer hardware asynchronously despite simulation omission"
+    ],
+    "acceptableAlternatives": [
+      "Simulation-synthesis mismatch due to incomplete sensitivity list"
+    ],
+    "partialCredit": [
+      "Mentions simulation failure but omits the sensitivity list event trigger explanation."
+    ],
+    "misconceptions": [
+      "Believing synthesis tool rules dictate simulation event execution triggers."
+    ],
+    "probes": [
+      "How does Verilator lint check missing sensitivity items in procedural blocks?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "hardware-060",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Analyze a combinational feedback loop where assign x = ~(y & clk); and assign y = ~x;. Why does this cause infinite zero-delay oscillation in event-driven simulators, and how does Yosys handle cyclic combinational paths during flattening?",
+    "level": "Experienced",
+    "answerKey": "Zero-delay feedback triggers infinite delta-cycle loops because changing 'x' immediately triggers 'y' and vice versa without advancing time. Yosys detects cyclic combinational paths and outputs a cyclic dependency error or breaks cycles arbitrarily.",
+    "essentialFacts": [
+      "Zero-delay feedback causes infinite delta-cycle loops in event simulators",
+      "Event-driven simulators hang or report oscillation errors",
+      "Yosys detects combinational loops and fails or cuts cycles during flattening"
+    ],
+    "acceptableAlternatives": [
+      "Combinational loop error and simulation freeze"
+    ],
+    "partialCredit": [
+      "Explains the simulator hang but not Yosys synthesis cycle detection behavior."
+    ],
+    "misconceptions": [
+      "Assuming combinational feedback safely forms memory cells without explicit sequential elements or latches."
+    ],
+    "probes": [
+      "What synthesis attribute or directive can designers use to control logic loop handling in synthesis tools?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "mit-cs"
+    ],
+    "id": "hardware-061",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a pipelined process, two blocks communicate via non-blocking assignments. If Process A updates reg_a <= data and Process B reads reg_a in the same clock edge, what is the exact delta-cycle scheduling behavior of these updates?",
+    "level": "Experienced",
+    "answerKey": "Process B reads the old value of reg_a. Non-blocking assignments evaluate their RHS expressions in the active region and update their LHS variables in the non-blocking assignment update region, so reads in concurrent active blocks see pre-update values.",
+    "essentialFacts": [
+      "Non-blocking assignments evaluate RHS in active region and update LHS in NBA region",
+      "Concurrent active reads observe the old (pre-update) value",
+      "Updates take effect in the subsequent delta cycle"
+    ],
+    "acceptableAlternatives": [
+      "Old value is read due to NBA region delay"
+    ],
+    "partialCredit": [
+      "Mentions a race condition exists without explaining the active vs NBA regions."
+    ],
+    "misconceptions": [
+      "Assuming non-blocking assignments update immediately like blocking assignments within the active region."
+    ],
+    "probes": [
+      "How would changing one assignment to blocking (=) alter the execution order and output?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-062",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A wide multiplexer is implemented using nested ternary operators: assign out = sel[1] ? (sel[0] ? d3 : d2) : (sel[0] ? d1 : d0);. How does Yosys map this expression to standard cell logic, and what is the gate-level depth in terms of 2-input MUXes?",
+    "level": "Experienced",
+    "answerKey": "Yosys maps this expression to a balanced binary tree of 2-input multiplexers. The gate-level depth is 2 levels of 2-input MUXes for a 4-to-1 multiplexer structure.",
+    "essentialFacts": [
+      "Maps to a balanced tree of 2-input multiplexers",
+      "Gate-level depth is 2 levels for a 4-to-1 MUX",
+      "Ternary operators build tree structures rather than priority-encoded chains"
+    ],
+    "acceptableAlternatives": [
+      "2 levels of MUXes",
+      "Binary MUX tree depth of 2"
+    ],
+    "partialCredit": [
+      "Identifies the MUX tree structure but calculates incorrect depth (e.g., 4 levels)."
+    ],
+    "misconceptions": [
+      "Assuming ternary operators generate priority-encoded conditional chains rather than balanced trees."
+    ],
+    "probes": [
+      "How does changing this to a casez statement alter priority encoding in synthesis?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "hdlbits"
+    ],
+    "id": "hardware-063",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given reg [7:0] a = 8'hFF; reg [7:0] b = 8'h01; reg [8:0] sum;, calculate sum = a + b;. What is the exact 9-bit binary value of sum after addition, and why does bit extension occur?",
+    "level": "Internship",
+    "answerKey": "The sum equals 9'h100 (binary 100000000). Bit extension occurs because addition is context-determined; the operands are sized to the max expression width (or carry requirements), expanding the addition to 9 bits to preserve the carry-out.",
+    "essentialFacts": [
+      "8'hFF (255) + 8'h01 (1) = 256",
+      "9-bit binary value is 9'h100 or 100000000",
+      "Context-determined addition width expands to prevent carry-out loss"
+    ],
+    "acceptableAlternatives": [
+      "9'h100",
+      "binary 100000000"
+    ],
+    "partialCredit": [
+      "Calculates the numeric value 256 or 9'h100 but omits the explanation of context-determined width extension."
+    ],
+    "misconceptions": [
+      "Assuming 8-bit operands force an 8-bit truncated addition regardless of the larger LHS register size."
+    ],
+    "probes": [
+      "What happens to the carry-out if 'sum' was defined as an 8-bit reg instead?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "verilator"
+    ],
+    "id": "hardware-064",
+    "track": "hardware",
+    "competency": "RTL semantics and synthesis",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A signal crosses from a 100 MHz clock domain to a 200 MHz clock domain using a standard 2-flop synchronizer. What is the maximum synchronization latency in cycles of the destination clock?",
+    "level": "Internship",
+    "answerKey": "2 destination clock cycles.",
+    "essentialFacts": [
+      "A 2-flop synchronizer consists of two flip-flops connected in series clocked by the destination clock.",
+      "The output is captured and available after 2 cycles of the destination clock."
+    ],
+    "acceptableAlternatives": [
+      "Two destination cycles",
+      "2 cycles"
+    ],
+    "partialCredit": [
+      "1 cycle - misunderstands synchronizer depth",
+      "Source clock cycles - confuses source and destination domains"
+    ],
+    "misconceptions": [
+      "Assuming synchronization happens instantaneously in zero time.",
+      "Thinking latency is measured in source clock cycles rather than destination cycles."
+    ],
+    "probes": [
+      "How does the destination clock frequency affect the metastability resolution window?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-065",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why can a 2-flop synchronizer not be used directly to cross a 4-bit parallel data bus from a slow clock to a fast clock domain?",
+    "level": "Internship",
+    "answerKey": "Routing skew causes individual bits to arrive at slightly different times, resulting in transient invalid mixed bus values being sampled.",
+    "essentialFacts": [
+      "Multi-bit buses suffer from physical skew across wires.",
+      "Independent synchronizers per bit can resolve each bit at different clock edges, causing illegal intermediate states."
+    ],
+    "acceptableAlternatives": [
+      "Bit skew causes misalignment and invalid multi-bit states.",
+      "Skew prevents synchronous multi-bit sampling."
+    ],
+    "partialCredit": [
+      "Mentions metastability on a single bit without explaining multi-bit skew."
+    ],
+    "misconceptions": [
+      "Believing metastability affects all bits of a bus simultaneously in the exact same way."
+    ],
+    "probes": [
+      "How does a Gray code encoder prevent multi-bit skew issues during CDC?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-066",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a clock domain crossing has a calculated MTBF of 50 hours, what two circuit or frequency parameters would you adjust to increase the MTBF to 100,000 hours?",
+    "level": "Entry level",
+    "answerKey": "Increase the resolution time by adding a third synchronizer flip-flop, and reduce the source or destination clock frequency product.",
+    "essentialFacts": [
+      "MTBF depends exponentially on the settling time (number of synchronizer stages).",
+      "MTBF is inversely proportional to the product of source and destination clock frequencies."
+    ],
+    "acceptableAlternatives": [
+      "Add a 3rd synchronizer stage and lower clock frequencies.",
+      "Increase synchronizer flops and decrease clock speeds."
+    ],
+    "partialCredit": [
+      "Mentioning only adding a register without acknowledging frequency factors."
+    ],
+    "misconceptions": [
+      "Assuming increasing supply voltage directly fixes CDC MTBF without affecting timing."
+    ],
+    "probes": [
+      "How does adding a third flop impact the total control path latency?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-067",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an asynchronous FIFO, why must read and write pointers be converted to Gray code before crossing clock domains?",
+    "level": "Entry level",
+    "answerKey": "Gray code ensures only a single bit changes between adjacent values, preventing multi-bit skew from causing corrupted multi-bit binary values during synchronization.",
+    "essentialFacts": [
+      "Binary counters change multiple bits simultaneously (e.g., 0111 to 1000).",
+      "Gray code guarantees a Hamming distance of 1 between consecutive values."
+    ],
+    "acceptableAlternatives": [
+      "Only one bit toggles per transition, avoiding invalid intermediate values.",
+      "Prevents multi-bit transition decoding errors."
+    ],
+    "partialCredit": [
+      "Mentions avoiding errors without explaining Hamming distance or multi-bit toggle issues."
+    ],
+    "misconceptions": [
+      "Believing Gray code eliminates metastability entirely rather than preventing multi-bit decoding errors."
+    ],
+    "probes": [
+      "How do you convert a Gray-coded pointer back to binary in the destination clock domain?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-068",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 2-phase handshake CDC protocol, a source asserts REQ, and the destination acknowledges with ACK. What is the primary throughput bottleneck compared to an asynchronous FIFO?",
+    "level": "Entry level",
+    "answerKey": "Round-trip synchronization latency (REQ must cross to dest, ACK must cross back to source) limits transfer rate to one item per multiple clock cycles.",
+    "essentialFacts": [
+      "Handshaking requires full round-trip confirmation before the next transfer can begin.",
+      "Asynchronous FIFOs pipeline transfers continuously using circular pointers without waiting for round-trips."
+    ],
+    "acceptableAlternatives": [
+      "Waiting for acknowledgement before sending the next item restricts throughput.",
+      "Round-trip delay of control signals."
+    ],
+    "partialCredit": [
+      "Mentions latency without explaining the round-trip requirement."
+    ],
+    "misconceptions": [
+      "Assuming handshaking achieves higher throughput due to simpler control logic."
+    ],
+    "probes": [
+      "How does a 4-phase handshake differ from a 2-phase handshake in terms of signal toggling?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-069",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A pulse synchronizer toggles a signal in the source domain and uses a toggle detector in the destination domain. What is the maximum source clock pulse width constraint relative to the destination clock?",
+    "level": "Experienced",
+    "answerKey": "The source pulse must remain stable long enough (typically at least 1.5 to 2 destination clock cycles) to be reliably sampled by the destination clock.",
+    "essentialFacts": [
+      "Source pulse width must exceed the destination clock period to guarantee detection.",
+      "Rapid pulses shorter than destination clock cycles can be missed by the toggle synchronizer."
+    ],
+    "acceptableAlternatives": [
+      "Source pulse must last at least two destination clock cycles.",
+      "Source clock cannot be faster than half the destination clock frequency."
+    ],
+    "partialCredit": [
+      "Mentions frequency difference without specifying pulse width or toggle duration constraints."
+    ],
+    "misconceptions": [
+      "Assuming any narrow pulse can be stretched combinationally without synchronizer timing violations."
+    ],
+    "probes": [
+      "What happens if two rapid pulses arrive in the source domain before the toggle is acknowledged?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-070",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An async FIFO uses Gray-coded pointers synchronized into opposite domains. When generating the empty flag in the read domain, why is comparing the synchronized write pointer directly to the read pointer safe?",
+    "level": "Experienced",
+    "answerKey": "Any metastability delay on the synchronized write pointer makes the FIFO appear emptier than it actually is, which is a safe conservative error rather than a dangerous overflow.",
+    "essentialFacts": [
+      "Synchronizer delay delays the apparent arrival of written data.",
+      "Conservative errors in status flags prevent data corruption or buffer overflow."
+    ],
+    "acceptableAlternatives": [
+      "Synchronizer delay results in conservative empty states, avoiding data corruption.",
+      "A delayed write pointer update only makes the FIFO look less full."
+    ],
+    "partialCredit": [
+      "Mentions safety without explaining conservative status flags."
+    ],
+    "misconceptions": [
+      "Believing pointer synchronization must be instantaneous for correct FIFO operation."
+    ],
+    "probes": [
+      "How does the conversion from Gray code back to binary affect the safety of empty flag generation?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-071",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a mux-based CDC scheme where a control signal selects data after crossing a synchronizer, why must the data signals remain stable throughout the entire synchronization window and destination setup time?",
+    "level": "Experienced",
+    "answerKey": "If data changes while the synchronizer output is metastable or transitioning, combinational logic downstream will sample unstable or intermediate glitch values.",
+    "essentialFacts": [
+      "Data must be held static across domains before and after control synchronization.",
+      "Combinational paths read corrupt values if inputs change during metastability resolution."
+    ],
+    "acceptableAlternatives": [
+      "Data must remain static to prevent sampling during intermediate transitions.",
+      "Changes during the metastability window cause combinational logic corruption."
+    ],
+    "partialCredit": [
+      "Mentions stability without referencing the synchronizer window or combinational logic sampling."
+    ],
+    "misconceptions": [
+      "Assuming synchronizing the control signal automatically stabilizes the associated data path."
+    ],
+    "probes": [
+      "How does adding holding registers on the source data bus mitigate this hazard?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-072",
+    "track": "hardware",
+    "competency": "clock domain crossings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a launch clock edge at t=0, a clock-to-Q delay of 0.5 ns, combinational logic delay of 3.2 ns, setup time of 0.4 ns, and a 10 ns clock period with zero skew, calculate the setup slack.",
+    "level": "Internship",
+    "answerKey": "Data arrival time = 0.5 ns + 3.2 ns = 3.7 ns. Required time = 10.0 ns - 0.4 ns = 9.6 ns. Setup slack = Required time - Arrival time = 9.6 ns - 3.7 ns = 5.9 ns.",
+    "essentialFacts": [
+      "Data arrival time is launch clock + clock-to-Q + logic delay.",
+      "Required time is capture clock time minus setup time.",
+      "Setup slack equals required time minus arrival time."
+    ],
+    "acceptableAlternatives": [
+      "+5.9 ns",
+      "5.9 nanoseconds"
+    ],
+    "partialCredit": [
+      "Award partial credit if the candidate correctly calculates arrival or required time but makes an arithmetic error in the final subtraction.",
+      "Award partial credit if they omit the clock-to-Q or setup time from the equation."
+    ],
+    "misconceptions": [
+      "Adding setup time to the data arrival time instead of subtracting it from the clock period to find the required time.",
+      "Treating clock-to-Q delay as part of the combinational logic delay."
+    ],
+    "probes": [
+      "How does a positive clock skew affect this setup slack calculation?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-073",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A register has a hold time requirement of 0.3 ns, a clock-to-Q delay of 0.4 ns, and the minimum combinational logic delay is 0.1 ns with zero clock skew. Is there a hold violation?",
+    "level": "Internship",
+    "answerKey": "Hold arrival time = clock-to-Q + min logic delay = 0.4 ns + 0.1 ns = 0.5 ns. Hold required time = hold time requirement = 0.3 ns. Arrival (0.5 ns) > Required (0.3 ns), so hold slack is +0.2 ns; therefore, there is no hold violation.",
+    "essentialFacts": [
+      "Hold check compares minimum data arrival against the hold time requirement.",
+      "Hold arrival time equals minimum clock-to-Q plus minimum logic delay.",
+      "Positive hold slack indicates no hold violation."
+    ],
+    "acceptableAlternatives": [
+      "No, slack is +0.2 ns",
+      "No hold violation exists"
+    ],
+    "partialCredit": [
+      "Award partial credit for correctly calculating the arrival time (0.5 ns) but misinterpreting the comparison inequality."
+    ],
+    "misconceptions": [
+      "Believing that hold violations depend on the clock frequency or period.",
+      "Using maximum path delays instead of minimum path delays for hold verification."
+    ],
+    "probes": [
+      "What circuit modification would you make if the minimum logic delay was 0.1 ns and the hold time was 0.5 ns?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-074",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If launch clock skew is +0.5 ns (arrives late) and capture clock skew is -0.2 ns (arrives early) under a 5 ns clock, how do these skews individually affect setup slack and hold slack?",
+    "level": "Entry level",
+    "answerKey": "Late launch clock (+0.5 ns) reduces setup slack by 0.5 ns and increases hold slack by 0.5 ns. Early capture clock (-0.2 ns) reduces setup slack by 0.2 ns and decreases hold slack by 0.2 ns. Net setup slack changes by -0.7 ns.",
+    "essentialFacts": [
+      "Positive launch skew delays data launch, hurting setup slack and helping hold slack.",
+      "Negative capture skew pulls the capture edge earlier, hurting setup slack and hurting hold slack.",
+      "Combined setup penalty is the difference between capture and launch skews."
+    ],
+    "acceptableAlternatives": [
+      "Setup slack decreases by 0.7 ns; hold slack increases by 0.3 ns."
+    ],
+    "partialCredit": [
+      "Award partial credit if the candidate correctly evaluates setup impact but reverses the hold impact signs."
+    ],
+    "misconceptions": [
+      "Assuming clock skew affects setup and hold checks in the same direction."
+    ],
+    "probes": [
+      "Why is clock skew often beneficial for hold time if both registers share the same local clock tree branch?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-075",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a half-cycle path where data is launched on the positive edge and captured on the negative edge of a 4 ns clock, what is the nominal setup time window available for the combinational logic?",
+    "level": "Entry level",
+    "answerKey": "The nominal window is half of the clock period (T_clk / 2 = 2.0 ns) minus the register clock-to-Q delay and setup time.",
+    "essentialFacts": [
+      "Half-cycle paths use opposite clock edges for launch and capture.",
+      "The available clock phase is half of the full clock period.",
+      "Clock-to-Q and setup time must still be subtracted from this half-cycle phase."
+    ],
+    "acceptableAlternatives": [
+      "2 ns minus clock-to-Q and setup time",
+      "2 nanoseconds"
+    ],
+    "partialCredit": [
+      "Award partial credit for stating 4 ns (full clock period) without adjusting for the half-cycle edge transition."
+    ],
+    "misconceptions": [
+      "Assuming half-cycle paths relax setup constraints compared to full-cycle paths of the same period."
+    ],
+    "probes": [
+      "How does a half-cycle path impact the hold time constraint relative to the launch edge?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-076",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A path is constrained with a setup multiplier of 2 and a hold multiplier of 0. If the clock period is 2 ns, what are the target capture edges for setup and hold checks?",
+    "level": "Entry level",
+    "answerKey": "The setup target capture edge is at 2 * 2 ns = 4 ns. The hold target capture edge defaults or is constrained to 0 ns (or the relaxed edge specified by the zero-hold multicycle constraint).",
+    "essentialFacts": [
+      "Setup multicycle path multiplier scales the required arrival time across multiple clock cycles.",
+      "Hold multicycle constraint must be explicitly relaxed to avoid checking against the immediate edge.",
+      "Without hold adjustment, hold checks default to the edge immediately preceding the setup capture edge."
+    ],
+    "acceptableAlternatives": [
+      "Setup at 4 ns, hold at 0 ns",
+      "Capture edge at 4 ns for setup"
+    ],
+    "partialCredit": [
+      "Award partial credit for correctly calculating the setup capture edge at 4 ns but omitting or misunderstanding the hold check edge."
+    ],
+    "misconceptions": [
+      "Assuming the hold check automatically shifts along with the setup multiplier without an explicit hold constraint."
+    ],
+    "probes": [
+      "Why does an unconstrained multicycle path often cause catastrophic hold violations in static timing analysis?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-077",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During static timing analysis, how do deterministic jitter and random jitter differ in their treatment within setup and hold uncertainty calculations, and why are they combined via different arithmetic rules?",
+    "level": "Experienced",
+    "answerKey": "Deterministic jitter has bounded peaks and is added linearly to clock uncertainty. Random jitter has a Gaussian distribution and is combined using Root-Sum-Square (RSS) due to statistical independence before linear addition for worst-case corners.",
+    "essentialFacts": [
+      "Deterministic jitter represents bounded duty-cycle distortion or crosstalk and is summed linearly.",
+      "Random jitter is unbounded Gaussian noise combined using root-sum-square (RSS).",
+      "Both uncertainty components directly reduce effective setup and hold time margins."
+    ],
+    "acceptableAlternatives": [
+      "Deterministic is linear sum; random is RSS combined.",
+      "Bounded deterministic vs Gaussian random distribution."
+    ],
+    "partialCredit": [
+      "Award partial credit for mentioning jitter types without explaining RSS versus linear combination."
+    ],
+    "misconceptions": [
+      "Treating all clock uncertainty components as purely additive linear margins without statistical reduction."
+    ],
+    "probes": [
+      "How does on-chip variation (OCV) factor into these uncertainty margins during STA?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-078",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In high-performance designs, why might a timing engineer intentionally introduce useful skew on the capture register clock pin to fix a setup violation, and what is the primary trade-off?",
+    "level": "Experienced",
+    "answerKey": "Useful skew delays or advances the capture clock relative to the launch clock. Delaying capture increases the setup time window, fixing setup violations, but it directly decreases hold slack on that same path, risking hold violations.",
+    "essentialFacts": [
+      "Intentional skew shifts the capture clock edge to improve setup slack.",
+      "The primary trade-off is degrading hold slack on the same path.",
+      "Requires careful verification across multiple PVT corners to prevent hold failures."
+    ],
+    "acceptableAlternatives": [
+      "Trades hold margin for setup margin by shifting capture edge.",
+      "Improves setup at the expense of hold."
+    ],
+    "partialCredit": [
+      "Award partial credit for recognizing setup improvement but omitting the hold degradation consequence."
+    ],
+    "misconceptions": [
+      "Assuming useful skew can simultaneously improve both setup and hold margins."
+    ],
+    "probes": [
+      "What tool feature automates useful skew insertion during physical synthesis and place-and-route?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-079",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A flip-flop exhibits a negative setup time (t_setup = -0.1 ns). Explain physically how internal latch stages achieve this, and how it impacts the corresponding hold time requirement (t_hold).",
+    "level": "Experienced",
+    "answerKey": "Master-slave latches tolerate data arriving slightly after the clock edge because internal feedback loops latch it fast. However, by the principle of time borrowing and window conservation, a more negative setup time necessitates a larger positive hold time requirement.",
+    "essentialFacts": [
+      "Negative setup time means data can change after the clock edge and still be captured correctly.",
+      "Achieved via internal latch transparency and a fast master stage.",
+      "Trade-off: Decreasing setup time increases the hold time constraint (t_setup + t_hold = constant window)."
+    ],
+    "acceptableAlternatives": [
+      "Internal latch transparency trades setup margin for a stricter hold requirement.",
+      "Sum of setup and hold timing window remains constant."
+    ],
+    "partialCredit": [
+      "Award partial credit for explaining negative setup without mentioning the corresponding increase in hold requirement."
+    ],
+    "misconceptions": [
+      "Believing that negative setup time violates fundamental causality or timing laws without penalty."
+    ],
+    "probes": [
+      "How does process voltage temperature (PVT) variation affect this internal latch timing window?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-080",
+    "track": "hardware",
+    "competency": "setup hold and timing closure",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 50 MHz digital block operating at 1.0V has a total switched capacitance of 200 pF. Calculate its dynamic power consumption in milliwatts using the standard dynamic power equation.",
+    "level": "Internship",
+    "answerKey": "Dynamic power is calculated using P = alpha * C * V^2 * f. Assuming an activity factor (alpha) of 1, P = 1 * (200 x 10^-12 F) * (1.0V)^2 * (50 x 10^6 Hz) = 10 x 10^-3 W = 10 mW.",
+    "essentialFacts": [
+      "Dynamic power formula is P = alpha * C * V^2 * f.",
+      "Calculation yields 10 mW for alpha = 1.",
+      "Correct unit conversion for pF (10^-12) and MHz (10^6)."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning that if activity factor alpha is less than 1, power scales proportionally."
+    ],
+    "partialCredit": [
+      "Correctly states the formula and multiplies components but makes a unit conversion error."
+    ],
+    "misconceptions": [
+      "Confusing dynamic power with static leakage power.",
+      "Omitting the frequency term or failing to square the voltage."
+    ],
+    "probes": [
+      "How does halving the operating frequency impact dynamic power versus halving the supply voltage?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-081",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does an asynchronous reset flip-flop require the reset signal to be deasserted synchronously with the clock edge, and what timing failure occurs if this reset recovery time is violated?",
+    "level": "Internship",
+    "answerKey": "While asynchronous assertion requires no clock, asynchronous deassertion (release) can cause a setup-like timing violation called recovery time failure if reset deasserts too close to the active clock edge, leading to metastability in the flip-flop output.",
+    "essentialFacts": [
+      "Asynchronous reset release near a clock edge risks metastability.",
+      "Recovery time is the minimum time reset must remain asserted before the active clock edge.",
+      "Violation leads to an indeterminate or metastable flip-flop state."
+    ],
+    "acceptableAlternatives": [
+      "Referring to recovery time as the setup-time equivalent for asynchronous control signals."
+    ],
+    "partialCredit": [
+      "Recognizes that asynchronous release causes metastability but confuses recovery time with hold time (removal time)."
+    ],
+    "misconceptions": [
+      "Believing asynchronous resets never require synchronization upon release."
+    ],
+    "probes": [
+      "How does a synchronizer circuit ensure reset deassertion happens safely relative to the clock?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "hardware-082",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an integrated clock-gating cell using a latch, why is the latch level-sensitive (transparent when clock is low) rather than edge-triggered, and how does this prevent clock glitches when the enable signal changes while the clock is high?",
+    "level": "Entry level",
+    "answerKey": "The latch is transparent when the clock is low. When the clock is high, the latch is opaque, holding its output stable regardless of enable changes during the high phase, thereby preventing glitches on the gated clock output.",
+    "essentialFacts": [
+      "Latch is transparent when clock is low.",
+      "Opaque state during clock-high prevents glitch transmission.",
+      "Edge-triggered DFFs would sample enable edges incorrectly or miss state changes."
+    ],
+    "acceptableAlternatives": [
+      "Explaining that the latch samples enable only when clock is low to prevent mid-cycle glitching."
+    ],
+    "partialCredit": [
+      "Explains that it holds the enable value stable but omits the specific low-phase transparency mechanism."
+    ],
+    "misconceptions": [
+      "Assuming the latch is transparent during the high phase of the clock."
+    ],
+    "probes": [
+      "What happens to the gated clock waveform if you replace the level-sensitive latch with a rising-edge triggered flip-flop?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-083",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If you scale the supply voltage from 1.2V to 0.9V to reduce dynamic power, why does subthreshold leakage current increase if threshold voltage is simultaneously lowered to maintain performance, and how does this affect total power?",
+    "level": "Entry level",
+    "answerKey": "Lowering threshold voltage (V_th) to recover performance increases subthreshold leakage exponentially. While dynamic power decreases quadratically with V, static leakage power increases, creating a trade-off where total power may increase if leakage dominates.",
+    "essentialFacts": [
+      "Lowering threshold voltage (V_th) to recover performance increases subthreshold leakage exponentially.",
+      "Dynamic power decreases with V^2, but static leakage power increases.",
+      "Total power is the sum of dynamic and static leakage components."
+    ],
+    "acceptableAlternatives": [
+      "Describing the balance between dynamic power savings and static leakage penalties."
+    ],
+    "partialCredit": [
+      "Mentioning that dynamic power drops but failing to explain the mechanism of leakage increase via V_th reduction."
+    ],
+    "misconceptions": [
+      "Believing lower supply voltage always reduces total power unconditionally."
+    ],
+    "probes": [
+      "At what operating point does static leakage power outweigh dynamic power savings in advanced technology nodes?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-084",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When designing a multi-voltage domain chip where a 0.8V core drives a 1.2V IO pad, why must a level shifter be placed in the 0.8V domain before the boundary, and what happens if a high-to-low level shifter is placed incorrectly?",
+    "level": "Experienced",
+    "answerKey": "A low-to-high level shifter translates 0.8V logic swings to 1.2V to prevent receiver gate oxide stress and crowbar current from partially-on PMOS/NMOS transistors. Placing it incorrectly or using the wrong type causes DC power loss or logic failure.",
+    "essentialFacts": [
+      "Low-to-high level shifters prevent floating or partially-on transistors in the higher voltage receiver.",
+      "Unshifted voltages cause high short-circuit (crowbar) currents.",
+      "Placement must bridge voltage domains correctly at the boundary."
+    ],
+    "acceptableAlternatives": [
+      "Discussing gate oxide reliability and crowbar current prevention."
+    ],
+    "partialCredit": [
+      "Stating that it bridges voltage domains but omitting transistor leakage or crowbar current effects."
+    ],
+    "misconceptions": [
+      "Believing standard CMOS gates can natively handle mismatched input and supply voltages without reliability issues."
+    ],
+    "probes": [
+      "How do level shifters handle the DC path between two different supply rails without creating a permanent short circuit?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "hardware-085",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a power-gated domain, an un-switched output drives an active-low input in an always-on domain. When power is shut off, what logic state must an isolation cell clamp this output to, and why does floating logic cause short-circuit current?",
+    "level": "Experienced",
+    "answerKey": "The isolation cell must clamp the output to logic 1 (for an active-low input) so the receiver input doesn't float. A floating input sits at an intermediate voltage, turning on both PMOS and NMOS transistors simultaneously, creating a severe short-circuit (crowbar) current.",
+    "essentialFacts": [
+      "Isolation cells prevent floating inputs in always-on blocks.",
+      "Clamping state depends on receiver polarity (logic 1 for active-low).",
+      "Floating gate voltages cause simultaneous PMOS/NMOS conduction, draining power."
+    ],
+    "acceptableAlternatives": [
+      "Describing clamping to a safe inactive state to avoid floating inputs."
+    ],
+    "partialCredit": [
+      "Identifying that it prevents floating inputs but misstating the required clamp level."
+    ],
+    "misconceptions": [
+      "Assuming floating inputs only cause logic errors rather than catastrophic analog short-circuit power dissipation."
+    ],
+    "probes": [
+      "How does an isolation cell maintain its clamped output state when the local power supply is completely cut off?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "hardware-086",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During static timing analysis, what is the physical difference between reset recovery time and reset removal time, and how do they correspond to setup and hold constraints relative to the active clock edge?",
+    "level": "Experienced",
+    "answerKey": "Recovery time is the minimum time an asynchronous reset must be deasserted before the active clock edge (akin to setup time). Removal time is the minimum time reset must remain deasserted after the active clock edge (akin to hold time).",
+    "essentialFacts": [
+      "Recovery time corresponds to setup time for asynchronous control deassertion.",
+      "Removal time corresponds to hold time for asynchronous control deassertion.",
+      "Violating either causes metastability during reset release."
+    ],
+    "acceptableAlternatives": [
+      "Describing recovery as pre-clock edge constraint and removal as post-clock edge constraint."
+    ],
+    "partialCredit": [
+      "Confusing recovery with removal or mixing up their relative timing positions."
+    ],
+    "misconceptions": [
+      "Believing static timing analysis only checks synchronous data paths and ignores reset release timing."
+    ],
+    "probes": [
+      "How do asynchronous reset synchronizers eliminate both recovery and removal timing violations in practical ASIC designs?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-087",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why can asynchronous reset release skew across millions of flip-flops cause chip failure during startup, and why is an asynchronous-assertion synchronous-deassertion reset synchronizer circuit required to fix this?",
+    "level": "Entry level",
+    "answerKey": "If reset release is skewed across a chip, some flip-flops exit reset on clock edge N while others exit on edge N+1, causing internal logic to sample invalid state transitions. A synchronizer releases reset synchronously to the clock, ensuring all flops exit reset simultaneously on the same clock edge.",
+    "essentialFacts": [
+      "Skewed reset release causes flip-flops to exit reset on different clock cycles.",
+      "This desynchronizes pipeline states and corrupts startup behavior.",
+      "Synchronous deassertion aligns release to the clock edge globally."
+    ],
+    "acceptableAlternatives": [
+      "Explaining that asynchronous release skew creates race conditions between distributed registers."
+    ],
+    "partialCredit": [
+      "Mentioning clock skew issues but failing to explain how asynchronous reset release creates multi-cycle misalignment."
+    ],
+    "misconceptions": [
+      "Assuming asynchronous reset means both assertion and deassertion can safely happen asynchronously without timing alignment."
+    ],
+    "probes": [
+      "Why is asynchronous assertion still used if deassertion must be synchronized?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "hardware-088",
+    "track": "hardware",
+    "competency": "reset and low power design",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Write an SVA concurrent assertion checking that every time `req` goes high, `ack` must assert within 1 to 3 cycles and stay high until `req` drops.",
+    "level": "Entry level",
+    "answerKey": "property p; @(posedge clk) req |-> ##[1:3] (ack && (ack [*1] until !req)); endproperty assert property (p);",
+    "essentialFacts": [
+      "Concurrent assertions require an explicit clocking event such as @(posedge clk).",
+      "The implication operator |-> binds the boolean antecedent to the sequential consequent.",
+      "Delay ranges like ##[1:3] specify the timing window for the response."
+    ],
+    "acceptableAlternatives": [
+      "Using s_eventually or explicit boolean delay terms with repetition operators."
+    ],
+    "partialCredit": [
+      "Correctly sets up the clocking and implication but introduces an off-by-one error in the cycle delay range."
+    ],
+    "misconceptions": [
+      "Believing immediate assertions can use multi-cycle delay operators like ##[1:3] without simulation errors.",
+      "Confusing overlapping implication |-> with non-overlapping |=>."
+    ],
+    "probes": [
+      "How would you modify the assertion if ack is permitted to deassert before req drops?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "verilator"
+    ],
+    "id": "hardware-089",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why an immediate assertion inside an always_ff block executes on every clock edge, whereas a concurrent assertion evaluates sampled values in the preponed region.",
+    "level": "Internship",
+    "answerKey": "Immediate assertions are procedural statements evaluated sequentially whenever execution flows through them. Concurrent assertions use sampled values from the preponed region to decouple evaluation from active region driver race conditions.",
+    "essentialFacts": [
+      "Immediate assertions execute procedurally like conditional statements in procedural blocks.",
+      "Concurrent assertions utilize a two-step evaluation model sampling at preponed and evaluating at observed.",
+      "Procedural execution order can introduce delta-cycle race conditions if signals change multiple times."
+    ],
+    "acceptableAlternatives": [
+      "Explaining simulation stratification regions (Preponed, Active, Observed)."
+    ],
+    "partialCredit": [
+      "Explains procedural execution of immediate assertions but omits the simulation sampling mechanics for concurrent assertions."
+    ],
+    "misconceptions": [
+      "Assuming immediate assertions evaluate at the end of the simulation time step.",
+      "Thinking concurrent assertions execute continuously without a clock edge reference."
+    ],
+    "probes": [
+      "What happens to an immediate assertion inside an always_comb block when inputs change multiple times within a single delta cycle?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "hardware-090",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a covergroup, you define a cross of opcode[3:0] and status[1:0]. If opcode has 16 values and status has 4, calculate the total bins and explain how to ignore invalid combinations.",
+    "level": "Experienced",
+    "answerKey": "The total unconstrained cross product yields 16 * 4 = 64 bins. Invalid combinations are excluded using the ignore_bins construct combined with a filtering expression (e.g., ignore_bins invalid = bin_name with (condition)).",
+    "essentialFacts": [
+      "A cross product of two variables multiplies their individual bin counts together.",
+      "ignore_bins removes specified cross combinations from coverage metrics so they do not deflate total coverage percentage.",
+      "Filtering expressions evaluate tuple pairs dynamically."
+    ],
+    "acceptableAlternatives": [
+      "Using illegal_bins if the invalid combinations represent functional hardware bugs."
+    ],
+    "partialCredit": [
+      "Correctly calculates 64 bins but does not explain the syntax or mechanism of ignore_bins."
+    ],
+    "misconceptions": [
+      "Believing ignore_bins counts toward unreached functional coverage goals.",
+      "Confusing ignore_bins with illegal_bins, which triggers simulation failures."
+    ],
+    "probes": [
+      "How does illegal_bins differ in its effect on simulation execution compared to ignore_bins?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "hardware-091",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In SystemVerilog, a random variable val uses the constraint val inside {[0:10], [20:30]}; with weights / 80, 20. Calculate the exact selection probability for val = 5.",
+    "level": "Experienced",
+    "answerKey": "The weight distribution / 80, 20 assigns 80% total weight to range [0:10] (11 values) and 20% to [20:30] (11 values). Each individual value in the first range has probability 0.80 / 11 = 80 / 1100 = 8 / 110 or approximately 7.27%.",
+    "essentialFacts": [
+      "Weights applied to ranges in distribution constraints specify relative aggregate probabilities.",
+      "The probability of an individual value equals the range weight divided by total weight, divided again by the number of elements in that range assuming uniform distribution.",
+      "Range [0:10] contains 11 integers inclusive."
+    ],
+    "acceptableAlternatives": [
+      "Expressing the probability as a fraction 80 / (11 * 100) or equivalent decimal 0.0727."
+    ],
+    "partialCredit": [
+      "Correctly identifies the weight distribution but divides by 10 instead of 11, missing the inclusion of zero."
+    ],
+    "misconceptions": [
+      "Assuming distribution weights apply per element rather than per range by default without dist operator nuances.",
+      "Thinking range endpoints are exclusive."
+    ],
+    "probes": [
+      "How would the individual value probability change if dist used := instead of / for the ranges?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "hardware-092",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a verification scoreboard mechanism using an associative array to track out-of-order transaction completions identified by a unique ID, ensuring proper memory leak prevention on retirement.",
+    "level": "Experienced",
+    "answerKey": "Store incoming transactions in an associative array keyed by transaction ID. When a completion arrives, look up the ID, compare expected vs. actual data, and remove the entry using array.delete(id) to free memory.",
+    "essentialFacts": [
+      "Associative arrays allow sparse key-based storage for out-of-order transaction tracking.",
+      "Explicit deletion via delete() prevents unbounded memory growth during long testbench runs.",
+      "Comparisons occur upon completion retrieval."
+    ],
+    "acceptableAlternatives": [
+      "Using queues if transaction IDs are dense and bounded."
+    ],
+    "partialCredit": [
+      "Describes adding transactions and performing comparisons, but omits deleting entries upon retirement, causing a memory leak."
+    ],
+    "misconceptions": [
+      "Assuming dynamic arrays handle sparse out-of-order IDs without reallocation overhead.",
+      "Believing automatic garbage collection cleans up unreferenced handles without explicit deletion in associative arrays."
+    ],
+    "probes": [
+      "What happens if a transaction ID arrives twice or never arrives, and how would you implement a timeout mechanism?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "hardware-093",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In SystemVerilog Assertions, what is the exact evaluation difference between disable iff (rst) placed inside a property versus using an if (!rst) antecedent implication?",
+    "level": "Entry level",
+    "answerKey": "disable iff (rst) aborts and resets any ongoing multi-cycle property evaluation immediately whenever rst becomes true. An if (!rst) antecedent only filters new trigger attempts, evaluating to vacuously true when inactive without resetting active multi-cycle threads.",
+    "essentialFacts": [
+      "disable iff terminates active evaluation threads globally when the condition is met.",
+      "An antecedent check (!rst) |-> ... only governs the start of new assertion threads, leaving existing multi-cycle threads running.",
+      "Vacuous success occurs when antecedents evaluate to false."
+    ],
+    "acceptableAlternatives": [
+      "Stating that disable iff provides asynchronous abort behavior while antecedents only filter trigger points."
+    ],
+    "partialCredit": [
+      "Notes that both handle reset logic, but fails to distinguish between aborting in-flight attempts versus filtering new triggers."
+    ],
+    "misconceptions": [
+      "Thinking disable iff and antecedent filtering behave identically for multi-cycle sequences.",
+      "Believing disable iff causes simulation errors if active."
+    ],
+    "probes": [
+      "Why is disable iff generally preferred for handling asynchronous resets in assertion properties?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "hdlbits"
+    ],
+    "id": "hardware-094",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During which simulation region does a concurrent assertion sample its variables, and why does reading variables updated in the active region inside a concurrent assertion cause race conditions?",
+    "level": "Internship",
+    "answerKey": "Concurrent assertions sample variables in the Preponed region before procedural blocks execute. Reading variables updated in the Active region inside assertion routines causes race conditions because mixing sampled states with active updates yields non-deterministic results depending on driver scheduling order.",
+    "essentialFacts": [
+      "The Preponed region stores signal values at the very start of the time step before active execution.",
+      "Concurrent assertions use Preponed values to ensure stable evaluation regardless of driver ordering in the Active region.",
+      "Active region updates occur after sampling takes place."
+    ],
+    "acceptableAlternatives": [
+      "Describing Verilog stratification: Preponed vs Active region scheduling."
+    ],
+    "partialCredit": [
+      "Identifies the Preponed region for sampling but fails to explain the delta-cycle race condition mechanics."
+    ],
+    "misconceptions": [
+      "Thinking assertions sample signals in the Observed or Reactive region.",
+      "Assuming concurrent assertions execute instantly like combinational logic gates."
+    ],
+    "probes": [
+      "How do immediate assertions differ in their sampling region compared to concurrent assertions?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "hardware-095",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In formal bounded model checking, if a safety property holds up to depth 50 but the diameter of the design is 120, what does failure at depth 51 imply?",
+    "level": "Experienced",
+    "answerKey": "Failure at depth 51 proves that a genuine counterexample exists of length 51, violating the safety property. However, because the bounded depth (51) is less than the design diameter (120), passing up to depth 50 did not prove the property universally true.",
+    "essentialFacts": [
+      "A counterexample found at any bounded depth represents a valid bug in the design.",
+      "The design diameter represents the maximum length required for any reachable state to be revisited or proven.",
+      "Passing up to depth k where k < diameter does not guarantee correctness beyond k."
+    ],
+    "acceptableAlternatives": [
+      "Stating that a bug was found at cycle 51, but full induction cannot be concluded yet."
+    ],
+    "partialCredit": [
+      "Recognizes that a counterexample was found, but confuses bounded verification limits with complete induction proofs."
+    ],
+    "misconceptions": [
+      "Assuming a failure within the bounded depth might be a false alarm caused by unreachable states.",
+      "Believing reaching depth 50 proves the system safe even if diameter is 120."
+    ],
+    "probes": [
+      "What additional proof technique, such as k-induction, is required to establish complete correctness when bounded depth is less than the design diameter?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "hardware-096",
+    "track": "hardware",
+    "competency": "verification and assertions",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A UART transmitter runs at a 115200 baud rate with an 8-bit payload, no parity, and 1 stop bit. Calculate the total transmission time in microseconds for a single character frame.",
+    "level": "Entry level",
+    "answerKey": "A standard UART character frame contains 1 start bit, 8 data bits, no parity, and 1 stop bit, totaling 10 bits. At 115200 baud, the bit period is 1 / 115200 = 8.6806 µs. Total frame time = 10 * 8.6806 µs = 86.81 µs.",
+    "essentialFacts": [
+      "UART frame includes start, data, and stop bits.",
+      "Total bits for an 8N1 configuration is 10 bits.",
+      "Bit period is the reciprocal of the baud rate."
+    ],
+    "acceptableAlternatives": [
+      "86.8 microseconds",
+      "86.81 µs"
+    ],
+    "partialCredit": [
+      "Correctly identifies 10 bits per frame (+0.5)",
+      "Calculates bit period incorrectly (+0.3)"
+    ],
+    "misconceptions": [
+      "Assuming only data bits matter without start and stop bits.",
+      "Confusing baud rate with clock frequency."
+    ],
+    "probes": [
+      "What changes to the total frame time if parity checking is enabled?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "hardware-097",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An SPI master uses CPOL=1 and CPHA=0 at 10 MHz. If the slave requires a minimum data setup time of 25 ns before the sampling edge, what is the maximum allowable cable propagation delay?",
+    "level": "Experienced",
+    "answerKey": "CPOL=1 and CPHA=0 means clock idles high, and data is sampled on the leading (falling) edge. Clock period at 10 MHz is 100 ns, giving a half-period of 50 ns. The sampling edge occurs 50 ns after the clock transition. With a 25 ns setup requirement, the maximum allowable cable propagation delay is 50 ns - 25 ns = 25 ns.",
+    "essentialFacts": [
+      "CPHA=0 samples on the leading edge of the clock.",
+      "Half-period of a 10 MHz clock is 50 ns.",
+      "Propagation delay equals half-period minus setup time."
+    ],
+    "acceptableAlternatives": [
+      "25 nanoseconds",
+      "25 ns"
+    ],
+    "partialCredit": [
+      "Correctly computes half-period as 50 ns (+0.5)",
+      "Fails to account for CPHA sampling edge timing (+0.2)"
+    ],
+    "misconceptions": [
+      "Confusing CPHA=0 and CPHA=1 sampling edge polarities.",
+      "Ignoring round-trip vs. one-way propagation delay limits."
+    ],
+    "probes": [
+      "How does changing to CPHA=1 alter the timing constraint for the data setup window?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-098",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A mechanical pushbutton connected to a GPIO pin generates contact bounce lasting 5 ms. If the microcontroller runs at 16 MHz, how many timer clock ticks must a software debounce filter wait before accepting a stable level?",
+    "level": "Internship",
+    "answerKey": "A 5 ms debounce time requires waiting out contact bounce. At 16 MHz, each clock cycle is 1 / 16,000,000 = 62.5 ns. Number of ticks = 5 ms / 62.5 ns = 0.005 s / 62.5e-9 s = 80,000 timer ticks.",
+    "essentialFacts": [
+      "Bounce duration is 5 ms (0.005 seconds).",
+      "Timer clock frequency is 16 MHz (62.5 ns period).",
+      "Product of time duration and clock frequency yields total clock ticks."
+    ],
+    "acceptableAlternatives": [
+      "80,000 cycles",
+      "80k ticks"
+    ],
+    "partialCredit": [
+      "Correctly converts milliseconds to seconds (+0.4)",
+      "Arithmetic error in final multiplication (+0.4)"
+    ],
+    "misconceptions": [
+      "Confusing timer prescaler settings with raw CPU clock periods.",
+      "Omitting unit conversions between milliseconds and nanoseconds."
+    ],
+    "probes": [
+      "What happens if the debounce threshold is set shorter than the actual bounce duration?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "hardware-099",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An ARM Cortex-M NVIC processes two pending IRQs with priorities 3 and 1 (lower number is higher priority). If IRQ 3 finishes while IRQ 1 is servicing, explain how tail-chaining reduces interrupt latency.",
+    "level": "Experienced",
+    "answerKey": "Tail-chaining allows the processor to transition directly from servicing one ISR to the next pending ISR (priority 1 after priority 3) without popping and pushing register stacks, saving CPU cycles on the context switch.",
+    "essentialFacts": [
+      "Tail-chaining eliminates redundant register stacking and unstacking between back-to-back interrupts.",
+      "Lower priority number indicates higher priority in ARM Cortex-M architectures.",
+      "Direct transition occurs when a pending interrupt is serviced immediately upon exiting the current ISR."
+    ],
+    "acceptableAlternatives": [
+      "Back-to-back interrupt execution without intermediate unstacking and stacking."
+    ],
+    "partialCredit": [
+      "Explains priority ordering correctly (+0.4)",
+      "Misses the specific mechanism of avoiding register stacking overhead (+0.4)"
+    ],
+    "misconceptions": [
+      "Believing tail-chaining requires dedicated hardware nesting registers.",
+      "Assuming lower priority numbers mean lower execution urgency."
+    ],
+    "probes": [
+      "What occurs if an even higher priority IRQ arrives while tail-chaining is executing?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "riscv"
+    ],
+    "id": "hardware-100",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During an I2C write transaction, the slave holds SCL low after the 8th clock pulse. What is this mechanism called, and what action must the master take before clocking the 9th bit?",
+    "level": "Entry level",
+    "answerKey": "This mechanism is clock stretching. The master must release the SCL line (stop driving it low) and wait until SCL is observed high before proceeding to read or write the 9th bit.",
+    "essentialFacts": [
+      "Slave holding SCL low is called clock stretching.",
+      "Master must wait for SCL to return high before continuing.",
+      "Used by slower slaves to process data before the next bit."
+    ],
+    "acceptableAlternatives": [
+      "Waiting for SCL to be released high by the slave."
+    ],
+    "partialCredit": [
+      "Identifies clock stretching correctly (+0.5)",
+      "Omits master's requirement to monitor SCL high state (+0.3)"
+    ],
+    "misconceptions": [
+      "Confusing clock stretching with bus arbitration loss.",
+      "Assuming the master can ignore the SCL state."
+    ],
+    "probes": [
+      "What failure mode occurs if a master ignores clock stretching and drives SCL regardless?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-101",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A peripheral-to-memory DMA transfer uses request/acknowledge handshaking with a 4-word FIFO. If the peripheral asserts REQ every 8 clock cycles and bus arbitration takes 2 cycles, calculate the maximum safe peripheral word rate.",
+    "level": "Experienced",
+    "answerKey": "The peripheral asserts REQ every 8 cycles. With a 4-word FIFO and 2-cycle arbitration, the maximum sustainable transfer rate is limited by the peripheral request rate, provided arbitration (2 cycles) is less than the request period (8 cycles). The maximum safe rate matches the peripheral request rate of 1 word per 8 clock cycles.",
+    "essentialFacts": [
+      "FIFO absorbs transient timing mismatches between peripheral and bus.",
+      "Bus arbitration latency (2 cycles) is well within the 8-cycle peripheral request period.",
+      "Maximum sustainable rate matches the limiting bottleneck (peripheral rate of 1 word / 8 cycles)."
+    ],
+    "acceptableAlternatives": [
+      "1 word per 8 clock cycles",
+      "1/8th of the clock frequency"
+    ],
+    "partialCredit": [
+      "Recognizes FIFO role in absorbing latency (+0.4)",
+      "Miscalculates rate bottleneck due to arbitration (+0.3)"
+    ],
+    "misconceptions": [
+      "Assuming DMA can exceed the peripheral request frequency.",
+      "Ignoring arbitration overhead."
+    ],
+    "probes": [
+      "What happens to the FIFO if the peripheral request rate increases to 1 word every clock cycle?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-102",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A peripheral generates random events at an average rate of 10 kHz. If interrupt context switching overhead is 1.5 microseconds, calculate whether polling or interrupts consumes fewer CPU cycles assuming a 100 MHz clock.",
+    "level": "Internship",
+    "answerKey": "At 10 kHz, events arrive every 100 microseconds. Interrupt overhead is 1.5 µs per event, yielding 10,000 * 1.5 µs = 0.015 seconds per second (1.5% CPU load). Polling continuously checks the flag, consuming 100% CPU time. Thus, interrupts consume significantly fewer CPU cycles.",
+    "essentialFacts": [
+      "Event arrival interval is 100 µs (10 kHz).",
+      "Interrupt overhead is 1.5 µs per event, yielding 1.5% CPU utilization.",
+      "Polling consumes 100% of polled CPU cycles."
+    ],
+    "acceptableAlternatives": [
+      "Interrupts consume fewer cycles because polling wastes time on idle checks."
+    ],
+    "partialCredit": [
+      "Calculates event period correctly (+0.4)",
+      "Incorrectly computes polling overhead (+0.2)"
+    ],
+    "misconceptions": [
+      "Assuming polling is always faster due to zero context switch overhead.",
+      "Ignoring active CPU utilization during polling loops."
+    ],
+    "probes": [
+      "At what event frequency does polling become more efficient than interrupts?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "hardware-103",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An ISR modifies a shared 32-bit global counter accessed by main-line code on a 32-bit MCU. Why can an asynchronous interrupt mid-read corrupt data, and what hardware instruction or compiler barrier prevents this?",
+    "level": "Entry level",
+    "answerKey": "Although a 32-bit read on a 32-bit MCU is typically atomic, if modified across multiple instructions or if non-atomic operations occur, an asynchronous interrupt can interleave during the read-modify-write cycle. Disabling interrupts locally or using atomic instructions / compiler memory barriers prevents this race condition.",
+    "essentialFacts": [
+      "Asynchronous interrupts can interrupt main-line code mid-operation.",
+      "Shared variables modified in ISRs require atomic access or critical section protection.",
+      "Disabling interrupts or using load-reserved/store-conditional ensures data integrity."
+    ],
+    "acceptableAlternatives": [
+      "Disabling interrupts during access",
+      "Atomic instructions"
+    ],
+    "partialCredit": [
+      "Explains race condition during interrupt interleaving (+0.5)",
+      "Misses the specific remediation method (+0.3)"
+    ],
+    "misconceptions": [
+      "Believing 32-bit reads are always immune to reentrancy.",
+      "Assuming the software volatile keyword guarantees atomicity."
+    ],
+    "probes": [
+      "Does the volatile qualifier prevent this race condition? Why or why not?"
+    ],
+    "sourceIds": [
+      "riscv",
+      "mit-cs"
+    ],
+    "id": "hardware-104",
+    "track": "hardware",
+    "competency": "embedded interfaces and interrupts",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  }
+]
