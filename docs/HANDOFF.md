@@ -123,3 +123,8 @@ Earlier evidence is preserved in qa/ADAPTIVE_RUBRIC_2026-10-24.md,
 qa/FEEDBACK_GROUNDING_2026-10-25.md, qa/LOCAL_GEMINI_SETUP_2026-10-24.md,
 qa/CONVERSATION_2026-10-24.md and REPOSITORY_AUDIT.md. Their dated counts describe
 those revisions, not this current implementation.
+
+GitHub publication: implementation commit `a070642` is pushed to
+`codex/adaptive-interview-rubric`, with [draft PR #13](https://github.com/ShatterdPotato/SBUHacks2026/pull/13).
+No merge or hosted deployment was performed. Local preview is running at
+http://127.0.0.1:5173/; root and health checks returned HTTP 200.
