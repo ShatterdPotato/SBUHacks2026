@@ -1,5 +1,23 @@
 # Cadence: shared team context
 
+## Incoming agent: next assignment
+
+The human is handing this project to a different Codex agent. The next requested
+milestone is **eye tracking and body-language tracking to improve the evidence
+behind the Confidence/delivery rating**. This feature is planned, not implemented
+or validated. Start with [NEXT_AGENT_HANDOFF](docs/NEXT_AGENT_HANDOFF.md): it maps
+the existing MediaPipe worker, evidence types, scoring weights, clock alignment,
+portal ownership, recording cleanup and verification requirements. Current visual
+signals are rough head direction and shoulder framing; they are not eye gaze.
+Keep tracking optional and local, report measurement reliability separately,
+and describe observable delivery rather than feelings or hiring suitability.
+
+Website implementation `fe0db58` is pushed to `codex/gearwell-frontend` in
+[draft PR #14](https://github.com/ShatterdPotato/SBUHacks2026/pull/14). Current
+verification: **157 tests, TypeScript and production build passed**. The current
+website is available locally at http://127.0.0.1:5173/; pushing Git does not update
+the hosted Site. This handoff does not claim a deployment or a merge to main.
+
 Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](docs/qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
 
 Latest October 25 frontend: **Gearwell** replaces the previous interface with the supplied brass design, mechanical gate, VRM examiner and live camera tile. Consented interviewer lines now use server-side ElevenLabs voice `Veg2qijYoJAS8VPKOOmi`; text-only practice remains available. The Cadence grading/recording engine and all high-thinking Gemini operations remain. Read the [integration, source and API map](docs/GEARWELL_INTEGRATION.md) and its linked QA before UI/media edits. Current checks: 151 tests, TypeScript and production build. This is source/GitHub work; no new hosted deployment is claimed.
@@ -19,7 +37,7 @@ adaptive interview/rubric implementation on `codex/adaptive-interview-rubric`.
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
 Repository: https://github.com/ShatterdPotato/SBUHacks2026. Canonical branch:
-`main`. Team: Aiden Li Productions. Gearwell is the public product name; Cadence names the underlying interview engine.
+`main`. Team: Aiden Li Productions. Cadence is the product name; Gearwell is its virtual interviewer.
 The human retired XTrain, hardware roles and the rover mailbox. Do not revive
 them or change unrelated repositories.
 

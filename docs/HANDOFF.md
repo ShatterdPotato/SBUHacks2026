@@ -1,5 +1,16 @@
 # Cadence continuation handoff
 
+## Torch handoff — next agent starts here
+
+The human requested a transition to another Codex agent after the completed
+website refresh. **Do not restart the frontend migration.** Implementation
+`fe0db58` is on `origin/codex/gearwell-frontend`, draft PR #14. The next task is
+eye/body tracking for more credible, evidence-backed delivery feedback. Read
+[NEXT_AGENT_HANDOFF](NEXT_AGENT_HANDOFF.md) for the implementation role, tricky
+code, proposed sequence and validation gates. No new eye-tracking implementation
+or physical-camera validation is claimed in this handoff. Secrets, recordings,
+personal data and generated QA output remain outside Git.
+
 Review refresh validation is complete: **157 tests**, `pnpm exec tsc --noEmit` and `pnpm build` passed from `web/`. The temporary browser QA route was removed; its reproducible fixture remains in `web/tests/fixtures/review-refresh-harness.tsx`. Current work continues on `codex/gearwell-frontend`, draft PR #14; the hosted Site remains unchanged.
 
 Current October 25 review refresh supersedes earlier scoring/export/timing notes: **Cadence** is the website; **Gearwell** is the interviewer. AI grading begins only after media finalization, with two concurrent high-thinking content-rubric calls and a cancellable grading chamber. Current grades/regrades use `assessmentMode: content`: no separate factual score, focused accuracy pass or verification pass. Reference answers still ground technical feedback. Results use Clarity, Confidence (observed delivery only) and Knowledgeability (technical content only) gauges. Downloads are local paginated PDFs. Relax is locked during interviews; gears/coil accents respect reduced motion. Responsive fields are bounded from 320 px upward. See [current behavior and verification](qa/REVIEW_REFRESH_2026-10-25.md). Historical implementation notes below retain their original dates.
