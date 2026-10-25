@@ -1,5 +1,7 @@
 # Gemini interview and grading agent
 
+Current website contract: consult the full rubric on every assessment. `assessmentMode: content` requests the category-specific content rubric and grounded feedback, with no separate factual score/check array. Use the relevant reference answer to judge technical understanding; do not run the legacy accuracy/verification sequence for this mode. Grading starts after the interview. Behavioral answers never count toward Knowledgeability. Cadence is the website name, Gearwell the interviewer. Preserve high reasoning, concise evidence-based justifications and schema compliance. This supersedes earlier background-grading/factual-score notes below.
+
 The candidate-facing interviewer is now Gearwell. Gemini still generates/assesses structured text at high thinking; ElevenLabs separately voices approved live question text. Never add speech instructions or private reasoning to question prompts. See `../../docs/GEARWELL_INTEGRATION.md`.
 
 Every provider request now loads an operation-specific interviewer system role

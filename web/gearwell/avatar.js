@@ -36,6 +36,7 @@ let clipLabels = [];
 let clipSources = [];
 const vrmaNames = ['Angry','Blush','Clapping','Goodbye','Jump','LookAround','Relax','Sad','Sleepy','Surprised','Thinking'];
 const animationControls = createAnimationControls({onSelect(index, cycle, matchEmotion) {
+  if(window.GearwellInterview?.active){relax();return;}
   emotionMode = Boolean(matchEmotion);
   cycling = cycle;
   running = true; // Selecting a preview explicitly opts into its motion.
@@ -83,6 +84,7 @@ function updateControl() {
   status.textContent = 'Gearwell';
   animationControls.update(clipIndex,cycling,emotionMode);
   stage.dataset.emotion=emotion;
+  stage.dataset.animation=clips[clipIndex]?.name || '';
   stage.dataset.animationMode=emotionMode ? 'emotion' : cycling ? 'cycle' : 'loop';
 }
 function playClip(index) {
@@ -96,6 +98,7 @@ function playClip(index) {
   updateControl();
 }
 function nextEmotionClip() {
+  if(window.GearwellInterview?.active){relax();return;}
   if(!clips.length)return;
   const pool=EMOTION_ANIMATIONS[emotion] || EMOTION_ANIMATIONS.neutral;
   const name=pool[emotionStep++ % pool.length];
@@ -103,8 +106,16 @@ function nextEmotionClip() {
   playClip(index<0 ? 0 : index);
 }
 function setEmotion(value) {
+  if(window.GearwellInterview?.active){relax();return;}
   emotionMode=true;cycling=false;emotion=resolveEmotion('',value);emotionStep=0;
   nextEmotionClip();
+}
+function relax(){
+  emotion='listening';emotionMode=false;cycling=false;running=!reducedMotion.matches;
+  const index=clips.findIndex(clip=>clip.name==='Relax');
+  // Preserve the current phase of the idle loop across voice and question events.
+  if(index>=0&&(clipIndex!==index||!currentAction))playClip(index);
+  else updateControl();
 }
 window.GearwellSpeech=voiceCheck;
 document.addEventListener('gearwell:speak',event=>{

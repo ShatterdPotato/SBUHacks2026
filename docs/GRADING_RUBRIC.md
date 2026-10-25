@@ -1,5 +1,7 @@
 # Cadence content and accuracy rubric
 
+Current website: content-only assessment uses the category-specific rubric and reference approach without a separate factual score or factual caps. Legacy factual-scoring details below describe compatibility callers, not the current results UI. Clarity averages relevance/completeness; Knowledgeability averages technical content only; Confidence uses available recorded delivery cues.
+
 ## Version 3 behavioral scoring and evidence
 
 Use `behavioralCriteria` for every behavioral answer: answers the question 25%, motivation/reflection 30%, personal examples/contribution 25%, requested coverage 20%. Introductions assess only requested motivation, background and skills. They require no technical tests, assumptions, verification, baselines or failure boundaries. Other behavioral questions assess the situation/actions/reflection actually asked. These answers are excluded from technical content and factual accuracy (null, never zero).

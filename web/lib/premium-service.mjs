@@ -5,7 +5,7 @@ import { localTurn } from './conversation.mjs';
 import { questionKind, canFollowUp } from './question-kind.mjs';
 import { referencesFor } from './knowledge.mjs';
 import { bankEntry, bankReference, sampleBank, trackFor, coverageSchedule } from './technical-bank.mjs';
-import { object, string, strings, checkSchema, feedbackSchema, gradedAnalysis, readQuestion, knowledgeFor } from './grading-core.mjs';
+import { object, string, strings, checkSchema, feedbackSchema, feedbackFields, gradedAnalysis, readQuestion, knowledgeFor } from './grading-core.mjs';
 import { freshQuestions } from './question-variety.mjs';
 
 export const PREMIUM_ROUTES=['/api/plan','/api/interviewer','/api/grade','/api/regrade','/api/session-report','/api/clip-feedback','/api/coach'];
@@ -63,7 +63,7 @@ async function assessAccuracy(payload,question,answer,env,fetcher) {
 
 export async function gradeAnswer(body,env,fetcher,{regrade=false}={}) {
  const {question,answer,duration}=answerInput(body);
- const baseline=localTurn(question,answer,duration,body.recorded===true);
+ const baseline=localTurn(question,answer,duration,body.recorded===true,body.assessmentMode);
  const frames=body.frames??[];
  if(!Array.isArray(frames)||frames.length>4||frames.some(f=>typeof f!=='string'||!/^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(f)||f.length>180000))throw new InputError('Use at most four small JPEG samples.');
  if(frames.length&&(!providerConfig(env).mediaCloudAvailable||body.visualConsent!==true))throw new InputError('Camera observations require an eligible provider and explicit frame consent.');
@@ -72,11 +72,20 @@ export async function gradeAnswer(body,env,fetcher,{regrade=false}={}) {
  const key=bankEntry(question.bankId);
  const previousFeedback=body.previousFeedback??[];
  if(!Array.isArray(previousFeedback)||previousFeedback.length>16||previousFeedback.some(v=>!validText(v,1000)))throw new InputError('Invalid prior feedback.');
- const payload={task:'Grade the complete answer against the mandatory rubric and supplied answer key. Analyse technical correctness deeply. Give exact evidence and specific actionable justification. Consider acceptable alternatives. Distinguish omission from contradiction. Never demand technical tests for behavior or introductions. Return the rubric and source-grounded checks; do not invent numeric scores.',question,questionKind:questionKind(question),transcript:answer,references,answerKey:key?{solution:key.answerKey,essentialFacts:key.essentialFacts,partialCredit:key.partialCredit,acceptableAlternatives:key.acceptableAlternatives,misconceptions:key.misconceptions,review:key.review}:null,deterministicChecks:baseline.knowledge.checks,...(regrade?{appeal:text(body.appeal,'Review request',1500),correction:'Reassess independently using the current transcript. Previous feedback may be wrong.'}:{})};
+ const payload={task:'Grade the complete answer against the mandatory rubric and supplied answer key. Analyse technical correctness deeply. Give exact evidence and specific actionable justification. Consider acceptable alternatives. Distinguish omission from contradiction. Never demand technical tests for behavior or introductions. Return the rubric and source-grounded checks; do not invent numeric scores.',question,questionKind:questionKind(question),transcript:answer,references,answerKey:key?{solution:key.answerKey,essentialFacts:key.essentialFacts,partialCredit:key.partialCredit,acceptableAlternatives:key.acceptableAlternatives,misconceptions:key.misconceptions,review:key.review}:null,deterministicChecks:baseline.knowledge?.checks??[],...(regrade?{appeal:text(body.appeal,'Review request',1500),correction:'Reassess independently using the current transcript. Previous feedback may be wrong.'}:{})};
  payload.previousFeedback=previousFeedback;
  payload.followupRule='For a follow-up, assess only the current probe. Parent answer-key facts are reference context, not a requirement to repeat the original complete solution. If the probe changes assumptions or requests a new calculation, do not apply the original numeric answer as ground truth.';
  const content=[{type:'input_text',text:JSON.stringify({...payload,visualTask:frames.length?'Describe only visible framing/posture/visibility cues. These observations never affect grades.':'No images are supplied; visual must be empty.'})},...frames.map(image_url=>({type:'input_image',image_url,detail:'low'}))];
- let data=await structured(regrade?'answer_regrade':'answer_grade',feedbackSchema,content,env,fetcher);
+ const contentOnly=body.assessmentMode==='content';
+ if(contentOnly){
+   payload.task='Assess this answer once against the mandatory category-specific content rubric and supplied reference approach. Ground every judgment in this answer; explain incorrect reasoning, missing steps and strengths accurately. Return criterion evidence, levels and actionable feedback. Do not produce a separate factual score or claim-check array.';
+   content[0].text=JSON.stringify({...payload,visualTask:frames.length?'Describe visible framing/posture cues only. They never affect content grades.':'No images: visual must be empty.'});
+ }
+ let data=await structured(regrade?'answer_regrade':'answer_grade',contentOnly?object(feedbackFields):feedbackSchema,content,env,fetcher);
+ if(contentOnly){
+   const analysis=gradedAnalysis(data,answer,baseline,{checks:[],references:[],coverage:'Technical feedback uses the supplied answer key and content rubric; no separate factual score.'},frames.length>0,previousFeedback);
+   return {...analysis,scores:{...analysis.scores,comprehension:null},knowledge:undefined,assessmentMode:'content',referenceAnswer:question.isFollowup?null:key?.answerKey??null,aiStatus:'complete',limitation:'Content-rubric coaching may be wrong. Technical understanding and observed delivery are separate; behavioral answers never count toward technical understanding.'};
+ }
  if(!Array.isArray(data.checks)||data.checks.length>20)throw new InputError('AI checks were incomplete. Retry grading.',502);
  let knowledge=knowledgeFor(question,answer,data.checks);
  let analysis=gradedAnalysis(data,answer,baseline,knowledge,frames.length>0,previousFeedback);

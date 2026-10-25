@@ -19,10 +19,9 @@ const time = (n:number) => `${Math.floor(n/60)}:${Math.floor(n%60).toString().pa
 export function ConversationStudio(props:Props) {
     const topicLimit = props.questionLimit ?? props.questions.length;
     const plan=useRef<InterviewPlan>(props.plan??{schedule:coverageSchedule(props.type??'Mixed',topicLimit),priorities:props.profile?.skills??[],profile:props.profile??{roleFamily:props.roleFamily,skills:[]},type:props.type??'Mixed',level:props.level??'Internship',count:topicLimit});
-    const grades=useRef<Promise<void>[]>([]);
     const nextRetry=useRef<{body:unknown;fallback:Question;action:string}|null>(null);
     const [waitingRetry,setWaitingRetry]=useState(false);
-    const [pendingGrades,setPendingGrades]=useState(0);
+
     const [phase,setPhaseState] = useState<Phase>('ready');
     const [camera,setCamera] = useState(true);
     const [consent,setConsent] = useState(false);
@@ -142,7 +141,7 @@ export function ConversationStudio(props:Props) {
             if(skip)evidence={...evidence,transcript:'',words:[]};
             if(!skip&&!evidence.transcript.trim()){setError('No speech was recognized. Choose “Try this answer again”, skip, or finish to preserve the video.');phaseTo('review');return;}
             const q={...current.current,...questionKind(current.current)};
-            let analysis=localTurn(q,evidence.transcript,duration,camera) as Analysis;
+            let analysis=localTurn(q,evidence.transcript,duration,camera,'content') as Analysis;
             const mainCount=[...takes.current,{question:q}].filter(t=>questionKind(t.question).purpose!=='introduction'&&!t.question.isFollowup).length;
             const category=plan.current.schedule[mainCount];
             const bank=sampleBank(props.role,props.level,1,[...takes.current.map(t=>t.question.prompt),q.prompt],takes.current.map(t=>t.question.bankId).filter(Boolean))[0];
@@ -151,16 +150,15 @@ export function ConversationStudio(props:Props) {
             let nextQuestion:Question=category==='Technical'&&bank?bank:localNextQuestion({role:props.role,type:category??props.type,level:props.level,index:mainCount,previous:[...takes.current.map(t=>t.question.prompt),q.prompt]}) as Question;
             const delivery=camera&&!skip?recordedDelivery({transcript:evidence.transcript,duration,words:evidence.words,audio:evidence.audioEvidence,vision:evidence.visionEvidence}):null;
             if(delivery)analysis={...analysis,scores:{...analysis.scores,confidence:delivery.score},metrics:delivery.metrics};
-            const history=takes.current.map(t=>({question:t.question,answer:t.transcript,grading:t.analysis.grading}));
-            const takeIndex=takes.current.length;
+            const history=takes.current.map(t=>({question:t.question,answer:t.transcript}));
+
             const eligible=aiConsent&&props.cloudAvailable&&!skip;
             if(eligible)analysis.aiStatus='pending';
-            takes.current.push({...evidence,question:q,analysis,duration,hasRecording:camera,url:null,mime:'',transcriptSource:skip?'skipped':corrected?'recording-corrected':camera?'recording':'typed',delivery,recordingOffset:Math.max(0,turnStart.current-recorderOffset.current),sessionRecording:camera,cloudEligible:eligible});
+            takes.current.push({...evidence,question:q,referenceAnswer:q.isFollowup?null:bankEntry(q.bankId)?.answerKey??null,analysis,duration,hasRecording:camera,url:null,mime:'',transcriptSource:skip?'skipped':corrected?'recording-corrected':camera?'recording':'typed',delivery,recordingOffset:Math.max(0,turnStart.current-recorderOffset.current),sessionRecording:camera,cloudEligible:eligible});
             const consentFields={cloudConsent:true,providerConsent:props.provider,demoDataOnly:props.unpaid,privacyMode:'fictional',nonSensitiveConsent:true};
             if(eligible){
-                queueGrade(takeIndex,q,evidence.transcript,duration,camera);
                 const body={...consentFields,question:q,answer:evidence.transcript,history,plan:plan.current,seenBankIds:recentBankIds(),followups,duration};
-                setStatus('The interviewer is considering your answer. Grading runs separately in the background.');
+                setStatus('Answer saved. Gearwell is preparing the next question. Grades are calculated after the interview.');
                 try{
                     const controller=new AbortController();requestController.current=controller;
                     const data=await aiRequest<{nextAction:string;nextQuestion:Question}>('/api/interviewer',body,controller.signal);
@@ -177,14 +175,6 @@ export function ConversationStudio(props:Props) {
             setLog(takes.current.map(t=>({question:t.question.prompt,answer:t.transcript})));
             await advance(nextAction,nextQuestion);
         }finally{locked.current=false;}
-    }
-    function queueGrade(index:number,q:Question,answer:string,duration:number,recorded:boolean){
-        setPendingGrades(n=>n+1);takes.current[index].cloudEligible=true;takes.current[index].analysis.aiStatus='pending';
-        const work=aiRequest<Analysis>('/api/grade',{cloudConsent:true,providerConsent:props.provider,demoDataOnly:props.unpaid,privacyMode:'fictional',nonSensitiveConsent:true,question:q,answer,duration,recorded,previousFeedback:takes.current.slice(Math.max(0,index-4),index).flatMap(t=>[t.analysis.summary,...t.analysis.improvements].slice(0,4).map(v=>v.slice(0,1000)))}).then(result=>{
-            const take=takes.current[index];if(!take)return;
-            take.analysis={...result,scores:{...result.scores,confidence:take.delivery?.score??null},metrics:{...result.metrics,wpm:take.delivery?.metrics.wpm??result.metrics.wpm}};
-        }).catch(e=>{const take=takes.current[index];if(take)take.analysis={...take.analysis,aiStatus:'failed',aiError:e instanceof Error?e.message:'Grading failed. Retry from your report.'};}).finally(()=>{if(mounted.current)setPendingGrades(n=>n-1);});
-        grades.current.push(work);
     }
     async function advance(action:string,next:Question){
         setLog(takes.current.map(t=>({question:t.question.prompt,answer:t.transcript})));
@@ -213,9 +203,9 @@ export function ConversationStudio(props:Props) {
                 if(e.transcript.trim()){
                     const duration=Math.min(180,Math.max(0,camera?(coach.current?.currentTime??turnStart.current)-turnStart.current:performance.now()/1000-turnStart.current));
                     const delivery=camera?recordedDelivery({transcript:e.transcript,duration,words:e.words,audio:e.audioEvidence,vision:e.visionEvidence}):null;
-                    const analysis=localTurn(current.current,e.transcript,duration,camera) as Analysis;analysis.scores.confidence=delivery?.score??null;
-                    takes.current.push({...e,question:current.current,analysis,duration,hasRecording:camera,url:null,mime:'',transcriptSource:camera?'recording':'typed',delivery,recordingOffset:Math.max(0,turnStart.current-recorderOffset.current),sessionRecording:camera});
-                    if(aiConsent&&props.cloudAvailable)queueGrade(takes.current.length-1,current.current,e.transcript,duration,camera);
+                    const analysis=localTurn(current.current,e.transcript,duration,camera,'content') as Analysis;analysis.scores.confidence=delivery?.score??null;
+                    takes.current.push({...e,question:current.current,analysis,duration,hasRecording:camera,url:null,mime:'',transcriptSource:camera?'recording':'typed',delivery,recordingOffset:Math.max(0,turnStart.current-recorderOffset.current),sessionRecording:camera,cloudEligible:aiConsent&&props.cloudAvailable,referenceAnswer:current.current.isFollowup?null:bankEntry(current.current.bankId)?.answerKey??null});
+                    if(aiConsent&&props.cloudAvailable)takes.current[takes.current.length-1].analysis.aiStatus='pending';
                 }
             }
             if(camera&&recorder.current){
@@ -223,11 +213,10 @@ export function ConversationStudio(props:Props) {
                 const blob=await recording.current;
                 if(blob?.size){const url=URL.createObjectURL(blob);takes.current=takes.current.map(t=>({...t,url,mime:blob.type,hasRecording:true}));
                     // An interrupted current turn still gets a replayable range.
-                    if(!takes.current.length)takes.current.push({...empty(),question:current.current,analysis:localTurn(current.current,'',0,true) as Analysis,duration:Math.max(0,elapsed),hasRecording:true,url,mime:blob.type,transcriptSource:'skipped',delivery:null,recordingOffset:0,sessionRecording:true});
+                    if(!takes.current.length)takes.current.push({...empty(),question:current.current,analysis:localTurn(current.current,'',0,true,'content') as Analysis,duration:Math.max(0,elapsed),hasRecording:true,url,mime:blob.type,transcriptSource:'skipped',delivery:null,recordingOffset:0,sessionRecording:true});
                 }
             }
-            release();setStatus('Finishing background grades. Your recording has stopped and is preserved.');
-            await Promise.allSettled(grades.current);
+            release();setStatus('Recording saved. Opening your end-of-interview assessment.');
             if(!mounted.current)return;props.onComplete(takes.current);
         }catch(e){if(mounted.current){release();props.onComplete(takes.current.map(t=>({...t,hasRecording:false,url:null,mime:''})), 'The video could not be finalized. Completed transcripts and feedback are retained; video clips are unavailable.');}}
         finally{locked.current=false;}
@@ -236,10 +225,9 @@ export function ConversationStudio(props:Props) {
     return <section className="conversation-studio">
         <div className="studio-heading"><div><div className="eyebrow">A CONVERSATION, AT YOUR PACE</div><h1>Let’s <em>talk.</em></h1><p>{props.role} · {topicLimit} topics{followups?' + follow-ups':''} · {aiConsent?'Questions adapt to your answers':'Local practice'}</p></div><strong>{time(elapsed)} / 20:00</strong></div>
         {error&&<p role="alert" className="conversation-error">{error}</p>}
-        {pendingGrades>0&&<p role="status">{pendingGrades} answer{pendingGrades===1?'':'s'} awaiting AI grading · current scores are provisional</p>}
         {waitingRetry&&<div className="studio-actions"><button className="primary" disabled={phase==='thinking'} onClick={()=>void retryNext()}>Retry AI question</button><button className="secondary" disabled={phase==='thinking'} onClick={()=>void retryNext(true)}>Continue with local bank</button></div>}
         <div className="studio-grid"><div>
-            <section className="question-card"><div className="question-meta"><span>{isFollowup.current?'Follow-up':question.category}</span><span>{question.source==='generated'?'AI question':'Local question'}</span></div>{question.anchorQuote&&<blockquote className="question-anchor"><span>From your previous answer</span><mark>{question.anchorQuote}</mark></blockquote>}<h2>{question.prompt}</h2>{question.answerFormat&&<p>For an independent calculation check, include <strong>{question.answerFormat}</strong>.</p>}<p role="status" aria-live="polite">{status||'The interviewer speaks, then listens. One continuous recording captures the whole conversation.'}</p></section>
+            <section className="question-card"><div className="question-meta"><span>{isFollowup.current?'Follow-up':question.category}</span><span>{question.source==='generated'?'AI question':'Local question'}</span></div>{question.anchorQuote&&<blockquote className="question-anchor"><span>From your previous answer</span><mark>{question.anchorQuote}</mark></blockquote>}<h2>{question.prompt}</h2>{question.answerFormat&&<p>For this task, include <strong>{question.answerFormat}</strong>.</p>}<p role="status" aria-live="polite">{status||'The interviewer speaks, then listens. One continuous recording captures the whole conversation.'}</p></section>
             {camera&&<section className="camera-card engine-camera"><video ref={video} autoPlay playsInline muted className="live-video" aria-label="Continuous interview camera preview"/><div className="camera-controls"><span className={active?'recording-status':'camera-status'}><i/>{active?'Continuous recording · stays on this device':stream.current?'Camera & microphone preview · model loading':'Camera off'}</span><span>{phase==='listening'?'Listening':phase==='speaking'?'Interviewer speaking':phase==='thinking'?'Preparing response':phase}</span></div></section>}
             {phase==='ready'&&<section className="transcript-card">
                 <label className="check-row"><input type="checkbox" checked={camera} onChange={e=>setCamera(e.target.checked)}/><span>Use camera and microphone (turn off for text conversation)</span></label>
@@ -257,9 +245,9 @@ export function ConversationStudio(props:Props) {
             </section>}
             {active&&<button className="secondary" disabled={phase==='thinking'||phase==='ending'} onClick={()=>void finishSession()}>Finish now & review completed answers</button>}
             {log.length>0&&<details className="transcript-card"><summary>Conversation so far · {log.length} responses</summary>{log.map((t,i)=><div key={i}><h3>{t.question}</h3><p>{t.answer||'Skipped'}</p></div>)}</details>}
-        </div><aside className="privacy-card"><h3>Your words drive the feedback.</h3><p>Speech is transcribed locally with Whisper Base English. Multi-batch answers receive a complete-answer refinement. Captions can be wrong; check them in your report. Use headphones to reduce interviewer echo.</p><p>Knowledge checks cite a versioned reference pack. Claims without evidence and personal stories stay unverified. Video observations describe framing and head position, never feelings or eye-contact certainty.</p>
+        </div><aside className="privacy-card"><h3>Your words drive the feedback.</h3><p>Speech is transcribed locally with Whisper Base English. Multi-batch answers receive a complete-answer refinement. Captions can be wrong; check them in your report. Use headphones to reduce interviewer echo.</p><p>Technical feedback uses the content rubric and relevant reference approach. Personal stories remain unverified. Video observations describe framing and head position, never feelings or eye-contact certainty.</p>
             <label className="check-row"><input type="checkbox" checked={aiConsent} disabled={!props.cloudAvailable||phase!=='ready'} onChange={e=>setAiConsent(e.target.checked)}/><span>Use {props.providerLabel} for adaptive questions, grading, reports and clip transcript coaching<small>{props.unpaid?'I will use only fictional, non-sensitive practice answers. I consent to sending these transcripts, questions, a broad role, selected skill topics, interview focus/level and session transcripts and evidence-based feedback to Google. Free-tier inputs and outputs may improve Google products and be read by reviewers. My real resume and recording are not uploaded.':'I consent to sending question/answer transcripts, selected skill topics, interview focus/level and session transcripts and evidence-based feedback to the configured AI provider. Recordings remain local.'}</small></span></label>
-            <p>{aiConsent?'Each next question is written after your answer using the role, focus, skill topics and recent conversation. Short exact quotes may highlight something to clarify. Latency and free quotas can interrupt AI; local fallback is labeled. Finishing early preserves the partial response and grades it when AI consent is enabled.':'Without this opt-in, answers stay local, questions use local retrieval/templates and factual checks have limited coverage.'}</p>
+            <p>{aiConsent?'Each next question is written after your answer using the role, focus, skill topics and recent conversation. Short exact quotes may highlight something to clarify. Latency and free quotas can interrupt AI; local fallback is labeled. Finishing early preserves the partial response and grades it when AI consent is enabled.':'Without this opt-in, answers stay local, questions use local retrieval/templates and feedback uses an approximate browser rubric.'}</p>
             {phase==='ready'&&<button className="text-link" onClick={props.onLegacy}>Switch to individual answer setup</button>}
         </aside></div>
     </section>;

@@ -2,7 +2,7 @@
 export const shellHtml = `
 <div class="wrap" id="landing-view">
 <header>
-  <a class="logo" href="#top" id="top"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path class="lg" fill="#c8963e"/><circle cx="20" cy="20" r="6" fill="#21180e"/></svg>Gearwell</a>
+  <a class="logo" href="#top" id="top"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path class="lg" fill="#c8963e"/><circle cx="20" cy="20" r="6" fill="#21180e"/></svg>Cadence</a>
   <nav><a class="hide" href="#how">How it works</a><a href="#setup">Get started</a></nav>
 </header>
 
@@ -69,7 +69,7 @@ export const shellHtml = `
 
 <main id="interview-room" class="interview-room" aria-labelledby="room-heading" data-state="idle" hidden>
   <div class="room-header">
-    <div><div class="room-brand">Gearwell</div><h1 id="room-heading" class="room-heading">Interview room</h1><p id="room-role" class="room-role"></p></div>
+    <div><div class="room-brand">Cadence</div><h1 id="room-heading" class="room-heading">Interview room</h1><p id="room-role" class="room-role"></p></div>
     <div id="room-controls-mount"></div><button id="admin-cancel" class="admin-cancel" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>Discard session</button>
   </div>
   <div class="room-grid">
@@ -88,7 +88,7 @@ export const shellHtml = `
 <dialog id="mechanical-gate" class="mechanical-gate" aria-labelledby="gate-status" aria-describedby="gate-description" data-state="idle">
   <div class="gate-stage"><div class="gate-door gate-left" aria-hidden="true"><span class="gate-brace"></span><span class="gate-brace"></span><span class="gate-piston"></span><svg class="gate-cog" viewBox="0 0 100 100"><path data-gate-cog/></svg><svg class="gate-cog small" viewBox="0 0 100 100"><path data-gate-cog/></svg></div><div class="gate-door gate-right" aria-hidden="true"><span class="gate-brace"></span><span class="gate-brace"></span><span class="gate-piston"></span><svg class="gate-cog" viewBox="0 0 100 100"><path data-gate-cog/></svg><svg class="gate-cog small" viewBox="0 0 100 100"><path data-gate-cog/></svg></div>
     <div class="gate-frame top" aria-hidden="true"></div><div class="gate-frame bottom" aria-hidden="true"></div>
-    <div class="gate-brand" aria-hidden="true">Gearwell · Examination chamber</div>
+    <div class="gate-brand" aria-hidden="true">Cadence · Examination chamber</div>
     <div class="gate-steam left" aria-hidden="true"></div><div class="gate-steam right" aria-hidden="true"></div>
     <div class="gate-center">
       <div class="gate-medallion" aria-hidden="true"><span class="gate-monogram">G</span><svg class="gate-progress-ring" viewBox="0 0 100 100"><circle class="gate-progress-track" cx="50" cy="50" r="46"/><circle class="gate-progress-value" cx="50" cy="50" r="46" pathLength="100"/></svg></div>

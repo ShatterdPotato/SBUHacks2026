@@ -8,16 +8,17 @@ export function answerAnchor(answer, max = 140) {
     const sentence = answer.trim().split(/(?<=[.!?])\s+/).find(s=>s.length>=12) ?? answer.trim();
     return sentence.length <= max ? sentence : sentence.slice(0,max).replace(/\s+\S*$/, '');
 }
-export function localTurn(question, answer, duration, recorded) {
+export function localTurn(question, answer, duration, recorded, assessmentMode='legacy') {
     const baseline = rubricAnalysis({ question, answer, duration, recorded });
     const kind = questionKind(question);
-    const knowledge = kind.category === 'Behavioral' ? {checks:[],references:[],coverage:'Behavioral response: technical accuracy is not graded. Personal experiences remain unverified.'} : localKnowledge(question,answer);
+    const knowledge = assessmentMode==='content'?{checks:[],references:[],coverage:'Content practice rubric; no separate factual score.'}:kind.category === 'Behavioral' ? {checks:[],references:[],coverage:'Behavioral response: technical accuracy is not graded. Personal experiences remain unverified.'} : localKnowledge(question,answer);
     baseline.questionKind = kind;
     if (baseline.metrics.words >= 5) {
         const grading = localGrading(question,answer,knowledge);
         Object.assign(baseline,{grading,...feedbackFromGrading(grading),scores:{...baseline.scores,content:grading.score}});
     }
-    return withKnowledge(baseline, knowledge);
+    const result=withKnowledge(baseline, knowledge);
+    return assessmentMode==='content'?{...result,assessmentMode,knowledge:undefined,scores:{...result.scores,comprehension:null}}:result;
 }
 export function localFollowup(question, answer) {
     if (!canFollowUp(question)) return '';

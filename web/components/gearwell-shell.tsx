@@ -3,10 +3,11 @@ import {memo,useEffect,useRef,useState,type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {shellHtml} from '../gearwell/shell';
 import '../lib/gearwell-voice';
+import {MechanicalBackdrop} from './mechanical-backdrop';
 
-type Props={stage:'setup'|'studio'|'review';setup:ReactNode;session:ReactNode;report:ReactNode;onCancel:()=>void;onReady:()=>void};
+type Props={stage:'setup'|'studio'|'grading'|'review';setup:ReactNode;session:ReactNode;report:ReactNode;grading:ReactNode;onCancel:()=>void;onReady:()=>void};
 // The imported room moves the canvas between mounts. Never reconcile its DOM.
-const GearwellMarkup=memo(function GearwellMarkup(){return <div dangerouslySetInnerHTML={{__html:shellHtml}}/>;});
+const GearwellMarkup=memo(function GearwellMarkup(){return <><MechanicalBackdrop/><div className="cadence-shell" dangerouslySetInnerHTML={{__html:shellHtml}}/></>;});
 function script(src:string,module=false) {
     return new Promise<void>((resolve,reject)=>{const node=document.createElement('script');node.src=src;node.type=module?'module':'text/javascript';node.onload=()=>resolve();node.onerror=()=>reject(new Error('The Gearwell room could not load. Refresh to retry.'));document.body.appendChild(node);});
 }
@@ -43,5 +44,5 @@ export function GearwellShell(props:Props) {
         programmatic.current=false;
         if(props.stage==='review')window.scrollTo(0,0);
     },[props.stage,ready]);
-    return <><GearwellMarkup/>{failure&&<p role="alert" className="error-banner">{failure}</p>}{slots.length>0&&<>{createPortal(props.setup,slots[0])}{roomOpen&&props.stage==='studio'&&createPortal(props.session,slots[1])}{props.stage==='review'&&createPortal(props.report,slots[2])}</>}</>;
+    return <><GearwellMarkup/>{props.stage==='grading'&&props.grading}{failure&&<p role="alert" className="error-banner">{failure}</p>}{slots.length>0&&<>{createPortal(props.setup,slots[0])}{roomOpen&&props.stage==='studio'&&createPortal(props.session,slots[1])}{props.stage==='review'&&createPortal(props.report,slots[2])}</>}</>;
 }

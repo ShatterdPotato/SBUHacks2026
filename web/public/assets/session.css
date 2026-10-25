@@ -106,3 +106,43 @@ mark{background:#765521;color:#fff2d4;padding:.05rem .2rem}
 @media(max-width:800px){.studio-grid{grid-template-columns:1fr}.report-overview{grid-template-columns:1fr}.overall{border-right:0;border-bottom:1px solid var(--line);padding-bottom:1rem}.room-grid{position:relative;top:auto;height:420px}.review-footer{flex-wrap:wrap}.studio-heading{align-items:flex-start}}
 @media(max-width:560px){.score-grid,.moments-grid,.clip-grid,.insight-grid,.feedback-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr!important}.room-grid{height:360px}.gearwell-content h2{font-size:1.4rem}.studio-heading{flex-wrap:wrap}.gearwell-content table{display:block;overflow:auto}.answer-review>summary{flex-wrap:wrap}.error-banner{flex-wrap:wrap}}
 .interview-room[hidden],#landing-view[hidden],#gearwell-report-slot[hidden]{display:none!important}
+/* Cadence responsive controls and mechanical report accents. */
+*,*::before,*::after{box-sizing:border-box}
+.cadence-shell{position:relative;z-index:1}
+.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,.95fr);align-items:start;gap:clamp(1.5rem,4vw,3rem)}
+.hero>*{min-width:0}.hero h1{font-size:clamp(3rem,5.6vw,4.8rem)}
+.gearwell-content,.gearwell-content *{min-width:0}
+.gearwell-content textarea,.gearwell-content select,.gearwell-content input:not([type=checkbox]){box-sizing:border-box;width:100%;max-width:100%;min-width:0}
+.gearwell-content select{overflow:hidden;text-overflow:ellipsis}
+.gearwell-content .field-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gearwell-content .check-row>span{min-width:0;overflow-wrap:anywhere}
+.gearwell-content h2{font-size:clamp(1.75rem,2.8vw,2.2rem)}
+.gearwell-content h3{font-size:1.5rem}.gearwell-content .field-label{font-size:1.25rem}
+.gearwell-content p,.gearwell-content blockquote,.gearwell-content li,.gearwell-content summary{overflow-wrap:anywhere}
+.gearwell-content .report-dials{padding:clamp(1.2rem,3vw,2rem)}
+.report-dials .result-needle{transform-origin:80px 87px}.dial-score{font-size:2rem;color:var(--brass2);line-height:1.3;margin:.25rem 0}
+.dial-score small{font-size:1rem}.report-dials details{font-size:.9rem;text-align:left}.report-dials details p{font-size:.95rem}
+.report-dials .g>span{display:block;font-size:1rem}.report-dials .g>strong{font-size:1.25rem}
+.room-avatar-mount .machine{display:block!important;opacity:.48;pointer-events:none;width:115%;max-width:none;left:-7.5%;bottom:10%;z-index:0}
+.room-avatar-mount .machine>circle,.room-avatar-mount .machine>.needle{display:none}
+.room-avatar-mount .examiner-caption{display:none!important}
+.mechanical-backdrop{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.ambient-gear{position:absolute;width:clamp(180px,24vw,380px);fill:#7e5c2420;stroke:#bc8c4555;stroke-width:1.5;opacity:.55}
+.ambient-gear g{transform-origin:100px 100px;animation:ambient-turn 95s linear infinite}
+.ambient-gear circle{fill:var(--bg)}.ambient-gear-left{left:-12vw;top:34vh}.ambient-gear-right{right:-10vw;top:68vh}.ambient-gear-right g{animation-direction:reverse;animation-duration:76s}
+.tesla-coil{position:absolute;right:1vw;top:15vh;width:clamp(50px,7vw,105px);height:250px;opacity:.5}.coil-brass{fill:#79582c30;stroke:#b78b4e;stroke-width:1.7}.coil-spark{fill:none;stroke:#8bd9ff;stroke-width:1.5;filter:drop-shadow(0 0 4px #64c6ff);opacity:0;animation:sparse-spark 13s ease-in-out infinite}.spark-two{animation-delay:6.5s}
+@keyframes ambient-turn{to{transform:rotate(360deg)}}
+@keyframes sparse-spark{0%,84%,100%{opacity:0}90%,94%{opacity:.85}}
+.grading-room{position:relative;z-index:2;min-height:100svh;display:grid;place-items:center;padding:clamp(1rem,5vw,4rem);isolation:isolate}
+.grading-doors{position:absolute;inset:0;z-index:-1;overflow:hidden;opacity:.5}.grading-doors .gate-door{width:50%;height:100%;top:0;position:absolute;transform:none}.grading-doors .gate-left{left:0}.grading-doors .gate-right{right:0}
+.grading-room .grading-panel{width:min(100%,660px);padding:clamp(1.25rem,4vw,3rem);text-align:center;background:#2c2118f5}
+.grading-cog{font-size:4rem;line-height:1.2;display:inline-block;color:var(--brass);animation:ambient-turn 10s linear infinite;margin:1rem}.grading-panel h1{font-size:clamp(2.3rem,4vw,3.5rem)}
+.grading-panel progress{width:100%;height:12px;accent-color:var(--brass);margin:1rem 0}.grading-panel small{display:block;margin-top:1rem}
+@media(max-width:880px){.hero{grid-template-columns:minmax(0,1fr)}.hero>.examiner-stage{position:relative;top:auto}.tesla-coil{right:-28px;opacity:.3}}
+@media(max-width:560px){.gearwell-content .field-row{grid-template-columns:minmax(0,1fr)}.hero h1{font-size:clamp(2.8rem,10vw,3.4rem)}.wrap{padding:0 1rem}.gearwell-content h2{font-size:1.8rem}.logo{font-size:1.7rem}nav{gap:.7rem;font-size:1rem}.room-avatar-mount .machine{opacity:.35}.grading-panel .eyebrow{font-size:.7rem}.review-header{flex-wrap:wrap;gap:1rem}}
+@media(prefers-reduced-motion:reduce){.ambient-gear g,.coil-spark,.grading-cog{animation:none}.coil-spark{opacity:0}}
+
+/* Animation previews are available on the landing page only. */
+.interview-room #animation-controls,.interview-room #animation-toggle,.interview-room .animation-menu{display:none!important}
+
+#gearwell-report-slot .report-heading h1{font-size:clamp(2.8rem,4.5vw,4.2rem);line-height:1.08}
