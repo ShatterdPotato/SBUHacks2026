@@ -1,36 +1,63 @@
-# Credential access for the next agent
+# Cadence credentials and access
 
-Verified October 24, 2026: the production Site environment contains
-`GEMINI_API_KEY` as a secret. The API returns its name and secret status, with
-its value redacted. Environment revision: 3. No key was copied into Git.
+Updated October 24, 2026. The earlier repository audit read no credential values.
+Later the user authorized local Gemini configuration. The supplied value was
+written through hidden stdin to ignored `web/.dev.vars`, never read back or
+printed, and never placed in command-line arguments or tracked source.
 
-## Continue using the deployed app
+## Local checkout
 
-The credential persists independently of this conversation. In the owner's
-connected Sites account, use the existing project:
+`web/.dev.vars` was absent during the repository audit and is **now configured
+locally** after user authorization. The preview was restarted. Health selects
+Gemini/unpaid with media cloud unavailable; live generic opener and fictional
+rubric grading smoke checks returned HTTP 200. See
+[verification](qa/LOCAL_GEMINI_SETUP_2026-10-24.md).
+The presence of a file would not prove a valid key; do not inspect secret values
+to establish continuity.
 
-`appgprj_6adcd46ff0dc8191943fd596d01bba52`
+For authorized local AI setup, use `web/.dev.vars.example` as the settings
+template. The owner supplies credentials through a secure local setup or approved
+secret manager. Keep the real file ignored; never paste keys into chat, source,
+logs or shell arguments. Curated practice, local transcription/recording and text
+conversation work without an API key.
 
-Read `web/.openai/hosting.json` and the Sites skill. Inspect the existing Site
-and environment through Sites tools. Preserve the existing secret when changing
-nonsecret settings or deploying. Test AI through the deployed application; the
-Worker uses its secret without exposing it to the browser or agent.
+The example config uses `AI_PROVIDER=gemini`, `GEMINI_DATA_POLICY=unpaid`,
+`GEMINI_MODEL=gemini-3.5-flash-lite` and optional retry
+`GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite`. The fallback is not a code default:
+it must be configured. OpenAI optionally uses `OPENAI_API_KEY`,
+`OPENAI_MODEL` and `OPENAI_TRANSCRIBE_MODEL`. See [architecture](ARCHITECTURE.md).
 
-Do not create another Site or replace the key merely because it is absent from
-the clone. GitHub repository access does not provide Sites account access.
+Keep the unpaid policy unless the owner explicitly authorizes appropriate
+billing/data handling. A policy flag cannot activate billing. Never restore a
+dummy key as a working configuration.
 
-## Local or different-account development
+## Existing hosted environment
 
-The current checkout has no real local API key. Copy `web/.dev.vars.example` to
-ignored `web/.dev.vars`; the owner must supply a key through a secure local setup
-or approved secret manager. Never paste it into chat or commit the file. Practice
-mode works without a key.
+Prior verification recorded a redacted `GEMINI_API_KEY` secret on the existing
+Site at environment revision **3**. Its value was not copied into Git.
+This is historical evidence, not a fresh account-access or key-health check.
 
-GitHub Actions repository secrets are a separate place for CI credentials; they
-are not source files and do not automatically populate a developer's local
-environment. No Actions secret or key-sharing integration is configured by this
-checkpoint. Another account must arrange authorized access separately.
+Project: `appgprj_6adcd46ff0dc8191943fd596d01bba52`.
+Identity manifest: `web/.openai/hosting.json`.
+Last recorded deployment IDs/source/audience: [HANDOFF](HANDOFF.md).
 
-A key previously pasted in chat should be rotated securely before public launch.
-Keep the unpaid policy unless the owner explicitly authorizes a real billing and
-data-handling change. See `HANDOFF.md` for model settings and verification tasks.
+Later continuations could visit the private Site but the Sites connector returned
+`Sites project not found`. Visitor/GitHub access does not grant owner/editor
+rights, runtime-secret access or publication rights. Do not create a replacement
+Site or transfer secrets to bypass that access issue.
+
+For hosting work, read the Sites skill and inspect the existing project/environment
+through the authorized owner's or same-workspace editor's connected account.
+Preserve existing secret bindings and audience while deploying. Supply temporary
+source credentials only through the skill's protected mechanism, never shell
+arguments or Git. A stored secret persists beyond a chat, but a new clone/account
+does not inherit local or connector access.
+
+No GitHub Actions workflow, repository-secret integration or automated deployment
+is tracked in this repository. GitHub Actions secrets are separate from local and
+Sites runtime settings. A previously chat-pasted key should be rotated securely
+by its owner before public launch; this audit makes no rotation claim.
+
+API usage belongs to the configured provider account and is independent of Codex/
+ChatGPT subscriptions. Never infer billing, ownership, key validity or delivery
+from source configuration alone.

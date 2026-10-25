@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "date": "2026-10-25",
+  "total": 448,
+  "summary": [
+    {
+      "track": "ai-ml",
+      "count": 112,
+      "competencies": 21,
+      "levels": {
+        "Internship": 34,
+        "Entry level": 39,
+        "Experienced": 39
+      },
+      "executable": 8,
+      "aiReviewed": 104
+    },
+    {
+      "track": "software",
+      "count": 112,
+      "competencies": 21,
+      "levels": {
+        "Internship": 35,
+        "Entry level": 38,
+        "Experienced": 39
+      },
+      "executable": 8,
+      "aiReviewed": 104
+    },
+    {
+      "track": "hardware",
+      "count": 112,
+      "competencies": 21,
+      "levels": {
+        "Internship": 36,
+        "Entry level": 36,
+        "Experienced": 40
+      },
+      "executable": 8,
+      "aiReviewed": 104
+    },
+    {
+      "track": "digital-logic",
+      "count": 112,
+      "competencies": 20,
+      "levels": {
+        "Internship": 34,
+        "Entry level": 39,
+        "Experienced": 39
+      },
+      "executable": 8,
+      "aiReviewed": 104
+    }
+  ],
+  "validation": "Schema, unique prompts, source ID integrity, difficulty coverage, deterministic reference execution and no-repeat sampling passed. AI review is not human certification."
+}

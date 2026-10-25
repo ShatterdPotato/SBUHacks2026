@@ -1,0 +1,3869 @@
+[
+  {
+    "prompt": "A disease has a 1% prevalence. A test has 90% sensitivity and 90% specificity. If a patient tests positive, what is the exact posterior probability they have the disease?",
+    "level": "Internship",
+    "answerKey": "P(D) = 0.01, P(+|D) = 0.90, P(-|~D) = 0.90 => P(+|~D) = 0.10. P(+) = P(+|D)P(D) + P(+|~D)P(~D) = (0.90 * 0.01) + (0.10 * 0.99) = 0.009 + 0.099 = 0.108. P(D|+) = (0.009) / 0.108 = 9/108 = 1/12 ≈ 8.33%.",
+    "essentialFacts": [
+      "Uses Bayes' theorem combining prior, sensitivity, and false positive rate.",
+      "Calculates total marginal probability of a positive test as 0.108.",
+      "Computes final posterior probability as approximately 8.33% or 1/12."
+    ],
+    "acceptableAlternatives": [
+      "8.33%",
+      "1/12",
+      "0.0833"
+    ],
+    "partialCredit": [
+      "Correctly sets up Bayes' theorem numerator but errs in calculating the total probability denominator.",
+      "Correctly computes false positive rate as 0.10 but arithmetic error in final division."
+    ],
+    "misconceptions": [
+      "Confusing sensitivity with the posterior probability directly.",
+      "Failing to account for the false positive rate on the healthy population."
+    ],
+    "probes": [
+      "How do you calculate the probability of a false positive for a healthy patient?",
+      "What happens to the posterior probability if disease prevalence rises to 10%?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-001",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does the Naive Bayes classifier assume feature independence given the class label, and how does this assumption simplify the joint probability estimation P(X1, X2, ..., Xn | Y)?",
+    "level": "Internship",
+    "answerKey": "It assumes feature independence to avoid the curse of dimensionality and the need for massive joint contingency tables. By conditional independence, P(X1, ..., Xn | Y) = product from i=1 to n of P(Xi | Y), reducing parameter estimation from exponential to linear complexity.",
+    "essentialFacts": [
+      "Explains conditional independence assumption given the class label.",
+      "Shows how joint probability factorizes into a product of individual marginal conditional probabilities.",
+      "Reduces computational and sample complexity from exponential to linear."
+    ],
+    "acceptableAlternatives": [
+      "Factorizes the joint probability into a product of independent conditional probabilities.",
+      "Eliminates cross-feature terms to reduce parameter count."
+    ],
+    "partialCredit": [
+      "Mentions independence but fails to explain how it simplifies the mathematical product.",
+      "Confuses independence with mutual exclusivity."
+    ],
+    "misconceptions": [
+      "Believing features must be unconditionally independent in the entire dataset.",
+      "Thinking Naive Bayes computes the full joint distribution without approximations."
+    ],
+    "probes": [
+      "What are the practical consequences when features are strongly correlated in real-world data?",
+      "How does this assumption affect the model's calibration?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-002",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When multiplying many small probabilities in a Naive Bayes model, underflow can occur. Why do we compute log-probabilities instead, and how does this transform multiplication into addition?",
+    "level": "Entry level",
+    "answerKey": "Multiplying many probabilities close to zero exceeds floating-point precision limits, resulting in underflow. Applying the logarithm function transforms products into sums via log(a * b) = log(a) + log(b), which prevents underflow and maintains numerical stability.",
+    "essentialFacts": [
+      "Identifies floating-point underflow caused by multiplying many small probabilities.",
+      "Applies logarithm properties to convert multiplication into addition.",
+      "Maintains monotonic ordering since log is a strictly increasing function."
+    ],
+    "acceptableAlternatives": [
+      "Uses log transform to turn products into sums, avoiding floating-point underflow.",
+      "Prevents numerical underflow by working in log-space."
+    ],
+    "partialCredit": [
+      "Explains underflow correctly but misses the mathematical property of logarithms converting products to sums.",
+      "Mentions log-space but confuses monotonic transformation."
+    ],
+    "misconceptions": [
+      "Thinking logarithms change the argmax classification result.",
+      "Believing log transform scales the probabilities linearly."
+    ],
+    "probes": [
+      "Does taking the log change the predicted class label output by argmax? Why?",
+      "How do you recover actual probabilities if needed later?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-003",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a discrete Naive Bayes model, a feature value never appears in the training set for a specific class, resulting in a zero probability. How does Laplace smoothing fix this?",
+    "level": "Entry level",
+    "answerKey": "Laplace (add-1) smoothing adds a small pseudo-count (typically 1) to the numerator and V (the number of unique feature values) to the denominator: P(Xi=x | Y=y) = (count(Xi=x, Y=y) + 1) / (count(Y=y) + V). This ensures no probability is zero.",
+    "essentialFacts": [
+      "Adds a pseudo-count to feature frequencies to prevent zero probabilities.",
+      "Adjusts the denominator by adding the vocabulary size or number of unique categories.",
+      "Ensures unseen test features do not wipe out entire class posteriors."
+    ],
+    "acceptableAlternatives": [
+      "Adds 1 to numerator and vocabulary size to denominator.",
+      "Uses add-alpha smoothing to assign non-zero probability to unseen categories."
+    ],
+    "partialCredit": [
+      "Mentions adding 1 to the numerator but forgets to adjust the denominator by vocabulary size.",
+      "Explains zero probability issue but omits the formula."
+    ],
+    "misconceptions": [
+      "Thinking smoothing only affects the numerator.",
+      "Believing smoothing eliminates model bias entirely."
+    ],
+    "probes": [
+      "What is the effect of choosing a very large smoothing parameter alpha?",
+      "How does Lidstone smoothing generalize Laplace smoothing?"
+    ],
+    "sourceIds": [
+      "ml-bank",
+      "sklearn"
+    ],
+    "id": "ai-ml-004",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a logistic regression model outputs a predicted probability of 0.4 for a positive class, but the cost of a false negative is four times a false positive, what is the optimal classification threshold?",
+    "level": "Entry level",
+    "answerKey": "The optimal threshold p* minimizing expected cost satisfies p* / (1 - p*) = C(FP) / C(FN) = 1/4. Thus 4p* = 1 - p* => 5p* = 1 => p* = 0.2. Since predicted probability 0.4 > 0.2, classify as positive.",
+    "essentialFacts": [
+      "Sets up the decision threshold equation based on cost ratios: p / (1-p) = C(FP) / C(FN).",
+      "Substitutes cost values to find the optimal threshold of 0.2.",
+      "Compares the predicted probability (0.4) against the threshold to make the classification decision."
+    ],
+    "acceptableAlternatives": [
+      "Threshold is 0.2, classify as positive.",
+      "Optimal threshold is 1/5 or 0.2; since 0.4 > 0.2, predict positive."
+    ],
+    "partialCredit": [
+      "Sets up the cost ratio inversely (e.g., FN/FP instead of FP/FN).",
+      "Calculates the threshold correctly as 0.2 but fails to make the final classification decision."
+    ],
+    "misconceptions": [
+      "Assuming the default classification threshold of 0.5 is always optimal regardless of class costs.",
+      "Multiplying costs directly with probabilities without setting up the decision rule."
+    ],
+    "probes": [
+      "How does changing the class imbalance ratio affect this optimal threshold?",
+      "What curve is used to evaluate all possible thresholds visually?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-005",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Describe how a Beta-Binomial conjugate prior model updates its hyperparameters alpha and beta when observing k successes in n trials, and state the resulting posterior mean formula.",
+    "level": "Experienced",
+    "answerKey": "With a Beta(alpha, beta) prior and observing k successes and n-k failures, the posterior is also Beta with updated parameters alpha' = alpha + k and beta' = beta + n - k. The posterior mean is given by (alpha + k) / (alpha + beta + n).",
+    "essentialFacts": [
+      "Identifies conjugate updating rule where successes add to alpha and failures add to beta.",
+      "States updated hyperparameters as alpha + k and beta + n - k.",
+      "Provides the correct posterior mean formula incorporating prior and observed data."
+    ],
+    "acceptableAlternatives": [
+      "Posterior parameters are alpha + k and beta + n - k, with posterior mean (alpha + k)/(alpha + beta + n).",
+      "Adds successes to alpha and failures to beta; mean is (alpha+k)/(alpha+beta+n)."
+    ],
+    "partialCredit": [
+      "Correctly updates parameters but makes an error in the posterior mean expression.",
+      "Remembers prior structure but confuses failures term (n-k)."
+    ],
+    "misconceptions": [
+      "Assuming conjugate priors require numerical integration or MCMC for exact updates.",
+      "Confusing the beta distribution parameters with mean and variance directly."
+    ],
+    "probes": [
+      "How do the prior hyperparameters alpha and beta act as effective sample sizes?",
+      "What happens to the posterior mean as n approaches infinity?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-006",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a non-negative random variable with a mean of 5, apply Markov's inequality to derive an upper bound for the probability that the variable is greater than or equal to 20.",
+    "level": "Experienced",
+    "answerKey": "Markov's inequality states P(X >= a) <= E[X] / a for a non-negative random variable X and a > 0. Substituting E[X] = 5 and a = 20 yields P(X >= 20) <= 5 / 20 = 1/4 = 0.25.",
+    "essentialFacts": [
+      "States Markov's inequality formula P(X >= a) <= E[X]/a.",
+      "Verifies the condition that the random variable is non-negative.",
+      "Substitutes mean E[X]=5 and a=20 to calculate the bound of 0.25."
+    ],
+    "acceptableAlternatives": [
+      "1/4",
+      "0.25",
+      "5/20"
+    ],
+    "partialCredit": [
+      "States the inequality correctly but divides a by E[X] instead.",
+      "Calculates 0.25 but omits the non-negativity condition requirement."
+    ],
+    "misconceptions": [
+      "Assuming Markov's inequality works for random variables that can take negative values without adjustments.",
+      "Confusing Markov's inequality with Chebyshev's inequality."
+    ],
+    "probes": [
+      "How does Chebyshev's inequality improve upon Markov's inequality when variance is known?",
+      "Why is this bound considered loose for many distributions?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-007",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the key difference between the maximum a posteriori (MAP) parameter estimate and the full posterior predictive distribution when generating new predictions in a Bayesian neural network?",
+    "level": "Experienced",
+    "answerKey": "MAP selects a single point estimate of the weights that maximizes the posterior theta_MAP = argmax_theta P(theta|D), ignoring parameter uncertainty during inference. The full posterior predictive distribution integrates over all possible weight configurations: P(y*|x*, D) = integral of P(y*|x*, theta) P(theta|D) d_theta, capturing both epistemic and aleatoric uncertainty.",
+    "essentialFacts": [
+      "Defines MAP as using a single point estimate of parameters.",
+      "Defines the full posterior predictive distribution as an integral over all parameter values weighted by their posterior.",
+      "Highlights that full Bayesian inference captures parameter (epistemic) uncertainty whereas MAP does not."
+    ],
+    "acceptableAlternatives": [
+      "MAP uses a single set of weights, whereas full posterior predictive averages predictions across an ensemble weighted by the posterior.",
+      "MAP ignores epistemic uncertainty by optimizing a single weight vector."
+    ],
+    "partialCredit": [
+      "Contrasts point estimation with integration but omits mention of epistemic uncertainty.",
+      "Defines MAP correctly but misstates the integration formula for posterior predictive."
+    ],
+    "misconceptions": [
+      "Believing MAP is equivalent to full Bayesian inference when sample size is large.",
+      "Confusing aleatoric and epistemic uncertainty in neural networks."
+    ],
+    "probes": [
+      "Why is computing the exact posterior predictive distribution intractable for deep neural networks?",
+      "What approximation methods are commonly used to estimate this integral (e.g., Monte Carlo Dropout, Laplace approximation)?"
+    ],
+    "sourceIds": [
+      "ml-bank",
+      "pytorch"
+    ],
+    "id": "ai-ml-008",
+    "track": "ai-ml",
+    "competency": "probability and Bayes",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a 2x2 matrix A with singular values sigma_1 = 100 and sigma_2 = 0.01, what is its condition number, and why does this value indicate potential numerical instability when solving Ax = b?",
+    "level": "Internship",
+    "answerKey": "The condition number is kappa(A) = sigma_1 / sigma_2 = 100 / 0.01 = 10,000. This high value indicates ill-conditioning, meaning small perturbations or rounding errors in b or A can be magnified by up to a factor of 10,000 in the computed solution x.",
+    "essentialFacts": [
+      "Condition number is the ratio of the largest to smallest singular value.",
+      "A condition number of 10,000 represents severe ill-conditioning.",
+      "Small input errors or noise can result in massive errors in the solution vector."
+    ],
+    "acceptableAlternatives": [
+      "kappa equals 10^4, which means division by a nearly zero singular value creates huge error amplification."
+    ],
+    "partialCredit": [
+      "Correctly calculates 10,000 but fails to explain the error amplification mechanism.",
+      "Identifies that small changes cause large output changes without referencing singular values."
+    ],
+    "misconceptions": [
+      "Confusing the condition number with the determinant of the matrix.",
+      "Believing condition numbers only apply to square matrices."
+    ],
+    "probes": [
+      "How would you alter the system if kappa(A) were 10^16, exceeding double-precision machine epsilon?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-009",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When computing softmax over logits [1000, 1005], direct exponentiation causes overflow. Explain how subtracting the maximum logit c = max(x) resolves this issue mathematically while preserving exact output probabilities.",
+    "level": "Entry level",
+    "answerKey": "Subtracting c scales each exponent: exp(x_i - c) / sum_j exp(x_j - c). The largest exponent becomes exp(0) = 1, preventing overflow. Algebraically, factoring out exp(c) from numerator and denominator cancels it out completely, leaving probabilities unchanged.",
+    "essentialFacts": [
+      "Subtracting the maximum logit bounds the largest exponent at zero.",
+      "This prevents floating-point overflow for large positive inputs.",
+      "The mathematical equivalence relies on numerator-denominator cancellation of exp(c)."
+    ],
+    "acceptableAlternatives": [
+      "It scales down all exponents so the max is e^0=1, and the multiplier cancels out across numerator and denominator."
+    ],
+    "partialCredit": [
+      "Mentions preventing overflow by subtracting max, but cannot explain why the fraction remains mathematically equivalent."
+    ],
+    "misconceptions": [
+      "Assuming subtracting the maximum changes the relative probabilities of the classes."
+    ],
+    "probes": [
+      "Does this shift affect gradient calculations during backpropagation through the softmax layer?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "ml-bank"
+    ],
+    "id": "ai-ml-010",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why is solving linear regression via normal equations X^T X beta = X^T y numerically inferior to using Singular Value Decomposition (SVD) of X, particularly when X has collinear features?",
+    "level": "Experienced",
+    "answerKey": "Forming X^T X squares the condition number, kappa(X^T X) = kappa(X)^2, worsening precision and risking singular matrices when features are collinear. SVD factors X directly as U Sigma V^T without squaring condition numbers, maintaining numerical stability.",
+    "essentialFacts": [
+      "Normal equations square the condition number of the design matrix.",
+      "Collinear features render X^T X nearly singular or non-invertible.",
+      "SVD avoids forming X^T X and handles rank deficiency reliably."
+    ],
+    "acceptableAlternatives": [
+      "X transpose X doubles the condition number exponent, causing catastrophic cancellation; SVD decomposes X directly."
+    ],
+    "partialCredit": [
+      "States that SVD is better for collinearity but fails to explain the condition number squaring effect."
+    ],
+    "misconceptions": [
+      "Believing normal equations are slower than SVD, rather than primarily suffering from precision loss."
+    ],
+    "probes": [
+      "How does Ridge regression modify X^T X to mitigate this numerical issue?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-011",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why is Cholesky decomposition preferred over LU decomposition for solving linear systems involving symmetric positive-definite covariance matrices, and what numerical advantage does it provide regarding roundoff errors?",
+    "level": "Experienced",
+    "answerKey": "Cholesky factorizes A = LL^T, using half the computational operations of LU. Because the matrix is symmetric positive-definite, it does not require row pivoting and inherently bounds roundoff error growth without instability.",
+    "essentialFacts": [
+      "Exploits symmetry to require half the operations of LU decomposition.",
+      "Avoids row pivoting while remaining numerically stable for positive-definite matrices.",
+      "Guarantees all diagonal elements of L are real and positive."
+    ],
+    "acceptableAlternatives": [
+      "It uses half the flops and avoids pivoting because positive-definite matrices don't suffer from growth factor instability."
+    ],
+    "partialCredit": [
+      "Notes that Cholesky is faster or uses less memory, but omits the lack of need for pivoting."
+    ],
+    "misconceptions": [
+      "Assuming Cholesky decomposition can be applied to any arbitrary square matrix."
+    ],
+    "probes": [
+      "What happens numerically if a matrix is nearly semi-definite with small negative eigenvalues due to floating-point rounding?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-012",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In FP16 mixed precision training, gradients often fall below the representable minimum positive value (~6 x 10^-5), causing underflow to zero. How does gradient scaling resolve this?",
+    "level": "Internship",
+    "answerKey": "Gradient scaling multiplies the loss by a large factor (e.g., 2^16) before backpropagation, shifting small gradients into the representable FP16 range. Gradients are then unscaled right before applying the optimizer update.",
+    "essentialFacts": [
+      "FP16 has a restricted dynamic range causing small gradients to underflow to zero.",
+      "Multiplying the loss by a scaling factor shifts gradients into the valid representable range.",
+      "The scale must be inverted prior to the optimizer parameter update."
+    ],
+    "acceptableAlternatives": [
+      "It multiplies gradients by a constant factor during backward pass to avoid underflow, then divides them out before updating weights."
+    ],
+    "partialCredit": [
+      "Understands scaling up the loss, but forgets to mention unscaling before the weight update step."
+    ],
+    "misconceptions": [
+      "Believing gradient scaling alters the final converged model parameters."
+    ],
+    "probes": [
+      "How do training frameworks dynamically adjust the scale factor if inf or NaN values appear?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "google-ml"
+    ],
+    "id": "ai-ml-013",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Standard Gram-Schmidt orthogonalization suffers from severe loss of orthogonality due to roundoff errors. How does Householder reflector-based QR decomposition avoid this numerical degradation?",
+    "level": "Entry level",
+    "answerKey": "Householder reflections apply orthogonal transformations that preserve Euclidean norms and angles precisely. Unlike classical Gram-Schmidt, which accumulates cancellation errors from explicit vector projections, Householder reflections maintain strict numerical orthogonality.",
+    "essentialFacts": [
+      "Classical Gram-Schmidt accumulates roundoff errors destroying orthogonality.",
+      "Householder reflections are orthogonal transformations that preserve vector norms.",
+      "Avoids catastrophic cancellation inherent in explicit vector projection steps."
+    ],
+    "acceptableAlternatives": [
+      "Householder QR uses unitary reflection matrices that don't suffer from the cumulative rounding errors of Gram-Schmidt."
+    ],
+    "partialCredit": [
+      "States that Householder is more stable, but does not explain how reflections preserve norms."
+    ],
+    "misconceptions": [
+      "Assuming modified Gram-Schmidt completely eliminates all roundoff errors compared to Householder."
+    ],
+    "probes": [
+      "What is the computational complexity difference between Gram-Schmidt and Householder QR?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-014",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a non-normal matrix A, why can eigenvalues be extremely sensitive to small perturbations in entries, and how does the Bauer-Fike theorem formalize this sensitivity using eigenvectors?",
+    "level": "Experienced",
+    "answerKey": "Non-normal matrices have non-orthogonal eigenvectors, yielding a high eigenvector condition number. The Bauer-Fike theorem bounds eigenvalue shifts by the perturbation norm multiplied by the condition number of the eigenvector matrix.",
+    "essentialFacts": [
+      "Non-normal matrices lack orthogonal sets of eigenvectors.",
+      "Eigenvalues of non-normal matrices can have high condition numbers.",
+      "Bauer-Fike bounds perturbation errors using the eigenvector matrix condition number."
+    ],
+    "acceptableAlternatives": [
+      "Non-orthogonal eigenvectors make eigenvalue problems ill-conditioned; Bauer-Fike bounds error via eigenvector matrix conditioning."
+    ],
+    "partialCredit": [
+      "Recognizes that non-normality causes sensitivity, but cannot state the role of the eigenvector condition number."
+    ],
+    "misconceptions": [
+      "Assuming all matrices have orthogonal eigenvectors."
+    ],
+    "probes": [
+      "How does normality (A^T A = A A^T) guarantee unitary diagonalizability and eigenvalue stability?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-015",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "While direct evaluation of softplus softplus(x) = log(1 + e^x) works for moderate inputs, large positive values of x cause e^x to overflow. How do modern numerical libraries compute softplus stably for large positive inputs?",
+    "level": "Entry level",
+    "answerKey": "For large positive x, libraries compute log(1 + e^x) as x + log(1 + e^-x). Since x is large and positive, e^-x underflows to 0, making log(1 + e^-x) approx 0, avoiding floating-point overflow while maintaining high precision.",
+    "essentialFacts": [
+      "Direct calculation of e^x overflows for large positive x.",
+      "Libraries use conditional branching to evaluate x + log(1 + e^-x) for large positive inputs.",
+      "For large positive inputs, e^-x is numerically safe and approaches zero."
+    ],
+    "acceptableAlternatives": [
+      "They rewrite it as x + log(1 + exp(-x)) for large positive values to prevent overflow."
+    ],
+    "partialCredit": [
+      "Knows that a different formula is used for large values, but cannot write the mathematically stable alternative."
+    ],
+    "misconceptions": [
+      "Believing that standard float64 handles arbitrarily large exponential inputs without overflow."
+    ],
+    "probes": [
+      "Why is this similar to the numerical trick used in the log-sum-exp stabilization?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "ml-bank"
+    ],
+    "id": "ai-ml-016",
+    "track": "ai-ml",
+    "competency": "linear algebra and numerical stability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a linear regression model has a mean squared error of 16 on training data and 36 on validation data, is this underfitting or overfitting, and what is one regularization technique you could add to address it?",
+    "level": "Internship",
+    "answerKey": "This indicates overfitting because the model performs significantly worse on validation data than training data. Adding L2 (Ridge) or L1 (Lasso) regularization penalizes large weights and reduces variance.",
+    "essentialFacts": [
+      "Higher validation error compared to training error indicates overfitting.",
+      "Regularization methods like Ridge or Lasso penalize large coefficient magnitudes to improve generalization."
+    ],
+    "acceptableAlternatives": [
+      "Elastic Net",
+      "Early stopping"
+    ],
+    "partialCredit": [
+      "Identifies overfitting correctly but names an unrelated optimization technique."
+    ],
+    "misconceptions": [
+      "Believing high training error is a sign of overfitting."
+    ],
+    "probes": [
+      "How does adding a penalty term to the loss function change the optimization objective?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "google-ml"
+    ],
+    "id": "ai-ml-017",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why must you standardize features before applying Lasso regularization, and what happens to features with very large raw scales during coordinate descent if scaling is omitted?",
+    "level": "Internship",
+    "answerKey": "Lasso penalizes the absolute magnitude of coefficients equally; unscaled features with larger units will have artificially smaller coefficients and get unfairly shrunk to zero, while small-scale features dominate.",
+    "essentialFacts": [
+      "L1 penalty treats all feature coefficients equally regardless of their native units.",
+      "Unscaled features skew the coordinate descent penalty application."
+    ],
+    "acceptableAlternatives": [
+      "Features with large numeric ranges dominate the L1 penalty term."
+    ],
+    "partialCredit": [
+      "Mentions scaling matters for gradient descent convergence speed without explaining L1 penalty equity."
+    ],
+    "misconceptions": [
+      "Assuming regularization penalty terms are scale-invariant."
+    ],
+    "probes": [
+      "Does Ridge regression also require feature scaling? Why?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-018",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Ridge regression with penalty alpha equals 5, derive the closed-form weight vector given design matrix X and target y. What is the matrix addition term added inside the inverse?",
+    "level": "Entry level",
+    "answerKey": "The closed-form solution is beta = (X^T X + alpha I)^(-1) X^T y. The term added inside the inverse is alpha I (alpha times the identity matrix).",
+    "essentialFacts": [
+      "Ridge closed-form formula is (X^T X + alpha I)^(-1) X^T y.",
+      "The alpha I term ensures matrix invertibility even when features are collinear."
+    ],
+    "acceptableAlternatives": [
+      "lambda I instead of alpha I if lambda is defined as the penalty parameter."
+    ],
+    "partialCredit": [
+      "Omits the identity matrix I or writes alpha X."
+    ],
+    "misconceptions": [
+      "Confusing Ridge closed-form with standard OLS expression (X^T X)^(-1) X^T y."
+    ],
+    "probes": [
+      "Why does adding alpha I resolve singularity issues when X^T X is non-invertible?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-019",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how Lasso (L1) regression yields sparse coefficient vectors compared to Ridge (L2). Reference the geometry of their constraint regions and loss function contours.",
+    "level": "Entry level",
+    "answerKey": "Lasso's diamond-shaped constraint region has sharp corners on the coordinate axes where loss contours often intersect, setting coefficients exactly to zero. Ridge's circular constraint has no sharp corners, yielding small non-zero weights.",
+    "essentialFacts": [
+      "L1 constraint region is a diamond with sharp corners on the axes; L2 is a hypersphere.",
+      "Loss contours typically intersect L1 corners, driving coefficients to zero."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning the absolute value derivative discontinuity at zero for Lasso."
+    ],
+    "partialCredit": [
+      "Explains that Lasso does feature selection without mentioning the geometric constraint shape."
+    ],
+    "misconceptions": [
+      "Assuming L2 regularization can also zero out coefficients completely."
+    ],
+    "probes": [
+      "What happens when you combine both penalties in Elastic Net?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-020",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given two highly collinear features in a linear regression model, how does adding small L2 regularization affect their estimated coefficients and the model's prediction variance?",
+    "level": "Entry level",
+    "answerKey": "L2 regularization stabilizes coefficients by shrinking them away from extreme values, drastically reducing prediction variance at the cost of a small increase in bias.",
+    "essentialFacts": [
+      "Collinearity causes unstable, high-variance OLS coefficients.",
+      "L2 penalty dampens coefficient magnitudes, reducing model prediction variance."
+    ],
+    "acceptableAlternatives": [
+      "Shrinks the coefficients toward zero, lowering variance."
+    ],
+    "partialCredit": [
+      "States variance decreases without mentioning coefficient behavior or bias trade-off."
+    ],
+    "misconceptions": [
+      "Believing L2 regularization eliminates multicollinearity completely from the underlying dataset."
+    ],
+    "probes": [
+      "How would L1 regularization behave differently on the same collinear features?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "google-ml"
+    ],
+    "id": "ai-ml-021",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When training a linear regression model with L1 regularization via gradient descent, why does standard subgradient descent fail to reach exact zero coefficients, and how do proximal gradient methods fix this?",
+    "level": "Experienced",
+    "answerKey": "Subgradient of |w| at zero is [-1, 1], so gradient steps bounce around zero without landing on exact zero. Proximal gradient methods use a soft-thresholding operator to explicitly truncate small values to exact zero.",
+    "essentialFacts": [
+      "L1 penalty is non-differentiable at zero, causing standard subgradient updates to oscillate.",
+      "Proximal operators apply soft-thresholding to achieve exact zeros."
+    ],
+    "acceptableAlternatives": [
+      "Coordinate descent can also achieve exact zeros by optimizing one weight at a time."
+    ],
+    "partialCredit": [
+      "Mentions non-differentiability at zero without explaining the proximal operator or soft-thresholding."
+    ],
+    "misconceptions": [
+      "Assuming standard gradient descent treats the absolute value penalty with a normal continuous derivative."
+    ],
+    "probes": [
+      "Derive the soft-thresholding function for a scalar weight update under L1 regularization."
+    ],
+    "sourceIds": [
+      "sklearn",
+      "pytorch"
+    ],
+    "id": "ai-ml-022",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an Elastic Net regression, the penalty combines L1 and L2 with ratio l1_ratio and strength alpha. Write the exact penalty term expression added to the residual sum of squares objective.",
+    "level": "Experienced",
+    "answerKey": "alpha * (rho * ||w||_1 + ((1 - rho) / 2) * ||w||_2^2), where rho is the l1_ratio.",
+    "essentialFacts": [
+      "Elastic Net combines L1 and L2 penalties linearly.",
+      "The formula includes a convex combination parameter (l1_ratio) and overall penalty strength alpha."
+    ],
+    "acceptableAlternatives": [
+      "alpha * l1_ratio * sum(|w_i|) + 0.5 * alpha * (1 - l1_ratio) * sum(w_i^2)."
+    ],
+    "partialCredit": [
+      "Includes both L1 and L2 terms but misses the scaling factors or the 0.5 factor for L2."
+    ],
+    "misconceptions": [
+      "Assuming Elastic Net multiplies L1 and L2 penalties instead of summing them."
+    ],
+    "probes": [
+      "Why is Elastic Net preferred over Lasso when features are strongly correlated?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-023",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how nested cross-validation prevents data leakage when simultaneously tuning the L2 regularization hyperparameter alpha and evaluating out-of-sample generalization performance on a dataset.",
+    "level": "Experienced",
+    "answerKey": "The outer loop evaluates generalization on unseen test folds, while the inner loop tunes alpha using cross-validation strictly on the training folds, preventing test labels/distributions from leaking into hyperparameter selection.",
+    "essentialFacts": [
+      "Inner loop performs hyperparameter tuning on training splits.",
+      "Outer loop evaluates unbiased generalization error without touching tuning data."
+    ],
+    "acceptableAlternatives": [
+      "Splitting data so test fold is never touched during hyperparameter optimization."
+    ],
+    "partialCredit": [
+      "Mentions cross-validation prevents overfitting without explaining the nested inner/outer loop separation."
+    ],
+    "misconceptions": [
+      "Believing standard cross-validation alone avoids leakage during hyperparameter search."
+    ],
+    "probes": [
+      "What specific metric bias occurs if you tune alpha on the entire dataset before splitting?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-024",
+    "track": "ai-ml",
+    "competency": "regression and regularization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given 80 true positives, 20 false positives, and 40 false negatives, calculate the exact precision and recall of the model.",
+    "level": "Internship",
+    "answerKey": "Precision = TP / (TP + FP) = 80 / (80 + 20) = 0.80. Recall = TP / (TP + FN) = 80 / (80 + 40) = 0.667.",
+    "essentialFacts": [
+      "Precision is calculated as true positives divided by true positives plus false positives.",
+      "Recall is calculated as true positives divided by true positives plus false negatives."
+    ],
+    "acceptableAlternatives": [
+      "Precision is 80%, recall is 66.67% or 2/3."
+    ],
+    "partialCredit": [
+      "Correct formula for precision but arithmetic error",
+      "Correct formula for recall but arithmetic error"
+    ],
+    "misconceptions": [
+      "Confusing precision denominator (TP+FP) with accuracy total or recall denominator (TP+FN)."
+    ],
+    "probes": [
+      "What does a high precision but low recall score indicate about the model's predictions?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-025",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A dataset has 99% negative cases. A dummy classifier always predicts negative, achieving 99% accuracy. Why is accuracy misleading here, and what metric should you use instead?",
+    "level": "Internship",
+    "answerKey": "Accuracy is misleading because it is dominated by the majority negative class, making a trivial non-predictive model look performant. Metrics like F1-score, Precision-Recall AUC, or minority-class recall should be used instead.",
+    "essentialFacts": [
+      "Class imbalance makes overall accuracy an uninformative metric.",
+      "Precision, recall, and F1-score provide better evaluation on imbalanced distributions."
+    ],
+    "acceptableAlternatives": [
+      "Use PR-AUC or balanced accuracy instead of raw accuracy."
+    ],
+    "partialCredit": [
+      "Identifies class imbalance as the problem but fails to recommend specific metrics"
+    ],
+    "misconceptions": [
+      "Believing high accuracy ensures a robust classifier regardless of label distribution."
+    ],
+    "probes": [
+      "How would changing the decision threshold affect precision and recall on this imbalanced dataset?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "sklearn"
+    ],
+    "id": "ai-ml-026",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A binary classifier outputs predicted probabilities. Explain how Expected Calibration Error (ECE) is computed by grouping predictions into bins, and state what a perfectly calibrated model achieves.",
+    "level": "Entry level",
+    "answerKey": "ECE bins predictions into equal-width intervals, calculates the weighted average absolute difference between empirical accuracy and mean confidence within each bin. A perfectly calibrated model achieves an ECE of 0.",
+    "essentialFacts": [
+      "ECE partitions probability predictions into discrete bins.",
+      "It measures the weighted absolute gap between bin accuracy and confidence.",
+      "Perfect calibration corresponds to an ECE of zero."
+    ],
+    "acceptableAlternatives": [
+      "ECE computes the weighted mean difference between accuracy and confidence across probability bins."
+    ],
+    "partialCredit": [
+      "Describes binning and accuracy comparison but omits weighting by bin size"
+    ],
+    "misconceptions": [
+      "Confusing calibration error with classification accuracy or ROC-AUC."
+    ],
+    "probes": [
+      "How does bin size selection impact the estimated ECE value?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-027",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a true binary label y = 1 and predicted probability p = 0.8, calculate the Brier score for this single prediction and explain what a score of 0 represents.",
+    "level": "Entry level",
+    "answerKey": "Brier score = (p - y)^2 = (0.8 - 1)^2 = (-0.2)^2 = 0.04. A score of 0 represents perfect probabilistic accuracy where predicted probabilities match true binary outcomes exactly.",
+    "essentialFacts": [
+      "Brier score is the mean squared error of probability predictions.",
+      "A score of 0 indicates absolute probabilistic correctness."
+    ],
+    "acceptableAlternatives": [
+      "Brier score formula is (y_pred - y_true)^2 resulting in 0.04."
+    ],
+    "partialCredit": [
+      "Correct squaring formula but arithmetic computation error"
+    ],
+    "misconceptions": [
+      "Confusing Brier score with 0-1 classification loss."
+    ],
+    "probes": [
+      "How does the Brier score differ from log loss when evaluating probabilistic predictions?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-028",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In temperature scaling, logits z are divided by scalar T before applying softmax. If T > 1, how does the resulting probability distribution change, and what does it correct?",
+    "level": "Entry level",
+    "answerKey": "Dividing logits by T > 1 compresses their range, producing a softer, higher-entropy probability distribution with lower maximum probabilities. This corrects model overconfidence.",
+    "essentialFacts": [
+      "Temperature scaling divides raw logits by scalar T.",
+      "Setting T > 1 softens the resulting probability distribution.",
+      "It is specifically used to correct overconfident model predictions."
+    ],
+    "acceptableAlternatives": [
+      "T > 1 flattens the probability distribution and reduces overconfidence."
+    ],
+    "partialCredit": [
+      "Recognizes that probabilities change but incorrectly states it increases confidence"
+    ],
+    "misconceptions": [
+      "Believing temperature scaling alters model accuracy or ranking of predictions."
+    ],
+    "probes": [
+      "Does temperature scaling change the argmax predictions of the model? Why or why not?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-029",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare Platt scaling and Isotonic regression for post-processing probability calibration. When is Isotonic regression preferred over Platt scaling, and what is the primary risk of using it?",
+    "level": "Experienced",
+    "answerKey": "Platt scaling fits a parametric logistic regression to logits (assuming a sigmoid shape), whereas Isotonic regression fits a non-parametric piecewise-constant monotonic function. Isotonic regression is preferred when training data is abundant and the calibration function is non-sigmoid, but it risks severe overfitting on small datasets.",
+    "essentialFacts": [
+      "Platt scaling is parametric assuming a sigmoid calibration function.",
+      "Isotonic regression is non-parametric and monotonic.",
+      "Isotonic regression requires large datasets to avoid overfitting."
+    ],
+    "acceptableAlternatives": [
+      "Platt uses a logistic mapping; Isotonic uses a non-parametric step function prone to overfitting on small data."
+    ],
+    "partialCredit": [
+      "Identifies parametric vs non-parametric distinction but omits the overfitting risk"
+    ],
+    "misconceptions": [
+      "Assuming Isotonic regression can extrapolate outside the training probability range."
+    ],
+    "probes": [
+      "How does Isotonic regression handle unseen probability values during test evaluation?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-030",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a multi-class classification problem with severe class imbalance, explain the mathematical difference between macro-averaged ROC-AUC and micro-averaged ROC-AUC.",
+    "level": "Experienced",
+    "answerKey": "Macro-averaged ROC-AUC computes ROC-AUC independently for each class and takes the unweighted arithmetic mean, giving equal weight to rare and frequent classes. Micro-averaged ROC-AUC aggregates all binary predictions globally across all classes into a single confusion matrix calculation before computing AUC, heavily weighting majority classes.",
+    "essentialFacts": [
+      "Macro-averaging computes unweighted per-class AUCs.",
+      "Micro-averaging pools all predictions globally, weighting classes by frequency."
+    ],
+    "acceptableAlternatives": [
+      "Macro gives equal weight per class; micro gives equal weight per sample."
+    ],
+    "partialCredit": [
+      "Correctly distinguishes class-level vs global pooling without explaining the weighting effect"
+    ],
+    "misconceptions": [
+      "Assuming macro and micro ROC-AUC yield identical values when class sizes are unbalanced."
+    ],
+    "probes": [
+      "Which averaging method would you choose if minority class performance is critical to business success?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-031",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A binary classifier has a false positive cost of 10 and a false negative cost of 40. Derive the optimal classification decision threshold p* using expected cost minimization.",
+    "level": "Experienced",
+    "answerKey": "To minimize expected misclassification cost, classify as positive when the predicted probability exceeds threshold t*. Setting expected cost derivative to zero yields the optimal threshold t* = C_FP / (C_FP + C_FN) = 10 / (10 + 40) = 0.20.",
+    "essentialFacts": [
+      "Optimal threshold minimizes expected misclassification cost.",
+      "Formula is C_FP / (C_FP + C_FN).",
+      "Calculation yields 10 / 50 = 0.20."
+    ],
+    "acceptableAlternatives": [
+      "Threshold formula C_FP / (C_FP + C_FN) gives 0.20."
+    ],
+    "partialCredit": [
+      "Sets up cost ratio formula correctly but inverts numerator and denominator"
+    ],
+    "misconceptions": [
+      "Assuming the default classification threshold of 0.5 is optimal regardless of asymmetric costs."
+    ],
+    "probes": [
+      "How does changing the class prevalence prior affect this optimal threshold calculation?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "sklearn"
+    ],
+    "id": "ai-ml-032",
+    "track": "ai-ml",
+    "competency": "classification metrics and calibration",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If you standardize a dataset using mean and standard deviation computed over all 10,000 samples before performing a 5-fold cross-validation, what specific type of data leakage occurs, and how does it bias validation performance?",
+    "level": "Internship",
+    "answerKey": "Computing global mean and standard deviation leaks test set distribution information into the training folds. This results in overly optimistic (inflated) validation performance estimates because the validation data was indirectly seen during preprocessing.",
+    "essentialFacts": [
+      "Global scaling leaks test set mean and variance into training folds.",
+      "Validation performance metrics become artificially inflated or overly optimistic."
+    ],
+    "acceptableAlternatives": [
+      "Preprocessing leakage",
+      "Information leakage from the test split"
+    ],
+    "partialCredit": [
+      "Identifies that data is shared between splits",
+      "Mentions performance is affected without explaining the optimistic bias"
+    ],
+    "misconceptions": [
+      "Thinking global scaling has no impact if no labels are used",
+      "Believing standard scaling is stateless"
+    ],
+    "probes": [
+      "How would you rewrite this preprocessing step using a scikit-learn Pipeline?",
+      "Does unsupervised feature scaling always cause catastrophic leakage?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-033",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "You compute target encoding means for a categorical feature using the entire 50,000-row dataset before splitting into train and test sets. Why does this cause data leakage, and what is the proper fix?",
+    "level": "Internship",
+    "answerKey": "Target encoding uses the target variable. Encoding the entire dataset leaks target values from the test set into the training features. The proper fix is to compute target encoding maps exclusively within each training fold (or training split) and apply them to the validation/test fold.",
+    "essentialFacts": [
+      "Target encoding incorporates the target variable, directly leaking test labels into training data.",
+      "Encodings must be computed strictly inside training folds or splits."
+    ],
+    "acceptableAlternatives": [
+      "Label leakage via target statistics",
+      "Out-of-fold target encoding"
+    ],
+    "partialCredit": [
+      "Recognizes target variable is used",
+      "Suggests removing the feature entirely rather than proper splitting"
+    ],
+    "misconceptions": [
+      "Believing categorical mappings are unsupervised",
+      "Assuming target encoding is safe because it is a summary statistic"
+    ],
+    "probes": [
+      "How does smoothing help prevent overfitting in target encoding?",
+      "What happens if a test category was never seen in the training fold?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-034",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When validating a time-series forecasting model with 1,000 daily observations, why is standard 5-fold cross-validation inappropriate, and what walk-forward validation scheme should be used instead to prevent future data leakage?",
+    "level": "Entry level",
+    "answerKey": "Standard K-fold randomly shuffles data, allowing the model to train on future observations to predict past ones (temporal leakage). A walk-forward validation (or rolling/expanding window cross-validation) must be used, ensuring training data strictly precedes validation data in time.",
+    "essentialFacts": [
+      "Standard random k-fold shuffles temporal data, causing future-to-past leakage.",
+      "Walk-forward or rolling split validation ensures training data strictly precedes evaluation data chronologically."
+    ],
+    "acceptableAlternatives": [
+      "Time-series split",
+      "Expanding window cross-validation"
+    ],
+    "partialCredit": [
+      "States time order matters",
+      "Identifies shuffling as the main issue without naming the replacement scheme"
+    ],
+    "misconceptions": [
+      "Assuming standard cross-validation works if time features are removed",
+      "Believing time-series leakage only affects test sets"
+    ],
+    "probes": [
+      "How does an expanding window differ from a sliding window validation scheme?",
+      "What is the impact of autocorrelation on time-series validation?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-035",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "You fill missing values in a dataset of 5,000 samples using the median of the entire feature column before splitting into train and test sets. Calculate the leakage impact and state the correct pipeline step order.",
+    "level": "Entry level",
+    "answerKey": "Computing the median globally incorporates distribution information from the test set. While the numerical impact depends on the test set variance, it causes an optimistic bias in generalization error. The correct order is to split the data first, then compute the median exclusively on the training fold and apply it to the test fold.",
+    "essentialFacts": [
+      "Global median imputation leaks test set distribution parameters into training data.",
+      "Splitting must occur before imputation, handled via pipelines or separate fit/transform calls."
+    ],
+    "acceptableAlternatives": [
+      "Imputation before split causes leakage",
+      "Split first, then impute using train statistics"
+    ],
+    "partialCredit": [
+      "Identifies imputation order is wrong",
+      "Mentions median changes but omits split order correction"
+    ],
+    "misconceptions": [
+      "Assuming median imputation is trivial and leakage-free",
+      "Believing missingness indicator features prevent leakage"
+    ],
+    "probes": [
+      "How does scikit-learn's Pipeline handle fit and transform isolation automatically?",
+      "What if missingness itself is informative (informative missingness)?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-036",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When generating meta-features for a stacked ensemble using training data, why must you use out-of-fold predictions rather than in-sample predictions from the base models, and what error pattern emerges if you use in-sample predictions?",
+    "level": "Entry level",
+    "answerKey": "In-sample predictions are overfitted to the training data, so base models output overly confident, low-entropy probabilities for instances they already memorized. Using in-sample predictions causes the meta-model to overly rely on base models that leak training labels, leading to severe generalization failure on test data. Out-of-fold predictions simulate unseen test data for the meta-model.",
+    "essentialFacts": [
+      "In-sample predictions contain overfitting artifacts and memorized targets.",
+      "Out-of-fold predictions provide unbiased estimates for training the meta-model."
+    ],
+    "acceptableAlternatives": [
+      "OOF predictions prevent meta-model overfitting",
+      "In-sample stacking leakage"
+    ],
+    "partialCredit": [
+      "Mentions in-sample predictions are overfitted",
+      "States OOF is necessary without explaining the meta-model impact"
+    ],
+    "misconceptions": [
+      "Believing more training data for the meta-model outweighs leakage",
+      "Assuming base model confidence equates to generalization"
+    ],
+    "probes": [
+      "How do you generate test-set predictions for the meta-model from base models trained on multiple folds?",
+      "What is the effect of blending versus stacking?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-037",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When performing hyperparameter tuning via grid search inside standard 5-fold cross-validation, explain why the reported test score is overly optimistic. How does nested cross-validation isolate hyperparameter selection from performance evaluation?",
+    "level": "Experienced",
+    "answerKey": "Tuning hyperparameters on the same validation folds used to evaluate performance causes selection bias (overfitting to the validation set). Nested cross-validation uses an outer loop for unbiased performance evaluation and an inner loop strictly for hyperparameter selection, ensuring test data never informs hyperparameter choices.",
+    "essentialFacts": [
+      "Tuning on evaluation folds causes selection bias and overly optimistic performance estimates.",
+      "Nested cross-validation uses an inner loop for tuning and an outer loop for independent performance estimation."
+    ],
+    "acceptableAlternatives": [
+      "Double cross-validation",
+      "Inner/outer cross-validation loops"
+    ],
+    "partialCredit": [
+      "Mentions hyperparameter tuning affects validation score",
+      "Describes an outer loop without explaining the inner loop's isolation"
+    ],
+    "misconceptions": [
+      "Thinking standard 5-fold CV is sufficient for both tuning and evaluation",
+      "Believing test set score is unbiased if validation score is high"
+    ],
+    "probes": [
+      "What is the computational complexity penalty of nested cross-validation?",
+      "How do you obtain final model weights after nested CV completes?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-038",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A customer churn dataset contains multiple transaction rows per user. If you use standard KFold validation instead of GroupKFold based on user IDs, why do models overfit during evaluation? Detail the leakage mechanism.",
+    "level": "Experienced",
+    "answerKey": "Standard KFold randomly splits rows, causing transactions from the exact same user to appear in both training and validation folds. Because user behaviors are highly correlated across transactions, the model memorizes user-specific patterns rather than generalizing, leading to overly optimistic validation metrics.",
+    "essentialFacts": [
+      "Standard KFold splits rows independently, placing correlated records of the same user into both train and validation.",
+      "GroupKFold ensures all rows belonging to a specific user group are kept entirely within either train or validation."
+    ],
+    "acceptableAlternatives": [
+      "User-level data leakage",
+      "Group-based cross-validation splitting"
+    ],
+    "partialCredit": [
+      "Mentions users are split across folds",
+      "Identifies correlation between rows without referencing GroupKFold"
+    ],
+    "misconceptions": [
+      "Assuming row-level independence holds for multi-row entities",
+      "Believing test performance matches production when user overlap exists"
+    ],
+    "probes": [
+      "How does GroupTimeSeriesSplit differ from standard GroupKFold?",
+      "What metrics are most sensitive to group leakage?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-039",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "You select the top 50 features out of 10,000 using univariate correlation with the target across the full dataset prior to cross-validation. Explain how this selection bias invalidates subsequent validation accuracy estimates.",
+    "level": "Experienced",
+    "answerKey": "Performing feature selection on the entire dataset incorporates target information from the validation/test folds into the feature set. This selection bias (often called the 'file drawer effect' or 'loo leak') results in models trained on features that spuriously correlate with the target in the holdout sets, yielding severely overoptimistic performance.",
+    "essentialFacts": [
+      "Global feature selection uses target labels from the entire dataset, leaking test labels into feature space.",
+      "Feature selection must be refit inside every cross-validation fold."
+    ],
+    "acceptableAlternatives": [
+      "Univariate feature selection leakage",
+      "Selection bias across folds"
+    ],
+    "partialCredit": [
+      "Recognizes feature selection uses all data",
+      "Mentions overfitting without explaining target label leakage"
+    ],
+    "misconceptions": [
+      "Assuming unsupervised feature selection (like variance threshold) causes leakage",
+      "Believing feature selection is a static preprocessing step independent of CV"
+    ],
+    "probes": [
+      "How do scikit-learn Pipelines encapsulate feature selection within cross-validation?",
+      "What is the statistical risk of selecting features on the full dataset when p >> n?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-040",
+    "track": "ai-ml",
+    "competency": "data leakage and validation",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Consider a node with 6 positive and 4 negative examples. Calculate the Gini impurity of this parent node. If a split divides it into two equal nodes with 3 positive, 2 negative each, what is the resulting Gini impurity?",
+    "level": "Internship",
+    "answerKey": "Parent Gini = 1 - (6/10)^2 - (4/10)^2 = 1 - 0.36 - 0.16 = 0.48. Child nodes each have Gini = 1 - (3/5)^2 - (2/5)^2 = 1 - 0.36 - 0.16 = 0.48. Weighted average child Gini = 0.5(0.48) + 0.5(0.48) = 0.48.",
+    "essentialFacts": [
+      "Gini impurity formula is 1 - sum(p_i^2)",
+      "Parent node Gini equals 0.48",
+      "Weighted average child Gini equals parent Gini"
+    ],
+    "acceptableAlternatives": [
+      "Noting that a split yielding identical class distributions results in zero impurity reduction."
+    ],
+    "partialCredit": [
+      "Correctly computes parent Gini but makes arithmetic error on child Gini.",
+      "Computes child Gini correctly but omits weighted averaging."
+    ],
+    "misconceptions": [
+      "Assuming any split strictly decreases node impurity.",
+      "Confusing Gini impurity with Shannon entropy."
+    ],
+    "probes": [
+      "What does a Gini impurity of 0.0 represent?",
+      "Why is the impurity reduction zero in this specific split example?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-041",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When bootstrapping a dataset of size N to build a decision tree in a Random Forest, what is the asymptotic probability that a specific training sample is excluded from a single bootstrap sample as N approaches infinity?",
+    "level": "Internship",
+    "answerKey": "Probability of selection in one draw is 1/N, so probability of not being chosen is (1 - 1/N). For N draws with replacement, exclusion probability is (1 - 1/N)^N, which limits to 1/e or approximately 36.8% as N approaches infinity.",
+    "essentialFacts": [
+      "Probability of selection in one bootstrap draw is 1/N",
+      "Probability of exclusion is (1 - 1/N)^N",
+      "Asymptotic limit as N goes to infinity is 1/e or approx 36.8%"
+    ],
+    "acceptableAlternatives": [
+      "Stating ~36.8% or e^-1 directly with clear limit reasoning."
+    ],
+    "partialCredit": [
+      "Identifies bootstrap sampling with replacement but uses incorrect formula.",
+      "Recalls 36.8% but cannot explain the limit as N -> infinity."
+    ],
+    "misconceptions": [
+      "Assuming samples are drawn without replacement in standard random forest bootstrapping.",
+      "Believing all samples are included in every bootstrap tree."
+    ],
+    "probes": [
+      "How does this out-of-bag percentage affect how Random Forests estimate generalization error?",
+      "What happens to the bootstrap sample size if N is very small?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-042",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A parent node with 50 positive and 50 negative samples is split into two child nodes: Child A has 40 positive and 10 negative; Child B has 10 positive and 40 negative. Compute the Information Gain using Shannon entropy (base 2).",
+    "level": "Entry level",
+    "answerKey": "Parent entropy = -0.5 log2(0.5) - 0.5 log2(0.5) = 1.0. Child entropy for each node = -(0.8 log2 0.8 + 0.2 log2 0.2) = 0.7219 bits. Weighted average child entropy = 0.7219. Information Gain = 1.0 - 0.7219 = 0.2781 bits.",
+    "essentialFacts": [
+      "Parent entropy is 1.0 bit for a 50/50 split",
+      "Child entropy calculation yields 0.7219 bits per child node",
+      "Information Gain is Parent Entropy minus weighted average child entropy (0.2781 bits)"
+    ],
+    "acceptableAlternatives": [
+      "Using natural logarithm (nats) if explicitly stated and calculated consistently."
+    ],
+    "partialCredit": [
+      "Computes parent entropy correctly but errs in child entropy log base 2 calculation.",
+      "Correctly sets up weighted average formula but makes an arithmetic subtraction error."
+    ],
+    "misconceptions": [
+      "Confusing entropy with Gini impurity values.",
+      "Weighting child nodes by number of features instead of number of samples."
+    ],
+    "probes": [
+      "How would Information Gain change if Child A and Child B were completely pure?",
+      "Why do decision tree algorithms prefer Information Gain Ratio over raw Information Gain in some scenarios?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-043",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Gradient Boosting for regression using squared error loss, what target do subsequent decision trees fit at each boosting iteration, and how does the learning rate (shrinkage) scale this contribution before adding it to the ensemble?",
+    "level": "Entry level",
+    "answerKey": "Subsequent trees fit the negative gradients of the loss function, which for squared error loss equals the current residuals (y - y_hat). The learning rate eta scales the tree predictions: y_hat_t = y_hat_{t-1} + eta * h_t(x).",
+    "essentialFacts": [
+      "Subsequent trees fit negative gradients, which equal residuals for squared error loss",
+      "Learning rate (shrinkage) scales tree predictions to prevent overfitting",
+      "Updated prediction equals previous prediction plus scaled new tree output"
+    ],
+    "acceptableAlternatives": [
+      "Describing pseudo-residuals for general loss functions."
+    ],
+    "partialCredit": [
+      "Identifies that trees fit residuals but omits the role of learning rate scaling.",
+      "Mentions learning rate but incorrectly applies it to gradient calculations."
+    ],
+    "misconceptions": [
+      "Believing gradient boosting trees fit the original target labels directly at every step.",
+      "Thinking learning rate controls the subsampling ratio of training samples."
+    ],
+    "probes": [
+      "What happens to the required number of trees if you set a very small learning rate like 0.01?",
+      "How does gradient boosting differ from AdaBoost in terms of what is updated?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-044",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how mean decrease in impurity (MDI) computes feature importance in Random Forests, and why it can be biased toward continuous or high-cardinality categorical features compared to permutation feature importance.",
+    "level": "Entry level",
+    "answerKey": "MDI sums the total reduction in impurity brought by a feature across all trees in the forest. It is biased toward features with high cardinality or many continuous values because they can easily find spurious splits that reduce training impurity.",
+    "essentialFacts": [
+      "MDI sums impurity decreases across all splits and trees for a feature",
+      "MDI is biased toward high-cardinality categorical or continuous features",
+      "Permutation importance measures drop in validation score when shuffling features"
+    ],
+    "acceptableAlternatives": [
+      "Explaining impurity reduction via Gini decrease or variance reduction."
+    ],
+    "partialCredit": [
+      "Defines MDI correctly but omits the explanation of its feature cardinality bias.",
+      "Confuses MDI with permutation importance methodology."
+    ],
+    "misconceptions": [
+      "Believing MDI measures true out-of-sample feature importance without training bias.",
+      "Assuming MDI is computed on a held-out test set."
+    ],
+    "probes": [
+      "Why can a random noisy column with many unique categories show high MDI importance?",
+      "When would you prefer permutation importance over MDI?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-045",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "XGBoost approximates the objective function at step t using a second-order Taylor expansion. Write the objective function in terms of first-order gradients g_i and second-order Hessians h_i, and state how optimal leaf weights are derived.",
+    "level": "Experienced",
+    "answerKey": "Objective at step t: sum_i [ g_i f_t(x_i) + 0.5 h_i f_t^2(x_i) ] + gamma T + 0.5 lambda sum(w_j^2). Taking derivative with respect to leaf weight w_j and setting to zero yields optimal weight: w_j* = -sum(g_i) / (sum(h_i) + lambda).",
+    "essentialFacts": [
+      "XGBoost objective uses second-order Taylor expansion with gradients g_i and Hessians h_i",
+      "Regularization terms include leaf count T and L2 norm of leaf weights w",
+      "Optimal leaf weight formula is w_j* = -sum(g_i) / (sum(h_i) + lambda)"
+    ],
+    "acceptableAlternatives": [
+      "Expressing objective function summation over leaf nodes directly."
+    ],
+    "partialCredit": [
+      "Writes out first-order gradient term but omits Hessian or regularization terms.",
+      "Recalls optimal weight formula but cannot derive it from the Taylor expansion."
+    ],
+    "misconceptions": [
+      "Assuming gradient boosting only uses first-order gradients like standard gradient descent.",
+      "Confusing leaf weight optimization with split score calculation."
+    ],
+    "probes": [
+      "What role does the gamma parameter play in tree pruning during this objective minimization?",
+      "How does the Hessian term affect leaf weight when model confidence is high?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-046",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does histogram-based gradient boosting reduce training time complexity per tree compared to exact greedy split finding, and what is the trade-off regarding split accuracy?",
+    "level": "Experienced",
+    "answerKey": "It buckets continuous feature values into discrete bins (e.g., 256 bins), reducing split search complexity from O(num_features * N log N) to O(num_features * num_bins). The trade-off is a minor loss in split precision due to binning granularity.",
+    "essentialFacts": [
+      "Histogram-based boosting buckets continuous features into discrete bins (e.g., 256 bins)",
+      "Reduces split search complexity from O(num_features * N log N) to O(num_features * num_bins)",
+      "Trade-off is a minor loss in split precision due to binned feature values"
+    ],
+    "acceptableAlternatives": [
+      "Mentioning memory efficiency and cache friendliness from contiguous bin representation."
+    ],
+    "partialCredit": [
+      "Explains binning concept but fails to state the exact algorithmic complexity improvement.",
+      "Mentions speedup but attributes it to sub-sampling rather than histogram construction."
+    ],
+    "misconceptions": [
+      "Believing histogram binning increases model depth capacity.",
+      "Assuming binning is performed on target labels rather than feature values."
+    ],
+    "probes": [
+      "How does histogram subtraction speed up building sibling nodes in LightGBM?",
+      "What is the impact of choosing 32 bins versus 256 bins on model performance?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-047",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how out-of-bag (OOB) error estimation in Random Forests computes generalization error without a separate validation set. Why can OOB error sometimes be overly optimistic compared to true out-of-sample test error?",
+    "level": "Experienced",
+    "answerKey": "Each tree is built using a bootstrap sample, leaving out ~36.8% of samples. For each training instance, predictions are aggregated only from trees where that instance was out-of-bag. OOB can be optimistic because hyperparameters were tuned using the full training set dynamics.",
+    "essentialFacts": [
+      "OOB error uses bootstrap excluded samples (approx 36.8%) to evaluate each tree",
+      "Predictions for each sample are aggregated only from trees where that sample was out-of-bag",
+      "OOB can be optimistic because hyperparameters or ensemble choices were tuned on the full training set"
+    ],
+    "acceptableAlternatives": [
+      "Explaining that OOB acts as an internal cross-validation estimate."
+    ],
+    "partialCredit": [
+      "Explains how OOB samples are left out during bootstrapping but misses why OOB error can be optimistic.",
+      "Confuses OOB error with k-fold cross validation score."
+    ],
+    "misconceptions": [
+      "Assuming OOB error is calculated using all trees in the forest for every sample.",
+      "Believing OOB error completely eliminates the need for an independent test set in final reporting."
+    ],
+    "probes": [
+      "Under what conditions would OOB error closely approximate test error?",
+      "How does feature subsampling in Random Forests impact the correlation between OOB estimators?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-048",
+    "track": "ai-ml",
+    "competency": "trees and ensembles",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given data points [0, 2, 10] and centroids at 1 and 9, assign each point to the nearest centroid and compute the final inertia (sum of squared distances).",
+    "level": "Internship",
+    "answerKey": "Points 0 and 2 are closest to centroid 1. Point 10 is closest to centroid 9. Squared distances: (0-1)^2 = 1, (2-1)^2 = 1, (10-9)^2 = 1. Sum of squared distances (inertia) = 1 + 1 + 1 = 3.",
+    "essentialFacts": [
+      "Assign points 0 and 2 to centroid 1 and point 10 to centroid 9 based on Euclidean distance.",
+      "Compute squared Euclidean distance for each point to its assigned centroid: 1, 1, and 1 respectively.",
+      "Sum the squared distances to obtain the total inertia value of 3."
+    ],
+    "acceptableAlternatives": [
+      "Inertia equals 3 by summing (0-1)^2, (2-1)^2, and (10-9)^2."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for correct cluster assignments with arithmetic errors in distance calculation."
+    ],
+    "misconceptions": [
+      "Confusing inertia (sum of squared distances) with mean absolute distance or Manhattan distance."
+    ],
+    "probes": [
+      "How would adding a fourth point at exactly 5 change the optimal centroid locations in the next iteration?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-049",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A PCA projection of a dataset yields eigenvalues [9.0, 1.0]. What exact percentage of total variance is explained by the first principal component?",
+    "level": "Internship",
+    "answerKey": "Total variance is the sum of all eigenvalues (9.0 + 1.0 = 10.0). The proportion explained by the first principal component is 9.0 / 10.0 = 0.90, which is 90%.",
+    "essentialFacts": [
+      "Total variance in PCA equals the sum of all eigenvalues of the covariance matrix.",
+      "The proportion of variance explained by a principal component is its eigenvalue divided by total variance.",
+      "Result is 9.0 / 10.0 = 90%."
+    ],
+    "acceptableAlternatives": [
+      "90 percent"
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for correctly identifying total variance as 10.0 without calculating the final percentage."
+    ],
+    "misconceptions": [
+      "Assuming eigenvalues represent standard deviations rather than variances."
+    ],
+    "probes": [
+      "What happens to the explained variance ratio if you standardize the features before running PCA?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-050",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In DBSCAN with eps = 2 and min_samples = 3, point A has neighbors at distances [0.5, 1.5, 2.5]. Is A a core point? Explain briefly.",
+    "level": "Entry level",
+    "answerKey": "Yes, A is a core point. Within distance eps = 2, there are points at 0.5 and 1.5 (2 points). Including point A itself at distance 0 gives a total of 3 points, meeting min_samples = 3.",
+    "essentialFacts": [
+      "Identify points within the eps neighborhood (distance <= 2): 0.5 and 1.5 (2 points).",
+      "Include point A itself at distance 0, bringing the total to 3 points.",
+      "Since total points >= min_samples (3), point A qualifies as a core point."
+    ],
+    "acceptableAlternatives": [
+      "Yes, because counting distance 0 to itself plus neighbors at 0.5 and 1.5 equals 3 points which meets min_samples."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for noting that 0.5 and 1.5 are within eps but omitting the point itself from the neighborhood count."
+    ],
+    "misconceptions": [
+      "Forgetting that a point's epsilon-neighborhood in DBSCAN includes the point itself at distance zero."
+    ],
+    "probes": [
+      "How would changing min_samples to 4 affect point A's classification?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-051",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how Ward's hierarchical agglomerative clustering linkage criterion chooses which two clusters to merge at each step.",
+    "level": "Entry level",
+    "answerKey": "Ward's method minimizes the total within-cluster variance. At each iteration, it evaluates all possible pair-wise cluster merges and selects the pair that results in the minimum increase in total error sum of squares (ESS).",
+    "essentialFacts": [
+      "Ward's linkage minimizes the increase in total within-cluster variance (error sum of squares).",
+      "At each step, it evaluates all cluster pairs and merges the pair producing the smallest variance increase."
+    ],
+    "acceptableAlternatives": [
+      "It minimizes the increase in sum of squared differences from cluster centroids upon merging."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for stating it minimizes distance between cluster means without mentioning variance or error sum of squares."
+    ],
+    "misconceptions": [
+      "Confusing Ward's linkage with single linkage (minimum distance between points)."
+    ],
+    "probes": [
+      "Why is Ward's linkage generally restricted to Euclidean distance metrics?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-052",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In t-SNE, what does the perplexity hyperparameter control regarding the effective number of nearest neighbors, and how does increasing perplexity affect the resulting visualization?",
+    "level": "Entry level",
+    "answerKey": "Perplexity dictates the smooth measure of effective neighbors for each point, balancing local and global aspects. Increasing perplexity considers a larger local neighborhood, which helps preserve broader global structures and stretches out dense cluster formations.",
+    "essentialFacts": [
+      "Perplexity acts as a smooth proxy for the effective number of local neighbors considered per point.",
+      "Increasing perplexity expands the neighborhood size, allowing the algorithm to incorporate more global structural relationships."
+    ],
+    "acceptableAlternatives": [
+      "Perplexity controls neighborhood size; higher values capture more global structure."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for identifying perplexity as a neighbor count parameter without explaining its impact on global structure."
+    ],
+    "misconceptions": [
+      "Believing perplexity directly sets the exact integer number of neighbors for every single point."
+    ],
+    "probes": [
+      "What typically happens to t-SNE runtime and output if perplexity is set higher than the total dataset size?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-053",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Gaussian Mixture Model EM fitting, write the E-step equation for the responsibility gamma_ij of cluster j for data point x_i, given mixing weights pi_j and normal densities N(x_i; mu_j, Sigma_j).",
+    "level": "Experienced",
+    "answerKey": "gamma_ij = (pi_j * N(x_i; mu_j, Sigma_j)) / (sum_{k=1}^K pi_k * N(x_i; mu_k, Sigma_k))",
+    "essentialFacts": [
+      "The numerator is the product of the prior mixing weight pi_j and the component density N(x_i; mu_j, Sigma_j).",
+      "The denominator sums the numerator across all K components for proper probability normalization.",
+      "The result represents the posterior probability that component j generated data point x_i."
+    ],
+    "acceptableAlternatives": [
+      "gamma_ij = pi_j * p(x_i|j) / sum_k (pi_k * p(x_i|k))"
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for writing the correct numerator but omitting the summation normalization in the denominator."
+    ],
+    "misconceptions": [
+      "Treating responsibilities as hard assignments (0 or 1) during the Expectation step instead of soft probabilities."
+    ],
+    "probes": [
+      "How does covariance matrix regularization prevent singular covariance matrices during the M-step?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-054",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why must the kernel matrix K be centered in Kernel PCA before computing eigenvectors, and what is the exact matrix formula used for centering K using centering matrix H?",
+    "level": "Experienced",
+    "answerKey": "Kernel PCA assumes zero-mean data in the implicit feature space. Uncentered kernels bias the projections. Centering formula: K_c = H K H, where H = I - (1/n) 1 1^T.",
+    "essentialFacts": [
+      "Kernel PCA requires zero-mean features in the kernel feature space; uncentered kernels lead to biased subspace projections.",
+      "The centering matrix is defined as H = I - (1/n) 1 1^T where 1 is a column vector of ones.",
+      "The centered kernel matrix is calculated via matrix multiplication: K_c = H K H."
+    ],
+    "acceptableAlternatives": [
+      "K_c = K - 1_n K - K 1_n + 1_n K 1_n where 1_n is matrix with entries 1/n."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for explaining why zero-mean assumption is needed without providing the correct matrix centering formula."
+    ],
+    "misconceptions": [
+      "Assuming standard input data centering in input space is sufficient without centering the kernel gram matrix."
+    ],
+    "probes": [
+      "Why is explicit feature space mapping intractable for kernels like the RBF kernel, necessitating kernel matrix centering?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-055",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "UMAP constructs fuzzy simplicial sets and optimizes cross-entropy. Why does UMAP use fuzzy union instead of intersection when combining multiple local simplicial sets into a global high-dimensional fuzzy graph?",
+    "level": "Experienced",
+    "answerKey": "UMAP uses fuzzy union (A union B = A + B - AB) to combine directional local graphs so that an edge is preserved if present in either local neighborhood. Intersection would produce an overly sparse graph, whereas union robustly preserves connectivity.",
+    "essentialFacts": [
+      "UMAP combines local directional fuzzy simplicial sets into a global graph using fuzzy set union.",
+      "Fuzzy union formula (A + B - A * B) ensures that edges present in either local neighborhood are retained.",
+      "Using intersection would make the global graph excessively sparse and disconnect meaningful clusters."
+    ],
+    "acceptableAlternatives": [
+      "Fuzzy union ensures that connections found in either local metric space are kept in the global graph, avoiding extreme sparsity."
+    ],
+    "partialCredit": [
+      "Award 0.5 credit for noting it combines graphs for global structure without explaining why union prevents sparsity."
+    ],
+    "misconceptions": [
+      "Assuming UMAP relies on linear dimensionality reduction techniques rather than manifold learning graph optimization."
+    ],
+    "probes": [
+      "How does fuzzy set cross-entropy loss differ from the Kullback-Leibler divergence minimized in t-SNE?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-056",
+    "track": "ai-ml",
+    "competency": "clustering and dimensionality reduction",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a loss function gradient at weight w=3 is dL/dw = 4 and learning rate alpha = 0.05, compute the updated weight using standard gradient descent.",
+    "level": "Internship",
+    "answerKey": "w_new = w - alpha * (dL/dw) = 3 - (0.05 * 4) = 3 - 0.2 = 2.8.",
+    "essentialFacts": [
+      "Gradient descent subtracts the learning-rate-scaled gradient from the current weight value.",
+      "The calculated updated weight is 2.8."
+    ],
+    "acceptableAlternatives": [
+      "2.80"
+    ],
+    "partialCredit": [
+      "Correct formula setup but arithmetic calculation error."
+    ],
+    "misconceptions": [
+      "Adding the gradient term instead of subtracting it during optimization."
+    ],
+    "probes": [
+      "What happens to the weight update if the learning rate is increased tenfold?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-057",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A model's loss oscillates wildly and diverges after increasing the learning rate. Explain why this happens and what immediate adjustment should be made to stabilize training.",
+    "level": "Internship",
+    "answerKey": "An excessively large learning rate causes gradient descent steps to overshoot the local loss minimum, leading to divergence. Training can be stabilized by reducing the learning rate.",
+    "essentialFacts": [
+      "Overshooting occurs when step sizes exceed local curvature bounds.",
+      "Decreasing the learning rate restores convergence stability."
+    ],
+    "acceptableAlternatives": [
+      "Lowering the learning rate; reducing step size."
+    ],
+    "partialCredit": [
+      "Identifies overshooting but does not mention how to fix it."
+    ],
+    "misconceptions": [
+      "Assuming divergence indicates that the model architecture has too many parameters."
+    ],
+    "probes": [
+      "How does adding momentum behave in a similar overshooting scenario?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-058",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Using the momentum update rule v_{t+1} = beta * v_t + g_t (where beta = 0.9, current velocity v_t = 2.0, and gradient step g_t = 1.0), calculate the updated velocity v_{t+1}.",
+    "level": "Entry level",
+    "answerKey": "Momentum updates velocity as v_{t+1} = beta * v_t + g_t. Substituting values: v_{t+1} = 0.9 * 2.0 + 1.0 = 1.8 + 1.0 = 2.8.",
+    "essentialFacts": [
+      "Momentum formula scales past velocity by beta and adds the current gradient step.",
+      "Calculation yields 1.8 + 1.0 = 2.8."
+    ],
+    "acceptableAlternatives": [
+      "2.80"
+    ],
+    "partialCredit": [
+      "Correct momentum formula with incorrect multiplication or addition."
+    ],
+    "misconceptions": [
+      "Multiplying the current gradient by beta instead of the past velocity."
+    ],
+    "probes": [
+      "How does high momentum help optimization traverse ravines in a loss landscape?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-059",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why must PyTorch gradients be explicitly zeroed using optimizer.zero_grad() before running loss.backward() in a training loop, rather than overwriting them automatically?",
+    "level": "Entry level",
+    "answerKey": "PyTorch accumulates gradients by default across backward passes to support gradient accumulation for large effective batch sizes. Calling zero_grad clears old gradients before accumulating new ones.",
+    "essentialFacts": [
+      "PyTorch accumulates gradients additively by design.",
+      "Explicit clearing prevents stale gradient buildup from previous iterations."
+    ],
+    "acceptableAlternatives": [
+      "Gradients sum up across steps; accumulation supports micro-batching."
+    ],
+    "partialCredit": [
+      "Mentions that gradients accumulate without explaining how or when to clear them."
+    ],
+    "misconceptions": [
+      "Believing gradients reset automatically at the start of each optimizer step."
+    ],
+    "probes": [
+      "How does gradient accumulation simulate larger batch sizes without increasing GPU memory usage?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-060",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how the Adam optimizer combines momentum and RMSprop by describing its use of first and second moment estimates for adaptive learning rates.",
+    "level": "Entry level",
+    "answerKey": "Adam tracks the exponentially decaying average of past gradients (first moment, momentum) and past squared gradients (second moment, RMSprop), scaling step sizes inversely by the root of the second moment.",
+    "essentialFacts": [
+      "First moment tracks the moving mean of gradients for momentum.",
+      "Second moment tracks the moving uncentered variance of gradients for RMSprop scaling."
+    ],
+    "acceptableAlternatives": [
+      "Combines moving averages of gradients and squared gradients to adapt learning rates."
+    ],
+    "partialCredit": [
+      "Explains momentum or RMSprop alone, but fails to describe their combination in Adam."
+    ],
+    "misconceptions": [
+      "Assuming Adam adjusts model weights directly without maintaining moment estimates."
+    ],
+    "probes": [
+      "Why are bias correction terms necessary in early Adam iterations?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-061",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Adam optimization, why are the initial bias correction terms 1 - beta_1^t and 1 - beta_2^t divided into the moment estimates, and what failure occurs without them?",
+    "level": "Experienced",
+    "answerKey": "Because moment estimates are initialized at zero, they are biased toward zero early in training when t is small. Dividing by 1 - beta^t scales them to unbiased estimates.",
+    "essentialFacts": [
+      "Zero initialization biases moving averages toward zero in early steps.",
+      "Bias correction factor 1 - beta^t removes this initialization bias."
+    ],
+    "acceptableAlternatives": [
+      "Prevents zero-bias initialization from suppressing early gradient steps."
+    ],
+    "partialCredit": [
+      "Mentions zero initialization but does not explain the exact correction factor formula."
+    ],
+    "misconceptions": [
+      "Believing bias correction adjusts for gradient magnitude scale rather than initialization bias."
+    ],
+    "probes": [
+      "How does the bias correction term behave as t becomes very large?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-062",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why L2 regularization and decoupled weight decay (AdamW) are mathematically identical in standard SGD but differ significantly when applied to adaptive optimizers like Adam.",
+    "level": "Experienced",
+    "answerKey": "In SGD, L2 regularization adds weight penalty directly to the gradient, identical to weight decay. In Adam, L2 gradients are scaled by second-moment estimates, whereas AdamW applies weight decay directly to weights.",
+    "essentialFacts": [
+      "L2 penalty gets divided by historical gradient magnitudes in Adam, reducing regularization on frequently updated weights.",
+      "AdamW decouples weight decay directly from adaptive gradient updates."
+    ],
+    "acceptableAlternatives": [
+      "AdamW applies decay directly to parameters; L2 interacts with adaptive scaling."
+    ],
+    "partialCredit": [
+      "Identifies that they differ in Adam but fails to explain the gradient scaling mechanism."
+    ],
+    "misconceptions": [
+      "Assuming L2 regularization and weight decay behave identically across all optimizer types."
+    ],
+    "probes": [
+      "How does AdamW affect model performance when training on models with sparse features?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "ml-bank"
+    ],
+    "id": "ai-ml-063",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a non-convex optimization landscape, how do the eigenvalues of the Hessian matrix at a critical point distinguish between a local minimum and a saddle point?",
+    "level": "Experienced",
+    "answerKey": "At a local minimum, all Hessian eigenvalues are strictly positive (positive semi-definite). At a saddle point, the Hessian has both positive and negative eigenvalues.",
+    "essentialFacts": [
+      "All positive eigenvalues indicate a local minimum.",
+      "Mixed positive and negative eigenvalues indicate a saddle point."
+    ],
+    "acceptableAlternatives": [
+      "Positive definite means minimum; indefinite means saddle point."
+    ],
+    "partialCredit": [
+      "Identifies local minimum eigenvalue condition but misses saddle point condition."
+    ],
+    "misconceptions": [
+      "Assuming a zero gradient guarantees a local minimum without checking Hessian eigenvalues."
+    ],
+    "probes": [
+      "How do perturbed SGD methods escape saddle points using negative Hessian eigenvalues?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-064",
+    "track": "ai-ml",
+    "competency": "gradient descent and optimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In PyTorch, if you run two backward passes without calling `optimizer.zero_grad()`, what happens to the gradient tensors, and why must you clear them manually?",
+    "level": "Internship",
+    "answerKey": "Gradients accumulate by summing new gradients into existing `.grad` attributes. They must be cleared manually because PyTorch accumulates gradients by design to support flexible batch accumulation and multi-loss training.",
+    "essentialFacts": [
+      "Gradients accumulate in the .grad attribute via addition.",
+      "PyTorch does not clear gradients automatically to support mini-batch accumulation."
+    ],
+    "acceptableAlternatives": [
+      "Gradients sum up. Manual zeroing is required because PyTorch supports gradient accumulation across multiple iterations or loss functions."
+    ],
+    "partialCredit": [
+      "Mentions accumulation but fails to explain why PyTorch design requires manual clearing."
+    ],
+    "misconceptions": [
+      "PyTorch clears gradients automatically at the start of backward.",
+      "Accumulated gradients overwrite previous ones."
+    ],
+    "probes": [
+      "How would you implement gradient accumulation over 4 micro-batches using this behavior?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-065",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does performing in-place modifications on tensors involved in the forward pass trigger a PyTorch runtime error during autograd?",
+    "level": "Internship",
+    "answerKey": "In-place operations overwrite tensor memory that the autograd engine needs to compute analytical gradients during the backward pass, violating graph dependency tracking and safety checks.",
+    "essentialFacts": [
+      "In-place operations alter tensor data needed by the backward pass.",
+      "Autograd detects this modification and throws an error to prevent incorrect gradients."
+    ],
+    "acceptableAlternatives": [
+      "Modifying tensors in-place destroys historical values required for gradient calculation, causing autograd safety exceptions."
+    ],
+    "partialCredit": [
+      "States it causes errors but misses the reason regarding stored activation history for backward execution."
+    ],
+    "misconceptions": [
+      "In-place operations are completely forbidden in PyTorch.",
+      "In-place operations only affect forward pass speed."
+    ],
+    "probes": [
+      "How do you safely perform an in-place operation like addition on a parameter without breaking autograd?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-066",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a PyTorch tensor `y = x.requires_grad_(True)` and `z = y * 2`, what is the effect of calling `z.detach().backward()` versus `z.backward()` on `x.grad`?",
+    "level": "Entry level",
+    "answerKey": "Calling `z.backward()` computes \\(\\frac{\\partial z}{\\partial x} = 2\\) and stores it in `x.grad`. Calling `z.detach().backward()` detaches the tensor from the graph, raising a RuntimeError because there is no gradient history or tracking for the detached tensor.",
+    "essentialFacts": [
+      "`z.backward()` computes the gradient and populates `x.grad` with 2.",
+      "`z.detach().backward()` breaks the computation graph link, resulting in a RuntimeError or unpopulated gradient."
+    ],
+    "acceptableAlternatives": [
+      "`z.backward()` updates `x.grad` correctly, while `z.detach().backward()` fails or has no gradient path to `x`."
+    ],
+    "partialCredit": [
+      "Identifies that `z.backward()` computes gradients, but incorrectly states `detach` just sets gradients to zero."
+    ],
+    "misconceptions": [
+      "`detach()` computes gradients without tracking memory.",
+      "`z.detach().backward()` updates `x.grad` with zeros."
+    ],
+    "probes": [
+      "When would you intentionally use `.detach()` during training (e.g., in GANs or reinforcement learning)?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-067",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why is calling `model.eval()` insufficient by itself to disable gradient tracking during PyTorch validation, and what additional context manager or function must you use?",
+    "level": "Entry level",
+    "answerKey": "`model.eval()` only toggles module behaviors like Dropout and BatchNorm for evaluation, but it does not disable gradient tracking. You must use `torch.no_grad()` to stop the autograd engine from building the computation graph.",
+    "essentialFacts": [
+      "`model.eval()` configures layers (Dropout/BatchNorm) but leaves autograd tracking active.",
+      "`torch.no_grad()` is required to disable the computation graph and save memory."
+    ],
+    "acceptableAlternatives": [
+      "`model.eval()` only affects layers like dropout/batchnorm. You need `torch.no_grad()` or `inference_mode()` to disable gradient calculation."
+    ],
+    "partialCredit": [
+      "Knows `model.eval()` handles dropout/batchnorm but confuses it with disabling autograd entirely."
+    ],
+    "misconceptions": [
+      "`model.eval()` automatically disables gradient calculation across the entire model.",
+      "Evaluation mode stops tensor history recording."
+    ],
+    "probes": [
+      "What is the difference between `torch.no_grad()` and `torch.inference_mode()` in newer PyTorch versions?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-068",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the difference between setting `tensor.requires_grad_(False)` and wrapping code in `torch.no_grad()` regarding tensor creation and memory consumption?",
+    "level": "Entry level",
+    "answerKey": "`requires_grad_(False)` permanently alters an existing tensor's flag and prevents gradient tracking for operations involving it. `torch.no_grad()` is a context manager that globally disables gradient history tracking for all operations within its block without modifying individual tensor flags.",
+    "essentialFacts": [
+      "`requires_grad_` modifies individual tensor flags persistently.",
+      "`torch.no_grad()` is a temporary context manager disabling history tracking across operations."
+    ],
+    "acceptableAlternatives": [
+      "Tensor flag modification vs temporary context manager disabling graph construction."
+    ],
+    "partialCredit": [
+      "Confuses tensor-level flags with scope-level context management."
+    ],
+    "misconceptions": [
+      "`torch.no_grad()` changes tensors to require gradients after exiting the block.",
+      "`requires_grad_(False)` frees tensor memory."
+    ],
+    "probes": [
+      "When would you prefer `torch.no_grad()` over setting `.requires_grad = False` on every model parameter?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-069",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Consider a neural network layer where output \\(y = w \\cdot x + b\\). Given scalar inputs \\(w=2, x=3, b=1\\), and upstream gradient \\(\\frac{\\partial L}{\\partial y} = 4\\), calculate \\(\\frac{\\partial L}{\\partial w}\\).",
+    "level": "Experienced",
+    "answerKey": "Using the chain rule, \\(\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial y} \\cdot \\frac{\\partial y}{\\partial w}\\). Since \\(\\frac{\\partial y}{\\partial w} = x = 3\\), the gradient is \\(4 \\cdot 3 = 12\\).",
+    "essentialFacts": [
+      "Apply chain rule: \\(\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial y} \\cdot x\\).",
+      "Substitute values: \\(4 \\cdot 3 = 12\\)."
+    ],
+    "acceptableAlternatives": [
+      "12"
+    ],
+    "partialCredit": [
+      "Multiplies upstream gradient by \\(w\\) instead of \\(x\\) (\\(4 \\cdot 2 = 8\\))."
+    ],
+    "misconceptions": [
+      "The derivative with respect to \\(w\\) depends on the value of \\(b\\).",
+      "Gradient equals the upstream gradient multiplied by \\(w\\)."
+    ],
+    "probes": [
+      "How does this derivative change if \\(x\\) is a vector and \\(w\\) is a matrix?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "google-ml"
+    ],
+    "id": "ai-ml-070",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When writing a custom PyTorch `torch.autograd.Function`, why must the static `backward` method accept saved tensors from the forward pass rather than recomputing them?",
+    "level": "Experienced",
+    "answerKey": "Intermediate activation values from the forward pass are mathematically required to compute analytical derivatives via the chain rule. Recomputing them during backward can be computationally inefficient, non-differentiable, or numerically inconsistent due to state changes.",
+    "essentialFacts": [
+      "Intermediate activations are needed for derivative calculations.",
+      "Recomputing during backward can introduce numerical discrepancies or performance overhead."
+    ],
+    "acceptableAlternatives": [
+      "Forward activations are needed for the chain rule, and recomputing them is inefficient or breaks state consistency."
+    ],
+    "partialCredit": [
+      "Mentions memory saving or efficiency without explaining the mathematical necessity for chain rule evaluation."
+    ],
+    "misconceptions": [
+      "Tensors cannot be recomputed during the backward pass.",
+      "Saved tensors are only used for debugging."
+    ],
+    "probes": [
+      "How do you use `ctx.save_for_backward` in the forward pass to manage this?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-071",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a multi-GPU data-parallel setup, how does PyTorch's `DistributedDataParallel` synchronize gradients across ranks, and at what point in the backward pass does this communication occur?",
+    "level": "Experienced",
+    "answerKey": "DDP overlaps computation and communication by hooking into the autograd engine. As soon as a layer's gradient is computed during the backward pass, an asynchronous ring-allreduce operation is triggered for that parameter bucket across ranks.",
+    "essentialFacts": [
+      "DDP uses autograd hooks to initiate communication.",
+      "Ring-allreduce happens asynchronously as gradients become available layer-by-layer during backward."
+    ],
+    "acceptableAlternatives": [
+      "Gradients are synchronized asynchronously layer-by-layer using ring-allreduce via autograd hooks during the backward pass."
+    ],
+    "partialCredit": [
+      "Knows gradients are synced across GPUs but thinks synchronization happens all at once after the entire backward pass."
+    ],
+    "misconceptions": [
+      "Synchronization happens after `optimizer.step()`.",
+      "DDP requires manual `all_reduce` calls in the training loop."
+    ],
+    "probes": [
+      "What is bucket size tuning in DDP and how does it affect communication overlap?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-072",
+    "track": "ai-ml",
+    "competency": "neural networks and autograd",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given queries and keys of dimension d_k = 64, what is the scaling factor applied before the softmax in self-attention, and why is dividing by the square root of d_k mathematically necessary for large dimensions?",
+    "level": "Entry level",
+    "answerKey": "The scaling factor is $1/\\sqrt{64} = 1/8$. Without scaling, large dimensions push dot products to magnitudes with extremely small gradients, causing softmax saturation and vanishing gradients.",
+    "essentialFacts": [
+      "Scaling factor is 1/8 or 1/sqrt(d_k)",
+      "Prevents extremely large dot products",
+      "Avoids saturating the softmax function"
+    ],
+    "acceptableAlternatives": [
+      "Division by 8 scales variance to 1."
+    ],
+    "partialCredit": [
+      "Identifies the factor correctly without explaining gradient saturation."
+    ],
+    "misconceptions": [
+      "Scaling normalizes the sequence length.",
+      "Scaling prevents floating-point overflow during matrix multiplication."
+    ],
+    "probes": [
+      "What happens to softmax gradients when inputs have high variance?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-073",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a causal decoder-like transformer, how is the attention matrix masked before softmax, and what exact numeric value is added to future positions to prevent information leakage?",
+    "level": "Internship",
+    "answerKey": "Upper triangular positions above the diagonal are masked by adding negative infinity (or a very large negative number like $-1e9$) so that their softmax weight evaluates to zero.",
+    "essentialFacts": [
+      "Add negative infinity or -1e9 to future positions",
+      "Mask is applied before softmax",
+      "Prevents attending to future tokens"
+    ],
+    "acceptableAlternatives": [
+      "Setting upper triangle to -inf."
+    ],
+    "partialCredit": [
+      "Mentions setting values to zero after softmax instead of before."
+    ],
+    "misconceptions": [
+      "Masking removes future tokens from the input tensor entirely.",
+      "Zeros are added to future logits."
+    ],
+    "probes": [
+      "Why must masking occur before the softmax operation rather than after?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-074",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During autoregressive generation in a transformer with L=32 layers, hidden dimension d=4096, and sequence length S=1024 (using FP16), calculate the total byte size required to store the KV cache for a single batch item.",
+    "level": "Experienced",
+    "answerKey": "KV cache stores Keys and Values for all layers. Size = $2 \\times L \\times S \\times d \\times 2 \\text{ bytes} = 2 \\times 32 \\times 1024 \\times 4096 \\times 2 = 536,870,912 \\text{ bytes} = 512 \\text{ MB}$.",
+    "essentialFacts": [
+      "Formula accounts for 2 tensors (K and V), 32 layers, 1024 sequence length, 4096 hidden dim, and 2 bytes for FP16",
+      "Total is 512 MB"
+    ],
+    "acceptableAlternatives": [
+      "0.5 GB"
+    ],
+    "partialCredit": [
+      "Omits the factor of 2 for keys and values."
+    ],
+    "misconceptions": [
+      "KV cache stores query projections as well.",
+      "Cache size scales quadratically with sequence length during generation steps."
+    ],
+    "probes": [
+      "How does multi-query attention (MQA) reduce this memory footprint?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-075",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given an input tensor of shape `(batch, seq_len, 768)` projected to queries, keys, and values, and h=12 attention heads, what is the exact tensor shape after reshaping and transposing for batched matrix multiplication?",
+    "level": "Entry level",
+    "answerKey": "Reshaped to `(batch, seq_len, 12, 64)` and transposed to `(batch, 12, seq_len, 64)`.",
+    "essentialFacts": [
+      "Shape becomes `(batch, 12, seq_len, 64)`",
+      "Head dimension (12) and sequence length axes are swapped"
+    ],
+    "acceptableAlternatives": [
+      "(B, num_heads, S, head_dim)"
+    ],
+    "partialCredit": [
+      "Correct reshape dimensions without the transpose step."
+    ],
+    "misconceptions": [
+      "Transposing batch and sequence length is required.",
+      "Head dimension is multiplied by seq_len."
+    ],
+    "probes": [
+      "Why is the transpose necessary before computing batched matrix multiplication with torch.matmul?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-076",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a BPE vocabulary has 50,000 base tokens and undergoes 2,500 merge operations where each merge adds one new token, what is the final vocabulary size?",
+    "level": "Internship",
+    "answerKey": "52,500. Each merge operation adds a new token to the vocabulary.",
+    "essentialFacts": [
+      "Base vocabulary size is 50,000",
+      "2,500 merges add 2,500 tokens",
+      "Final size is 52,500"
+    ],
+    "acceptableAlternatives": [
+      "50000 + 2500 = 52500"
+    ],
+    "partialCredit": [
+      "Subtracts instead of adds."
+    ],
+    "misconceptions": [
+      "Merges reduce the vocabulary size.",
+      "Each merge replaces two tokens, keeping size constant."
+    ],
+    "probes": [
+      "What determines which pairs are merged during BPE training?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-077",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Rotary Position Embedding (RoPE), how are adjacent pairs of query vector dimensions modified for a given position index m, and what mathematical property does this impart to the inner product of Q and K?",
+    "level": "Experienced",
+    "answerKey": "They are rotated in 2D planes by an angle $m\\theta_i$. This ensures the inner product of Q and K depends only on the relative distance $(m - n)$, naturally incorporating relative position.",
+    "essentialFacts": [
+      "Rotates 2D subspaces by angle proportional to position index",
+      "Inner product depends only on relative distance (m - n)"
+    ],
+    "acceptableAlternatives": [
+      "Applies complex rotation matrix; inner product encodes relative distance."
+    ],
+    "partialCredit": [
+      "Mentions rotation but omits relative distance property."
+    ],
+    "misconceptions": [
+      "RoPE adds additive positional embeddings directly to input embeddings.",
+      "RoPE modifies absolute token positions without affecting inner products."
+    ],
+    "probes": [
+      "Why is RoPE preferred over absolute positional embeddings in modern LLMs?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-078",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given unnormalized logits `[2.0, 1.0, 0.5]` for a vocabulary of size 3, where the true target token index is 0, calculate the exact negative log-likelihood loss.",
+    "level": "Entry level",
+    "answerKey": "Softmax denominator: $e^2 + e^1 + e^{0.5} \\approx 7.389 + 2.718 + 1.649 = 11.756$. Probability for index 0: $7.389 / 11.756 \\approx 0.6286$. Loss = $-\\ln(0.6286) \\approx 0.464$.",
+    "essentialFacts": [
+      "Computes exponentials of logits",
+      "Calculates softmax probability for target index 0",
+      "Takes negative log of the probability (approx 0.464)"
+    ],
+    "acceptableAlternatives": [
+      "-ln(exp(2)/(exp(2)+exp(1)+exp(0.5))) ≈ 0.464"
+    ],
+    "partialCredit": [
+      "Sets up softmax correctly but makes an arithmetic error in exponentiation."
+    ],
+    "misconceptions": [
+      "Cross-entropy loss uses the raw logit value directly without exponentiation.",
+      "Logits must sum to 1 before calculating loss."
+    ],
+    "probes": [
+      "How does subtracting the maximum logit before computing exponentials prevent numerical overflow?"
+    ],
+    "sourceIds": [
+      "pytorch"
+    ],
+    "id": "ai-ml-079",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In beam search with beam width k=3, if each step expands all current beams across a vocabulary of size V=1000, how many total candidate sequences are evaluated before selecting the top 3?",
+    "level": "Experienced",
+    "answerKey": "$3 \\times 1000 = 3000$ candidate sequences are evaluated (all expansions of current beams), from which the top 3 are kept.",
+    "essentialFacts": [
+      "Multiply beam width (3) by vocabulary size (1000)",
+      "Total candidates evaluated is 3000"
+    ],
+    "acceptableAlternatives": [
+      "3k candidates"
+    ],
+    "partialCredit": [
+      "Adds beam width and vocabulary size instead of multiplying."
+    ],
+    "misconceptions": [
+      "Beam search evaluates $V^k$ combinations at each step.",
+      "Only the top candidate from each beam is expanded."
+    ],
+    "probes": [
+      "How does increasing beam width affect generation quality and computational cost?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-080",
+    "track": "ai-ml",
+    "competency": "attention and language models",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given two normalized embedding vectors u = [0.6, 0.8] and v = [1.0, 0.0], calculate their exact dot product, which equals their cosine similarity. State the resulting scalar value.",
+    "level": "Internship",
+    "answerKey": "The dot product is (0.6 * 1.0) + (0.8 * 0.0) = 0.6. Since both vectors are already normalized (magnitude = 1), their cosine similarity is 0.6.",
+    "essentialFacts": [
+      "Dot product formula for 2D vectors",
+      "Recognition that normalized vectors have a magnitude of 1",
+      "Direct calculation of scalar result 0.6"
+    ],
+    "acceptableAlternatives": [
+      "0.6",
+      "6/10"
+    ],
+    "partialCredit": [
+      "0.5 credit for setting up the dot product formula correctly but making an arithmetic addition error."
+    ],
+    "misconceptions": [
+      "Assuming unnormalized vectors need length division even when explicitly stated as normalized."
+    ],
+    "probes": [
+      "How does vector magnitude affect cosine similarity if the vectors are not normalized?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-081",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a query where 3 relevant items exist, a retrieval system returns a top-5 list containing 2 of the relevant items. Calculate the exact Recall@5 score for this single query.",
+    "level": "Internship",
+    "answerKey": "Recall@K measures the proportion of all ground-truth relevant items that are retrieved in the top K. Here, 2 relevant items are retrieved out of 3 total relevant items, yielding Recall@5 = 2/3.",
+    "essentialFacts": [
+      "Definition of Recall@K as retrieved relevant items divided by total relevant items",
+      "Identification of numerator as 2 and denominator as 3",
+      "Calculation of 2/3 or ~0.67"
+    ],
+    "acceptableAlternatives": [
+      "2/3",
+      "0.67",
+      "66.7%"
+    ],
+    "partialCredit": [
+      "0.5 credit for dividing by 5 (K) instead of the total number of relevant items."
+    ],
+    "misconceptions": [
+      "Confusing Recall@K denominator with K instead of the total ground-truth relevant items."
+    ],
+    "probes": [
+      "How does Precision@5 differ from Recall@5 for this same retrieval output?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-082",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain the core computational difference between bi-encoder and cross-encoder architectures during inference when scoring one query against 10,000 candidate documents in a vector search system.",
+    "level": "Entry level",
+    "answerKey": "A bi-encoder encodes the query and documents separately, allowing document embeddings to be pre-computed and indexed for O(N) vector search. A cross-encoder concatenates query and document, processing all 10,000 pairs through full transformer layers at runtime.",
+    "essentialFacts": [
+      "Separate encoding vs. concatenated joint encoding",
+      "Pre-computation of document embeddings in bi-encoders",
+      "Runtime transformer self-attention scoring per pair for cross-encoders"
+    ],
+    "acceptableAlternatives": [
+      "Mentioning vector similarity search via ANN index versus full transformer scoring per candidate pair."
+    ],
+    "partialCredit": [
+      "0.5 credit for stating one is faster without explaining the separate versus joint representation mechanism."
+    ],
+    "misconceptions": [
+      "Believing cross-encoders can pre-compute document representations independently of specific queries."
+    ],
+    "probes": [
+      "Why is a bi-encoder typically used for first-stage retrieval while a cross-encoder is used for re-ranking?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-083",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a contrastive retrieval loss function with temperature tau = 0.07, why does lowering the temperature parameter sharpen the probability distribution over negative candidate documents?",
+    "level": "Entry level",
+    "answerKey": "Dividing dot product logits by a smaller temperature tau magnifies their relative differences before softmax normalization, amplifying the score of the hardest positive match relative to negatives and making the distribution peakier.",
+    "essentialFacts": [
+      "Scaling logits by 1/tau prior to softmax",
+      "Amplification of logit differences",
+      "Increased sensitivity to hard negatives"
+    ],
+    "acceptableAlternatives": [
+      "Mentioning that smaller tau makes the softmax distribution more confident or peaky."
+    ],
+    "partialCredit": [
+      "0.5 credit for knowing it affects the softmax output without explaining logit scaling."
+    ],
+    "misconceptions": [
+      "Assuming lower temperature decreases gradient magnitudes during backpropagation."
+    ],
+    "probes": [
+      "What numerical overflow risks emerge when tau approaches zero without max-subtraction?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-084",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an IVF-Flat vector index with nlist = 100, what is the exact operational trade-off of increasing the nprobe parameter from 1 to 10 during query search?",
+    "level": "Entry level",
+    "answerKey": "Searching 10 cluster centroids instead of 1 increases recall accuracy by checking more partitions, but linearly increases query latency since more vectors must undergo distance calculations.",
+    "essentialFacts": [
+      "nprobe controls the number of cluster centroids searched",
+      "Trade-off between improved recall accuracy and increased query latency",
+      "Linear scaling of distance calculations with nprobe"
+    ],
+    "acceptableAlternatives": [
+      "Mentioning higher retrieval accuracy at the cost of slower query times."
+    ],
+    "partialCredit": [
+      "0.5 credit for noting speed changes without mentioning recall or cluster traversal."
+    ],
+    "misconceptions": [
+      "Assuming nprobe alters index training time or memory footprint."
+    ],
+    "probes": [
+      "How does increasing nlist during index construction affect the required nprobe value at search time?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-085",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an HNSW vector index, explain how the efConstruction parameter affects index build time versus graph connectivity quality, and how it differs from efSearch.",
+    "level": "Experienced",
+    "answerKey": "efConstruction controls the size of the dynamic candidate list during graph construction, improving graph connectivity and recall quality at the cost of slower build times. efSearch controls the candidate list size during query time.",
+    "essentialFacts": [
+      "efConstruction determines build-time candidate list size and graph quality",
+      "efSearch determines query-time candidate list size",
+      "Trade-off between build time/connectivity versus query-time performance"
+    ],
+    "acceptableAlternatives": [
+      "Describing efConstruction as building denser connections while efSearch explores more paths at query time."
+    ],
+    "partialCredit": [
+      "0.5 credit for defining one parameter correctly without distinguishing build versus search phases."
+    ],
+    "misconceptions": [
+      "Believing efConstruction directly limits the maximum degree M of graph nodes."
+    ],
+    "probes": [
+      "What happens to memory usage and query latency if efSearch is set equal to the entire index size?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-086",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If high-dimensional dense embeddings of size 1536 are truncated to 512 dimensions using Matryoshka Representation Learning, why does retrieval performance degrade gracefully rather than catastrophically?",
+    "level": "Experienced",
+    "answerKey": "Matryoshka training explicitly optimizes nested lower-dimensional prefixes (e.g., the first 512 dimensions) to retain the most critical semantic variance, ensuring robust representation even at reduced lengths.",
+    "essentialFacts": [
+      "Nested loss function optimization during training",
+      "Preservation of primary semantic variance in initial dimensions",
+      "Ordered importance of embedding dimensions"
+    ],
+    "acceptableAlternatives": [
+      "Mentioning that earlier dimensions carry higher variance or hierarchical training objectives."
+    ],
+    "partialCredit": [
+      "0.5 credit for noting that embeddings contain redundant dimensions without explaining the nested training mechanism."
+    ],
+    "misconceptions": [
+      "Assuming arbitrary truncation of standard unconstrained embeddings yields equal retention of semantic information."
+    ],
+    "probes": [
+      "How does Matryoshka representation learning differ from applying post-hoc PCA truncation to standard embeddings?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-087",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When combining sparse BM25 ranks and dense vector search ranks using Reciprocal Rank Fusion with constant k=60, calculate the exact RRF score for a document ranked 1st in BM25 and 20th in dense retrieval.",
+    "level": "Experienced",
+    "answerKey": "The RRF formula is sum 1 / (k + r_i). Here, r_1 = 1 and r_2 = 20. Score = 1/(60 + 1) + 1/(60 + 20) = 1/61 + 1/80 = 0.01639 + 0.01250 = 0.02889.",
+    "essentialFacts": [
+      "RRF formula 1 / (k + r_i)",
+      "Plugging in ranks 1 and 20 with k=60",
+      "Summing reciprocal ranks to get approximately 0.0289"
+    ],
+    "acceptableAlternatives": [
+      "1/61 + 1/80",
+      "0.0289",
+      "59/2440"
+    ],
+    "partialCredit": [
+      "0.5 credit for correct formula setup but incorrect addition or division."
+    ],
+    "misconceptions": [
+      "Multiplying ranks instead of summing reciprocal ranks, or omitting constant k."
+    ],
+    "probes": [
+      "What is the purpose of the constant k in Reciprocal Rank Fusion, and how does a larger k affect score differences between top ranks?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-088",
+    "track": "ai-ml",
+    "competency": "retrieval and embeddings",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an A/B test with 5,000 users allocated to control and 5,000 to treatment, recorded counts are 4,900 and 5,100. Calculate the Chi-square test statistic for uniformity and state if SRM is flagged at alpha = 0.01.",
+    "level": "Experienced",
+    "answerKey": "Expected count E = 5000 for both groups. Chi-square statistic = sum((O - E)^2 / E) = ((4900 - 5000)^2 / 5000) + ((5100 - 5000)^2 / 5000) = (10000 / 5000) + (10000 / 5000) = 2 + 2 = 4.0. The critical value for 1 degree of freedom at alpha = 0.01 is 6.635. Since 4.0 < 6.635, Sample Ratio Mismatch (SRM) is not flagged.",
+    "essentialFacts": [
+      "Calculate expected counts as 5000 per group.",
+      "Compute the Chi-square goodness-of-fit statistic yielding 4.0.",
+      "Compare against the critical Chi-square threshold (6.635) to conclude SRM is not flagged."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning that the p-value is approximately 0.045, which is greater than 0.01, thus failing to reject uniformity."
+    ],
+    "partialCredit": [
+      "Correct expected counts and Chi-square formula setup but an arithmetic calculation error.",
+      "Correct calculation of Chi-square = 4.0 but missing the comparison against the critical threshold."
+    ],
+    "misconceptions": [
+      "Assuming any deviation from a 50/50 split automatically triggers an SRM flag without hypothesis testing.",
+      "Using a two-sample z-test formula instead of a goodness-of-fit Chi-square test."
+    ],
+    "probes": [
+      "How would the conclusion change if the alpha threshold were set to 0.05 instead of 0.01?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-089",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A feature has training proportions [0.4, 0.6] across two bins and production proportions [0.3, 0.7]. Calculate the Population Stability Index (PSI) for this feature and state whether it indicates significant distribution shift (PSI > 0.25).",
+    "level": "Entry level",
+    "answerKey": "PSI = sum((Actual - Expected) * ln(Actual / Expected)). Bin 1: (0.3 - 0.4) * ln(0.3 / 0.4) = -0.1 * (-0.2877) = 0.0288. Bin 2: (0.7 - 0.6) * ln(0.7 / 0.6) = 0.1 * 0.1542 = 0.0154. Total PSI = 0.0288 + 0.0154 = 0.0442. Since 0.0442 < 0.25, it indicates no significant shift.",
+    "essentialFacts": [
+      "Apply the PSI formula using actual (production) and expected (train) proportions.",
+      "Compute individual bin contributions correctly (~0.0288 and ~0.0154).",
+      "Sum contributions to get total PSI (~0.044) and conclude no significant distribution shift."
+    ],
+    "acceptableAlternatives": [
+      "Using base-10 logarithm instead of natural logarithm if explicitly stated, yielding scaled proportional results."
+    ],
+    "partialCredit": [
+      "Correct formula structure but minor log calculation error.",
+      "Correct PSI sum calculation but incorrect interpretation of the standard > 0.25 threshold."
+    ],
+    "misconceptions": [
+      "Assuming PSI can result in a negative value.",
+      "Swapping actual and expected proportions inside the logarithmic ratio term."
+    ],
+    "probes": [
+      "What operational actions would you take if the computed PSI exceeded 0.25 in a production monitoring pipeline?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "google-ml"
+    ],
+    "id": "ai-ml-090",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When evaluating financial models with overlapping label horizons of 5 days, why does standard K-fold cross-validation cause severe data leakage, and what purging technique prevents train set contamination from test labels?",
+    "level": "Entry level",
+    "answerKey": "Standard K-fold randomly shuffles samples, placing observations whose 5-day future return windows overlap into both training and validation folds. This leaks future target information. Purging removes training samples whose label time intervals overlap with the test set time bounds.",
+    "essentialFacts": [
+      "Identify that random splitting distributes temporally overlapping labels across train and test splits.",
+      "Explain that overlapping label horizons cause target leakage.",
+      "Define purging as removing training observations whose time intervals overlap with test set bounds."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning embargoing in addition to purging to handle serial correlation and autocorrelation."
+    ],
+    "partialCredit": [
+      "Recognizing temporal overlap causes leakage but failing to define purging.",
+      "Describing standard time-series splits without addressing label horizon overlap."
+    ],
+    "misconceptions": [
+      "Believing standard time-series split alone handles label horizon overlap without explicit purging of overlapping windows."
+    ],
+    "probes": [
+      "How does embargoing differ from purging when constructing cross-validation splits for time series?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-091",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An ML model shows higher overall accuracy for treatment than control, but lower accuracy within every individual user subgroup. What causal phenomenon explains this reversal, and which variable must be conditioned on to fix it?",
+    "level": "Experienced",
+    "answerKey": "Simpson's Paradox. It occurs because a confounding variable (e.g., user activity level or device type) is unconditioned, creating a spurious marginal association. To fix it, condition on the confounding subgroup variable during evaluation or stratified analysis.",
+    "essentialFacts": [
+      "Identify Simpson's Paradox as the statistical reversal phenomenon.",
+      "Explain that an unconditioned confounder creates a spurious aggregated relationship.",
+      "State that conditioning on the confounder (stratification) resolves the paradox."
+    ],
+    "acceptableAlternatives": [
+      "Referring to confounding bias or omitted variable bias corrected via stratification."
+    ],
+    "partialCredit": [
+      "Naming Simpson's Paradox but incorrectly identifying the statistical remedy.",
+      "Explaining confounding without naming the paradox."
+    ],
+    "misconceptions": [
+      "Assuming overall aggregated accuracy is always more reliable than subgroup accuracy when discrepancies occur."
+    ],
+    "probes": [
+      "Why does pooling data across heterogeneous subgroups without conditioning lead to biased causal conclusions?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-092",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If you independently evaluate 100 different hyperparameter configurations at an individual significance level of alpha = 0.05, calculate the Bonferroni-adjusted alpha threshold required to maintain a family-wise error rate of 0.05.",
+    "level": "Entry level",
+    "answerKey": "The Bonferroni-adjusted alpha threshold is alpha_adj = alpha / m, where m is the number of configurations tested (100). Thus, alpha_adj = 0.05 / 100 = 0.0005.",
+    "essentialFacts": [
+      "State the Bonferroni correction formula (alpha / m).",
+      "Substitute alpha = 0.05 and m = 100.",
+      "Calculate the adjusted threshold as 0.0005 (or 5e-4)."
+    ],
+    "acceptableAlternatives": [
+      "Expressing the answer as a fraction 1/2000."
+    ],
+    "partialCredit": [
+      "Multiplying alpha by m instead of dividing.",
+      "Correct formula setup with an arithmetic decimal placement error."
+    ],
+    "misconceptions": [
+      "Believing family-wise error rate decreases as the number of tested configurations increases without correction."
+    ],
+    "probes": [
+      "What is the primary statistical drawback of using the Bonferroni correction when testing a very large number of hypotheses?"
+    ],
+    "sourceIds": [
+      "google-ml"
+    ],
+    "id": "ai-ml-093",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does including a mediator variable (a feature caused by the treatment) in a regression model for estimating causal treatment effect introduce post-treatment bias, and what happens to the estimated causal effect?",
+    "level": "Experienced",
+    "answerKey": "Controlling for a mediator blocks part of the causal path from treatment to outcome, resulting in an underestimate (attenuation) of the total causal effect because it attributes the effect solely to direct paths.",
+    "essentialFacts": [
+      "Explain that mediators lie on the causal pathway between treatment and outcome.",
+      "State that controlling for a mediator blocks that specific indirect mechanism.",
+      "Conclude that this attenuates or distorts the estimated total causal effect."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning overcontrolling bias or blocking the indirect causal mechanism."
+    ],
+    "partialCredit": [
+      "Recognizing that mediators are affected by treatment but failing to explain how the regression coefficient changes.",
+      "Describing standard confounding instead of mediation."
+    ],
+    "misconceptions": [
+      "Treating all covariates as potential control variables regardless of whether they occur before or after treatment assignment."
+    ],
+    "probes": [
+      "How can causal Directed Acyclic Graphs (DAGs) help distinguish true confounders from mediators?"
+    ],
+    "sourceIds": [
+      "ml-bank"
+    ],
+    "id": "ai-ml-094",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When evaluating a spatial regression model predicting property prices with clustered geographic coordinates, why does random K-fold cross-validation yield overly optimistic test scores, and what split strategy should be used instead?",
+    "level": "Internship",
+    "answerKey": "Random K-fold places neighboring properties from the same geographic cluster into both train and test sets. Due to spatial autocorrelation, training points leak information about test points. GroupKFold or spatial block cross-validation should be used instead.",
+    "essentialFacts": [
+      "Explain spatial autocorrelation between nearby geographic observations.",
+      "State that random splitting leaks spatial neighbor information into validation folds.",
+      "Recommend GroupKFold or spatial block cross-validation."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning geographic block splitting or cluster-based splitting."
+    ],
+    "partialCredit": [
+      "Identifying data leakage due to proximity without naming spatial autocorrelation or the alternative split strategy."
+    ],
+    "misconceptions": [
+      "Assuming independent and identically distributed (i.i.d.) assumptions hold for spatial data."
+    ],
+    "probes": [
+      "How does spatial block cross-validation differ from standard random K-fold splitting?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-095",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If user income is missing specifically for high-earning users who opt out of reporting, what type of missingness is this, and why does imputing missing values with the training median bias downstream causal inference?",
+    "level": "Internship",
+    "answerKey": "This is Missing Not At Random (MNAR) because the probability of missingness depends on the unobserved value itself. Imputing with the median distorts the income distribution and masks the true causal relationship between income and the target outcome.",
+    "essentialFacts": [
+      "Classify the missingness mechanism as Missing Not At Random (MNAR).",
+      "Explain that missingness depends on the unobserved value itself.",
+      "State that median imputation compresses variance and introduces bias in downstream models."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning informative missingness or non-ignorable missingness."
+    ],
+    "partialCredit": [
+      "Correctly identifying MNAR but failing to explain how median imputation distorts downstream analysis.",
+      "Describing Missing At Random (MAR) instead of MNAR."
+    ],
+    "misconceptions": [
+      "Assuming all missing data can be safely imputed using median or mean without investigating the missingness mechanism."
+    ],
+    "probes": [
+      "How would you handle MNAR data differently than Missing Completely At Random (MCAR) data in a modeling pipeline?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "google-ml"
+    ],
+    "id": "ai-ml-096",
+    "track": "ai-ml",
+    "competency": "experiments and causal pitfalls",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given training feature proportions [0.5, 0.5] across two bins and production proportions [0.2, 0.8], calculate the exact Population Stability Index (PSI) and state whether shift is significant (PSI > 0.25).",
+    "level": "Experienced",
+    "answerKey": "PSI = sum((Actual - Expected) * ln(Actual / Expected)). Bin 1: (0.2 - 0.5) * ln(0.2 / 0.5) = (-0.3) * (-0.9163) = 0.2749. Bin 2: (0.8 - 0.5) * ln(0.8 / 0.5) = (0.3) * (0.4700) = 0.1410. Total PSI = 0.4159. Since 0.4159 > 0.25, significant shift is indicated.",
+    "essentialFacts": [
+      "PSI formula uses actual vs expected proportions with natural logarithms.",
+      "Calculated PSI is approximately 0.416.",
+      "A PSI value greater than 0.25 indicates significant distribution shift."
+    ],
+    "acceptableAlternatives": [
+      "0.416, indicating significant shift."
+    ],
+    "partialCredit": [
+      "Correctly setting up the PSI summation formula without final arithmetic."
+    ],
+    "misconceptions": [
+      "Confusing expected and actual proportions in the numerator of the log ratio."
+    ],
+    "probes": [
+      "How would you handle a zero proportion in a bin when computing PSI?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-097",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a deployed model's input feature distribution P(X) changes over time while the conditional probability P(Y|X) remains constant, what specific type of distribution shift has occurred, and how does it impact model performance?",
+    "level": "Entry level",
+    "answerKey": "Covariate shift (or feature shift). While the decision boundary P(Y|X) remains valid, changing input densities can lead to uncalibrated probability outputs or reduced accuracy in regions where test density is high but training density was low.",
+    "essentialFacts": [
+      "The shift is covariate shift (changes in P(X)).",
+      "The conditional probability P(Y|X) remains unchanged.",
+      "Performance can degrade if the model relies on regions underrepresented in training."
+    ],
+    "acceptableAlternatives": [
+      "Feature shift; input distribution shift."
+    ],
+    "partialCredit": [
+      "Naming covariate shift correctly without detailing performance impact."
+    ],
+    "misconceptions": [
+      "Confusing covariate shift with concept drift where P(Y|X) changes."
+    ],
+    "probes": [
+      "What validation technique can detect covariate shift prior to model deployment?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-098",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During label shift where P(Y) changes but P(X|Y) is invariant, how do you adjust predictions using source training priors and target validation priors?",
+    "level": "Experienced",
+    "answerKey": "Use Bayes' theorem / confusion matrix reweighting (BBSE). Multiply source predictions by the ratio of target class priors to source class priors: P_target(y=k) / P_source(y=k), adjusted through the inverse confusion matrix.",
+    "essentialFacts": [
+      "Label shift assumes P(X|Y) is invariant while P(Y) changes.",
+      "Adjustment weights predictions by the ratio of target to source class priors.",
+      "The confusion matrix of the classifier is used to correct estimation errors."
+    ],
+    "acceptableAlternatives": [
+      "Black Box Shift Estimation or reweighting by prior ratios."
+    ],
+    "partialCredit": [
+      "Mentioning prior ratios without describing the confusion matrix correction."
+    ],
+    "misconceptions": [
+      "Assuming label shift requires retraining the entire feature extractor."
+    ],
+    "probes": [
+      "How does label shift differ fundamentally from covariate shift regarding feature weighting?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-099",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A model trained with batch-computed StandardScaler features performs poorly in real-time streaming inference where features are scaled using running window statistics. What deployment issue causes this discrepancy?",
+    "level": "Internship",
+    "answerKey": "Training-serving skew (or feature distribution mismatch). Computing scaling parameters dynamically on running windows rather than freezing training mean and variance parameters causes inconsistent feature transformations between training and inference.",
+    "essentialFacts": [
+      "This is training-serving skew caused by inconsistent feature preprocessing.",
+      "Inference must use frozen statistics (mean and variance) computed during training.",
+      "Dynamic running statistics alter feature scales relative to what the model learned."
+    ],
+    "acceptableAlternatives": [
+      "Feature pipeline inconsistency; training-serving data leakage."
+    ],
+    "partialCredit": [
+      "Identifying feature mismatch without naming training-serving skew."
+    ],
+    "misconceptions": [
+      "Assuming real-time normalization improves model robustness automatically."
+    ],
+    "probes": [
+      "Where should transformation parameters be stored to prevent training-serving skew?"
+    ],
+    "sourceIds": [
+      "sklearn"
+    ],
+    "id": "ai-ml-100",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When using Maximum Softmax Probability (MSP) for OOD detection, why can overconfident incorrect predictions on out-of-distribution samples occur, and what alternative metric like energy score addresses this flaw?",
+    "level": "Experienced",
+    "answerKey": "Softmax normalization forces probabilities to sum to 1, causing models to output high confidence even for unseen classes if logit magnitudes are large. Energy score (free energy) is unconstrained by softmax and correlates better with input density.",
+    "essentialFacts": [
+      "Softmax forces normalization, leading to overconfidence on OOD inputs.",
+      "Energy score avoids softmax normalization constraints.",
+      "Energy score better separates in-distribution from out-of-distribution data."
+    ],
+    "acceptableAlternatives": [
+      "Logit-based energy score or Mahalanobis distance."
+    ],
+    "partialCredit": [
+      "Explaining softmax overconfidence without naming energy score."
+    ],
+    "misconceptions": [
+      "Assuming softmax probability directly reflects true Bayesian uncertainty."
+    ],
+    "probes": [
+      "How does temperature scaling affect maximum softmax probability values?"
+    ],
+    "sourceIds": [
+      "pytorch",
+      "google-ml"
+    ],
+    "id": "ai-ml-101",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a canary release routing 5% of production traffic to a new model version, what statistical test is used to evaluate if an observed latency increase is significant rather than random noise?",
+    "level": "Entry level",
+    "answerKey": "A two-sample hypothesis test, such as a Student's t-test or Mann-Whitney U test, compares latency distributions between the control and canary groups to determine statistical significance.",
+    "essentialFacts": [
+      "Two-sample hypothesis testing (e.g., t-test, Mann-Whitney U).",
+      "Evaluates whether latency differences exceed random sampling noise.",
+      "Compares control traffic against canary traffic metrics."
+    ],
+    "acceptableAlternatives": [
+      "Welch's t-test or permutation test."
+    ],
+    "partialCredit": [
+      "Stating a statistical test without specifying parameters."
+    ],
+    "misconceptions": [
+      "Relying solely on mean latency differences without checking variance or sample size."
+    ],
+    "probes": [
+      "What risk does multiple hypothesis testing introduce during continuous canary monitoring?"
+    ],
+    "sourceIds": [
+      "google-ml",
+      "ml-bank"
+    ],
+    "id": "ai-ml-102",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When monitoring a classifier in production without immediate ground truth labels, what proxy metric or statistical method can be deployed to detect performance degradation over time?",
+    "level": "Internship",
+    "answerKey": "Tracking prediction distribution drift (e.g., PSI on model outputs), confidence score distributions, or feature drift metrics (KS-test) to signal potential performance decay before ground truth labels arrive.",
+    "essentialFacts": [
+      "Monitoring input feature drift or output prediction drift.",
+      "Population Stability Index (PSI) or Kolmogorov-Smirnov test.",
+      "Used when ground truth labels are delayed."
+    ],
+    "acceptableAlternatives": [
+      "Confidence monitoring or adversarial validation."
+    ],
+    "partialCredit": [
+      "Mentioning monitoring predictions without statistical tests."
+    ],
+    "misconceptions": [
+      "Believing accuracy can be computed instantly without ground truth labels."
+    ],
+    "probes": [
+      "What is the primary limitation of using prediction drift as a proxy for accuracy?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "google-ml"
+    ],
+    "id": "ai-ml-103",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how adversarial validation constructs a binary classification dataset to distinguish between training and test sets, and state what an AUC near 1.0 indicates regarding covariate shift.",
+    "level": "Entry level",
+    "answerKey": "Combine train and test sets, assign label 0 to train and 1 to test, and train a classifier to distinguish them. An AUC near 1.0 indicates significant covariate shift because the two distributions are easily separable.",
+    "essentialFacts": [
+      "Combines train and test sets with labels 0 and 1.",
+      "Trains a classifier to distinguish train from test samples.",
+      "An AUC near 1.0 indicates severe covariate shift."
+    ],
+    "acceptableAlternatives": [
+      "Domain classifier AUC near 1.0 showing high distinguishability."
+    ],
+    "partialCredit": [
+      "Explaining the labeling scheme without interpreting AUC."
+    ],
+    "misconceptions": [
+      "Assuming adversarial validation measures concept drift rather than covariate shift."
+    ],
+    "probes": [
+      "How can features with high feature importance in adversarial validation be handled?"
+    ],
+    "sourceIds": [
+      "sklearn",
+      "ml-bank"
+    ],
+    "id": "ai-ml-104",
+    "track": "ai-ml",
+    "competency": "deployment and distribution shift",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  }
+]

@@ -1,0 +1,3987 @@
+[
+  {
+    "prompt": "Simplify the Boolean expression F = A'B'C' + A'BC' + AB'C' + ABC' using Boolean algebra. What is the minimal sum-of-products form?",
+    "level": "Internship",
+    "answerKey": "C' Factor out the common literal C' across all terms. Apply the complement law (A + A' = 1) to eliminate variables A and B.",
+    "essentialFacts": [
+      "Factor out the common literal C' across all terms.",
+      "Apply the complement law (A + A' = 1) to eliminate variables A and B."
+    ],
+    "acceptableAlternatives": [
+      "C'",
+      "NOT C"
+    ],
+    "partialCredit": [
+      "Correctly factoring out C' but failing to fully apply the complement law."
+    ],
+    "misconceptions": [
+      "Assuming variables A and B must appear in the final minimized expression."
+    ],
+    "probes": [
+      "How did you eliminate variables A and B during the reduction steps?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-001",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Find the dual of the Boolean expression X = (A + B')(C * D + 1). Show each step clearly.",
+    "level": "Internship",
+    "answerKey": "X^d = (A \\cdot B') + ((C + D) \\cdot 0) = A \\cdot B'",
+    "essentialFacts": [
+      "Swap all AND operations with OR operations and vice versa.",
+      "Invert all constants (replace 1 with 0 and 0 with 1) while leaving literals uncomplemented."
+    ],
+    "acceptableAlternatives": [
+      "A * B'",
+      "(A AND B')"
+    ],
+    "partialCredit": [
+      "Swapping operators correctly but forgetting to swap the constants 0 and 1."
+    ],
+    "misconceptions": [
+      "Complementing the literal variables (e.g., turning A into A') when finding the dual."
+    ],
+    "probes": [
+      "What is the fundamental difference between taking the dual and taking the complement of a Boolean expression?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-002",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Minimize the Boolean function F(A,B,C) = sum of minterms m(0, 2, 5, 7) using a Karnaugh map. List the minimal SOP.",
+    "level": "Entry level",
+    "answerKey": "F = A'C' + AC Map minterms onto a 3-variable Gray-code K-map grid. Group adjacent 1s into valid powers-of-two groupings to form prime implicants.",
+    "essentialFacts": [
+      "Map minterms onto a 3-variable Gray-code K-map grid.",
+      "Group adjacent 1s into valid powers-of-two groupings to form prime implicants."
+    ],
+    "acceptableAlternatives": [
+      "\\bar{A}\\bar{C} + AC"
+    ],
+    "partialCredit": [
+      "Correctly plotting minterms on the K-map but forming sub-optimal or overlapping groupings."
+    ],
+    "misconceptions": [
+      "Treating K-map cells linearly instead of wrapping around edges."
+    ],
+    "probes": [
+      "Which specific cells wrap around to form a group on a 3-variable K-map?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-003",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Apply De Morgan's laws to transform F = \\overline{(A + B * \\bar{C})} into a pure sum-of-products expression with only inverted inputs.",
+    "level": "Entry level",
+    "answerKey": "F = \\bar{A} \\cdot (\\bar{B} + C) = \\bar{A}\\bar{B} + \\bar{A}C",
+    "essentialFacts": [
+      "Break the overarching negation bar across the outermost operator.",
+      "Change the enclosed AND operator to an OR operator and negate each sub-term."
+    ],
+    "acceptableAlternatives": [
+      "\\bar{A}\\bar{B} + \\bar{A}C"
+    ],
+    "partialCredit": [
+      "Applying De Morgan's law to the outer level correctly but making an error on inner term inversions."
+    ],
+    "misconceptions": [
+      "Negating the literal names themselves instead of flipping operators and applying bars."
+    ],
+    "probes": [
+      "How does operator precedence dictate the order in which you apply De Morgan's laws?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-004",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given F(A,B,C) = sum of minterms m(1, 3, 7) with don't-care d(5), find the minimal sum-of-products expression.",
+    "level": "Entry level",
+    "answerKey": "F = C Treat the don't-care minterm 5 as a 1 to expand adjacent groupings. Combine minterms 1, 3, 5, and 7 into a single group of four to eliminate variables A and B.",
+    "essentialFacts": [
+      "Treat the don't-care minterm 5 as a 1 to expand adjacent groupings.",
+      "Combine minterms 1, 3, 5, and 7 into a single group of four to eliminate variables A and B."
+    ],
+    "acceptableAlternatives": [
+      "C"
+    ],
+    "partialCredit": [
+      "Using the don't-care term correctly but grouping only pairs instead of maximizing the group size to four."
+    ],
+    "misconceptions": [
+      "Treating don't-care terms as mandatory zeros that cannot be utilized for simplification."
+    ],
+    "probes": [
+      "Why is it strategically beneficial to include don't-care terms in K-map groupings?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-005",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Analyze the combinational circuit F = AB + BC for static 1-hazards when input ABC transitions from 111 to 011.",
+    "level": "Experienced",
+    "answerKey": "A static 1-hazard occurs because term AB drops to 0 while BC remains 1, but no product term covers transition state 011.",
+    "essentialFacts": [
+      "Identify that product term AB turns off while BC stays active during the input change.",
+      "Recognize the lack of a redundant consensus term (AC) bridging the two product terms."
+    ],
+    "acceptableAlternatives": [
+      "Glitch occurs due to missing consensus term AC covering the transition."
+    ],
+    "partialCredit": [
+      "Stating that a glitch occurs without identifying the missing product term coverage."
+    ],
+    "misconceptions": [
+      "Assuming static hazards can only occur in product-of-sums circuits."
+    ],
+    "probes": [
+      "What redundant product term must be added to the SOP expression to eliminate this hazard?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-006",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Using the consensus theorem, simplify F = AB + \\bar{A}C + BC to a minimal sum-of-products expression and name the redundant term.",
+    "level": "Experienced",
+    "answerKey": "F = AB + \\bar{A}C; term BC is redundant.",
+    "essentialFacts": [
+      "Identify $BC$ as the consensus term derived from $AB$ and $\\bar{A}C$.",
+      "Apply the consensus theorem identity $XY + \\bar{X}Z + YZ = XY + \\bar{X}Z$."
+    ],
+    "acceptableAlternatives": [
+      "AB + \\bar{A}C"
+    ],
+    "partialCredit": [
+      "Arriving at the correct simplified expression without explicitly identifying the consensus term."
+    ],
+    "misconceptions": [
+      "Confusing the consensus theorem with the absorption law."
+    ],
+    "probes": [
+      "How does the consensus term relate to prime implicant coverage on a Karnaugh map?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-007",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A synthesis tool infers a transparent latch from an incomplete combinational case statement. Write a Boolean expression demonstrating why missing assignments create state retention.",
+    "level": "Experienced",
+    "answerKey": "Q_next = (Condition \\cdot D) + (\\overline{Condition} \\cdot Q_prev)",
+    "essentialFacts": [
+      "Recognize that incomplete conditional assignments require remembering the previous state $Q_prev$.",
+      "Model the inferred latch as a multiplexer with feedback holding the prior value when conditions are unassigned."
+    ],
+    "acceptableAlternatives": [
+      "Q = cond ? D : Q_prev expressed in Boolean logic."
+    ],
+    "partialCredit": [
+      "Describing the latch behavior conceptually without writing the explicit Boolean state retention equation."
+    ],
+    "misconceptions": [
+      "Believing incomplete combinational assignments default safely to zero."
+    ],
+    "probes": [
+      "How do you modify RTL code using default assignments to prevent unintentional latch inference?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-008",
+    "track": "digital-logic",
+    "competency": "Boolean algebra",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a 3-input truth table where F(A,B,C) = 1 for rows 1, 3, and 6 (binary), write the canonical sum-of-products expression using minterm notation sum of minterms m(...).",
+    "level": "Internship",
+    "answerKey": "$F(A,B,C) = \\sum m(1, 3, 6) = \\bar{A}\\bar{B}C + \\bar{A}BC + AB\\bar{C}$",
+    "essentialFacts": [
+      "Rows 1, 3, 6 correspond to binary 001, 011, 110",
+      "Minterm notation uses $\\sum m$ for rows where output is 1",
+      "Canonical SOP explicitly includes all variables as minterms"
+    ],
+    "acceptableAlternatives": [
+      "$\\bar{A}\\bar{B}C + \\bar{A}BC + AB\\bar{C}$",
+      "$\\sum m(1, 3, 6)$"
+    ],
+    "partialCredit": [
+      "Correctly identifies binary values for rows but misses algebraic expansion",
+      "Lists wrong minterm indices"
+    ],
+    "misconceptions": [
+      "Confusing minterms with maxterms",
+      "Treating decimal row indices as literal gate names"
+    ],
+    "probes": [
+      "How do you convert a row index like binary 011 into its corresponding minterm algebraic product?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-009",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 3-variable Boolean function has minterms sum of minterms m(0, 2, 5). What is its canonical product-of-sums (POS) expression using maxterm notation \\Pi M(...)?",
+    "level": "Internship",
+    "answerKey": "$F(A,B,C) = \\Pi M(1, 3, 4, 6, 7) = (A+B+\\bar{C})(A+\\bar{B}+\\bar{C})(\\bar{A}+B+C)(\\bar{A}+\\bar{B}+C)(\\bar{A}+\\bar{B}+\\bar{C})$",
+    "essentialFacts": [
+      "POS uses maxterms for rows where output is 0",
+      "For 3 variables, total rows are 0 to 7; maxterm indices are the complement of minterm indices",
+      "Maxterms sum literals where 0 is uncomplemented and 1 is complemented"
+    ],
+    "acceptableAlternatives": [
+      "$\\Pi M(1, 3, 4, 6, 7)$"
+    ],
+    "partialCredit": [
+      "Correctly identifies the missing indices but makes a literal complementation error in the POS expansion"
+    ],
+    "misconceptions": [
+      "Assuming POS uses the same indices as minterms",
+      "Inverting variables incorrectly in maxterms (treating 0 as complemented)"
+    ],
+    "probes": [
+      "What is the relationship between minterm indices and maxterm indices for a complete truth table?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-010",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 4-variable function has minterms sum of minterms m(1, 5, 9) and don't-cares d(13, 15). Formulate the exact set of prime implicants covered by minterm 9 during K-map minimization.",
+    "level": "Entry level",
+    "answerKey": "Minterm 9 (binary 1001) combines with minterm 1 (0001) to form $\\bar{B}\\bar{C}D$, and with minterm 13 (1101) using don't-care to form $A\\bar{C}D$.",
+    "essentialFacts": [
+      "Minterm 9 is binary 1001 ($A\\bar{B}\\bar{C}D$)",
+      "Can combine with 1 ($0001 \\rightarrow \\bar{B}\\bar{C}D$) and 13 ($1101 \\rightarrow A\\bar{C}D$)",
+      "Don't-cares like 13 and 15 can be utilized as 1s to enlarge groupings"
+    ],
+    "acceptableAlternatives": [
+      "$\\bar{B}\\bar{C}D$ and $A\\bar{C}D$"
+    ],
+    "partialCredit": [
+      "Identifies one valid prime implicant containing minterm 9 but misses the other"
+    ],
+    "misconceptions": [
+      "Treating don't-cares as mandatory 0s",
+      "Grouping invalid adjacent cells in K-maps (e.g., diagonal grouping)"
+    ],
+    "probes": [
+      "How do don't-care conditions expand the adjacency options for adjacent minterms in a K-map?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-011",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Expand the non-canonical function F(A,B,C) = AB + \\bar{C} into its full canonical sum-of-products form showing all missing variables.",
+    "level": "Entry level",
+    "answerKey": "$F = AB(C + \\bar{C}) + \\bar{C}(A + \\bar{A})(B + \\bar{B}) = ABC + AB\\bar{C} + A\\bar{B}\\bar{C} + \\bar{A}B\\bar{C} + \\bar{A}\\bar{B}\\bar{C}$",
+    "essentialFacts": [
+      "Missing variables are reintroduced using identity $X + \\bar{X} = 1$",
+      "$AB$ expands to $ABC + AB\\bar{C}$",
+      "$\\bar{C}$ expands to all terms containing $\\bar{C}$, ensuring all 3 variables are present"
+    ],
+    "acceptableAlternatives": [
+      "$ABC + AB\\bar{C} + A\\bar{B}\\bar{C} + \\bar{A}B\\bar{C} + \\bar{A}\\bar{B}\\bar{C}$",
+      "$\\sum m(0, 2, 4, 6, 7)$"
+    ],
+    "partialCredit": [
+      "Expands one term correctly but leaves the other term non-canonical"
+    ],
+    "misconceptions": [
+      "Multiplying by 0 instead of adding/multiplying with $(X+\\bar{X})$",
+      "Dropping overlapping duplicated minterms without proper boolean combination"
+    ],
+    "probes": [
+      "How do you systematically expand a product term lacking a variable into full minterms?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-012",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For F(A,B,C,D) = sum of minterms m(0, 2, 5, 7, 8, 10, 13, 15), identify all essential prime implicants and explain why minterm 5 is covered by more than one prime implicant.",
+    "level": "Experienced",
+    "answerKey": "Essential prime implicants are $\\bar{A}\\bar{B}\\bar{D}$ (covers 0,2) and $BD$ (covers 5,7,13,15); minterm 5 ($0101$) is covered by both $BD$ and $\\bar{A}BD$ or similar because it sits at the intersection of overlapping variable groupings in the K-map.",
+    "essentialFacts": [
+      "An essential prime implicant covers at least one minterm covered by no other prime implicant",
+      "Minterm 5 is covered by multiple implicants because adjacent cell groupings overlap in 4-variable K-maps",
+      "Minimization requires selecting prime implicants that cover all minterms with minimum cost"
+    ],
+    "acceptableAlternatives": [
+      "EPIs: $\\bar{B}\\bar{D}$ (for 0,2,8,10) and $BD$ (for 5,7,13,15); minterm 5 is covered by $BD$ and other overlapping implicants like $\\bar{A}BD$ or $A\\bar{B}D$"
+    ],
+    "partialCredit": [
+      "Identifies some prime implicants correctly but misidentifies which ones are essential"
+    ],
+    "misconceptions": [
+      "Confusing prime implicants with essential prime implicants",
+      "Assuming every minterm must be covered by a unique prime implicant"
+    ],
+    "probes": [
+      "What defines an essential prime implicant versus a non-essential prime implicant during Quine-McCluskey tabulation?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-013",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Convert the function F(A,B,C) = AB + BC + AC into Reed-Muller (algebraic normal form) using modulo-2 arithmetic. Show the resulting exclusive-or sum of products.",
+    "level": "Experienced",
+    "answerKey": "$F(A,B,C) = AB \\oplus BC \\oplus AC \\oplus ABC$ (or simplified via XOR laws, noting $AB + BC + AC = AB \\oplus BC \\oplus ABC$ depending on algebraic expansion).",
+    "essentialFacts": [
+      "Algebraic normal form (ANF) expresses Boolean functions using AND and XOR ($\\oplus$)",
+      "Or-to-Xor conversion uses $X + Y = X \\oplus Y \\oplus (X \\cdot Y)$",
+      "Repeated variables in modulo-2 arithmetic collapse ($X \\cdot X = X$, $X \\oplus X = 0$)"
+    ],
+    "acceptableAlternatives": [
+      "$AB \\oplus BC \\oplus AC$ with proper modulo-2 expansion yielding $AB \\oplus BC \\oplus ABC$"
+    ],
+    "partialCredit": [
+      "Applies standard OR logic instead of modulo-2 XOR expansion rules"
+    ],
+    "misconceptions": [
+      "Treating standard Boolean OR ($+$) as equivalent to XOR ($\\oplus$) without conversion",
+      "Failing to apply idempotent laws in modulo-2 expansion"
+    ],
+    "probes": [
+      "How does the Reed-Muller canonical form differ from standard sum-of-products canonical form?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-014",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A combinational block has inputs A, B and outputs Y_0, Y_1. If Y_0 = sum of minterms m(1, 2) and Y_1 = sum of minterms m(2, 3), write the canonical SOP for a shared logic implementation.",
+    "level": "Entry level",
+    "answerKey": "$Y_0 = \\bar{A}B + A\\bar{B}$, $Y_1 = A\\bar{B} + AB$; shared term is $A\\bar{B}$ (minterm 2), allowing $Y_0 = A\\bar{B} + \\bar{A}B$ and $Y_1 = A\\bar{B} + AB$.",
+    "essentialFacts": [
+      "Multi-output minimization identifies common product terms across multiple functions",
+      "Minterm 2 ($A\\bar{B}$) is shared between $Y_0$ and $Y_1$",
+      "Canonical SOP representations can be factored to share intermediate logic gates"
+    ],
+    "acceptableAlternatives": [
+      "$Y_0 = \\bar{A}B + A\\bar{B}$; $Y_1 = A\\bar{B} + AB$; shared minterm 2 ($A\\bar{B}$)"
+    ],
+    "partialCredit": [
+      "Writes individual canonical SOPs correctly but fails to identify or discuss the shared term"
+    ],
+    "misconceptions": [
+      "Assuming multi-output optimization changes the truth table minterm definitions",
+      "Combining independent outputs into a single boolean expression without output selector flags"
+    ],
+    "probes": [
+      "Why is identifying shared minterms important for multi-level logic synthesis?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-015",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 3-variable truth table defines F(0,0,0)=1 and leaves rows 1 through 7 unspecified. Explain how a synthesis tool maps these unspecified entries to optimize gate cost.",
+    "level": "Experienced",
+    "answerKey": "The synthesis tool treats rows 1 through 7 as don't-care states ($d$), evaluating them as either 0 or 1 during K-map or Quine-McCluskey minimization to yield the simplest possible product terms (e.g., $F = 1$ or smaller grouped implicants).",
+    "essentialFacts": [
+      "Unspecified truth table entries are treated as don't-cares by logic synthesizers",
+      "Synthesizers evaluate combinations of don't-cares to maximize prime implicant sizes",
+      "Incomplete specifications allow hardware minimization that differs from fully specified tables"
+    ],
+    "acceptableAlternatives": [
+      "Treats unspecified entries as don't-cares to minimize gate count",
+      "Assigns 1 or 0 to unspecified rows to maximize grouping size"
+    ],
+    "partialCredit": [
+      "Recognizes that unspecified entries are don't-cares but does not explain how they reduce gate count"
+    ],
+    "misconceptions": [
+      "Assuming unspecified truth table entries default to logic 0 in synthesis",
+      "Believing synthesis tools throw errors on incomplete truth tables without explicit default assignments"
+    ],
+    "probes": [
+      "What synthesis warning or lint message typically occurs when truth table cases or case statements are incomplete?",
+      "How does Yosys handle unspecified default cases in RTL synthesis?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-016",
+    "track": "digital-logic",
+    "competency": "truth tables and canonical forms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Find the minimal sum-of-products expression for the 3-variable function F(A,B,C) = sum m(0, 2, 5, 7) using a Karnaugh map.",
+    "level": "Internship",
+    "answerKey": "The minimal sum-of-products expression is B_bar*C_bar + A*C (or ¬B¬C + AC).",
+    "essentialFacts": [
+      "Minterms 0 and 2 group together to form ¬B¬C.",
+      "Minterms 5 and 7 group together to form AC.",
+      "No larger groups of 4 can be formed from these minterms."
+    ],
+    "acceptableAlternatives": [
+      "¬B¬C + AC",
+      "C'B' + AC"
+    ],
+    "partialCredit": [
+      "Correctly identifies individual prime implicants but misses the optimal combination.",
+      "Sets up the K-map correctly with 1s at minterm locations but makes an adjacency grouping error."
+    ],
+    "misconceptions": [
+      "Assuming diagonal cells are adjacent in a Karnaugh map.",
+      "Treating minterm indices as arithmetic values rather than Gray-code grid coordinates."
+    ],
+    "probes": [
+      "How do you determine if minterm 0 and minterm 5 are adjacent on a 3-variable K-map?",
+      "What happens to the variable B when you group minterms 0 and 2?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-017",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Minimize the 3-variable function F(A,B,C) = sum m(1, 3) with don't-cares d(5, 7) using a Karnaugh map.",
+    "level": "Internship",
+    "answerKey": "The minimal sum-of-products expression is C.",
+    "essentialFacts": [
+      "Treat don't-care minterms 5 and 7 as 1s to form a larger group.",
+      "Minterms 1, 3, 5, and 7 form a 4-cell group where A and B eliminate.",
+      "The resulting simplified term depends exclusively on C."
+    ],
+    "acceptableAlternatives": [
+      "C"
+    ],
+    "partialCredit": [
+      "Includes don't-cares in the map but fails to combine them into the largest possible power-of-two group.",
+      "Derives C + AB or another non-minimal form."
+    ],
+    "misconceptions": [
+      "Treating don't-care conditions as 0s in all circumstances.",
+      "Failing to exploit don't-care conditions to eliminate literals."
+    ],
+    "probes": [
+      "Why is it advantageous to include don't-care terms 5 and 7 as 1s in this K-map?",
+      "How many literals does the term C eliminate compared to ¬A¬BC + ¬ABC?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-018",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a 4-variable K-map with minterms m(0, 4, 5, 7, 8, 12, 13, 15), identify the minimal sum-of-products expression.",
+    "level": "Entry level",
+    "answerKey": "The minimal sum-of-products expression is C'D' + BD.",
+    "essentialFacts": [
+      "Minterms 0, 4, 8, and 12 form a column group yielding C'D'.",
+      "Minterms 5, 7, 13, and 15 form a 4-cell group yielding BD.",
+      "Both groups represent essential prime implicants."
+    ],
+    "acceptableAlternatives": [
+      "¬C¬D + BD",
+      "C'D' + BD"
+    ],
+    "partialCredit": [
+      "Identifies one of the two 4-cell groups correctly but misses the other.",
+      "Produces overlapping redundant terms that increase literal count."
+    ],
+    "misconceptions": [
+      "Assuming corner cells in a 4-variable map cannot wrap around to form a group.",
+      "Confusing rows and columns in standard Gray-code mapping."
+    ],
+    "probes": [
+      "How do the corner cells 0 and 8 factor into the C'D' group?",
+      "Are there any essential prime implicants left uncovered after identifying BD and C'D'?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-019",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Find the minimal product-of-sums expression for the Boolean function F(A,B,C,D) = product M(0, 2, 4, 6) using a Karnaugh map.",
+    "level": "Entry level",
+    "answerKey": "The minimal product-of-sums expression is (A + C).",
+    "essentialFacts": [
+      "Maxterms 0, 2, 4, and 6 correspond to coordinates where A=0 and C=0.",
+      "Plotting maxterms as 0s on the K-map allows grouping them into a 4-cell block.",
+      "The combined group yields the sum term (A + C)."
+    ],
+    "acceptableAlternatives": [
+      "(A + C)",
+      "A + C"
+    ],
+    "partialCredit": [
+      "Plots maxterms correctly as 0s but groups them individually instead of combining into a quad.",
+      "Mistakenly converts maxterms to minterms during K-map entry."
+    ],
+    "misconceptions": [
+      "Treating maxterm K-maps identically to minterm K-maps without inverting the output interpretation.",
+      "Grouping 1s instead of 0s when solving for product-of-sums."
+    ],
+    "probes": [
+      "How do maxterm coordinates differ from minterm coordinates when plotting on a Karnaugh map?",
+      "Why does grouping maxterms 0, 2, 4, and 6 eliminate variables B and D?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-020",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Calculate the literal count and gate count for the minimized SOP expression of F = sum m(0, 1, 2, 3, 4, 5, 6, 7).",
+    "level": "Entry level",
+    "answerKey": "The minimized SOP expression is A', resulting in 1 literal and 0 extra gates if A' is available (or 1 inverter).",
+    "essentialFacts": [
+      "Minterms 0 through 7 cover the entire upper half of the 4-variable K-map where A=0.",
+      "The expression simplifies to a single literal A'.",
+      "Literal count is 1 and gate count is 1 inverter."
+    ],
+    "acceptableAlternatives": [
+      "A'",
+      "¬A"
+    ],
+    "partialCredit": [
+      "Identifies A' correctly but counts literals or gates incorrectly.",
+      "Splits the 8 minterms into smaller groups unnecessarily."
+    ],
+    "misconceptions": [
+      "Assuming a group of 8 minterms requires more than one literal.",
+      "Failing to recognize half-map coverage."
+    ],
+    "probes": [
+      "Which variable is held constant across all minterms from 0 to 7 on a 4-variable map?",
+      "How many cells are in a valid octet grouping on a Karnaugh map?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-021",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how to resolve a static-1 hazard in a combinational circuit by adding a redundant consensus term derived from a Karnaugh map.",
+    "level": "Experienced",
+    "answerKey": "Identify adjacent product terms in the K-map whose transition causes a momentary output drop to 0, and add a consensus prime implicant covering that transition boundary to maintain continuous logic high.",
+    "essentialFacts": [
+      "Static-1 hazards occur when transitioning between adjacent Karnaugh map groupings that lack an encompassing bridge term.",
+      "Adding a redundant prime implicant (consensus term) covers the boundary transition.",
+      "Ensures output remains continuously high during input changes."
+    ],
+    "acceptableAlternatives": [
+      "Add a consensus term covering the transition edge between two distinct prime implicants."
+    ],
+    "partialCredit": [
+      "Identifies where the hazard occurs on the K-map but fails to specify the correct consensus product term.",
+      "Proposes adding pipeline registers which solve timing but not combinational static hazards."
+    ],
+    "misconceptions": [
+      "Believing K-map minimization always eliminates all electrical and logical hazards without redundant terms.",
+      "Assuming hazards are caused solely by gate propagation delay differences without spatial map geometry."
+    ],
+    "probes": [
+      "Why does a transition between two non-overlapping prime implicants cause a static-1 hazard?",
+      "How does adding a redundant product term prevent the transient glitch?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-022",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Describe how to map a 5-variable logic function using two 4-variable Karnaugh maps, and explain how to identify cross-map adjacencies.",
+    "level": "Experienced",
+    "answerKey": "Use Shannon's expansion to create two separate 4-variable maps for E=0 and E=1, then find adjacencies by checking identical cell coordinates across both maps.",
+    "essentialFacts": [
+      "Split the 5-variable function into two sub-functions based on the 5th variable E.",
+      "Evaluate corresponding cells in the E=0 map and E=1 map for 3-dimensional adjacency.",
+      "Combine terms within maps and across maps to find 5-variable prime implicants."
+    ],
+    "acceptableAlternatives": [
+      "Construct dual 4-variable maps for the fifth variable and evaluate identical coordinate pairs for cross-map grouping."
+    ],
+    "partialCredit": [
+      "Explains splitting into two maps but omits how cross-map adjacencies are evaluated.",
+      "Treats the two maps independently without combining terms across the fifth variable dimension."
+    ],
+    "misconceptions": [
+      "Assuming 5-variable maps require a 32-cell grid drawn in a single plane.",
+      "Forgetting that adjacent cells exist between the two sub-maps at identical coordinate positions."
+    ],
+    "probes": [
+      "How do you represent a 5-variable minterm that spans both the E=0 and E=1 Karnaugh maps?",
+      "What is the dimensional power-of-two size for a grouping that bridges across both 4-variable sub-maps?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-023",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how a prime implicant table is used after K-map reduction to select a minimum-cost set of essential and non-essential prime implicants.",
+    "level": "Experienced",
+    "answerKey": "Identify essential prime implicants covering mandatory minterms, then select secondary rows from the prime implicant table to cover remaining minterms with minimum total literal cost.",
+    "essentialFacts": [
+      "Columns represent minterms and rows represent prime implicants derived from the K-map.",
+      "Essential prime implicants cover minterms with a single unique row.",
+      "Remaining minterms are covered by selecting additional rows to minimize cost."
+    ],
+    "acceptableAlternatives": [
+      "Use essential prime implicants first, then apply column/row dominance or Petrick's method to resolve remaining minterms."
+    ],
+    "partialCredit": [
+      "Explains identifying essential prime implicants but omits how non-essential rows are chosen.",
+      "Confounds K-map adjacency grouping with prime implicant table column covering."
+    ],
+    "misconceptions": [
+      "Assuming all prime implicants identified on a K-map must be included in the final minimized expression.",
+      "Ignoring cost optimization when multiple non-essential prime implicant combinations cover remaining minterms."
+    ],
+    "probes": [
+      "How do you identify an essential prime implicant from a prime implicant table?",
+      "What is column dominance in the context of prime implicant reduction?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-024",
+    "track": "digital-logic",
+    "competency": "Karnaugh maps and minimization",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do you implement a 3-variable Boolean function F(A,B,C) = sum of minterms m(0, 2, 5, 7) using a single 4-to-1 multiplexer with select inputs connected to variables A and B? Give the inputs for data lines D_0 through D_3.",
+    "level": "Internship",
+    "answerKey": "Connect select lines $S_1 = A$ and $S_0 = B$. Evaluate the function for each $AB$ combination in terms of $C$: for $AB=00$ (minterms 0, 1), $m_0$ is present and $m_1$ is absent, giving $D_0 = C'$. For $AB=01$ (minterms 2, 3), $m_2$ is present and $m_3$ is absent, giving $D_1 = C'$. For $AB=10$ (minterms 4, 5), $m_4$ is absent and $m_5$ is present, giving $D_2 = C$. For $AB=11$ (minterms 6, 7), $m_6$ is absent and $m_7$ is present, giving $D_3 = C$. Specifically: $D_0 = C'$, $D_1 = C'$, $D_2 = C$, $D_3 = C$.",
+    "essentialFacts": [
+      "Select lines are connected to variables $A$ and $B$.",
+      "Data lines are driven by $C$ or $C'$ based on minterm presence for each $AB$ pair.",
+      "Minterms are correctly mapped to binary combinations of $A, B, C$."
+    ],
+    "acceptableAlternatives": [
+      "Expressed using truth table partitioning with $C$ as the data input source."
+    ],
+    "partialCredit": [
+      "Correctly identifies select lines but makes an error in one data line expression.",
+      "Correctly partitions minterms but assigns wrong inversions."
+    ],
+    "misconceptions": [
+      "Assuming data inputs must be static 0 or 1 constants.",
+      "Incorrectly mapping minterm indices to binary address pairs."
+    ],
+    "probes": [
+      "How do you determine the input for $D_2$ when $A=1, B=0$?",
+      "What changes if select lines are connected to $B$ and $C$ instead?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-025",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a 3-to-8 active-high decoder with an active-low enable pin E' = 0, what are the output values of Y_5 and Y_2 when the select inputs are A_2 A_1 A_0 = 101?",
+    "level": "Internship",
+    "answerKey": "With $A_2 A_1 A_0 = 101$ (binary 5) and enable active ($E'=0$), $Y_5 = 1$ and all other outputs including $Y_2 = 0$.",
+    "essentialFacts": [
+      "Binary input 101 corresponds to decimal 5.",
+      "An active-high decoder asserts only the selected output line to 1.",
+      "All unselected output lines remain at 0 when enabled."
+    ],
+    "acceptableAlternatives": [
+      "$Y_5$ is high (1), $Y_2$ is low (0)."
+    ],
+    "partialCredit": [
+      "Identifies $Y_5$ correctly but confuses enable logic state.",
+      "Identifies correct decimal value but outputs active-low behavior."
+    ],
+    "misconceptions": [
+      "Assuming active-low outputs for a standard active-high decoder.",
+      "Believing multiple outputs can be high simultaneously."
+    ],
+    "probes": [
+      "What happens to all outputs if the enable $E'$ is set to 1?",
+      "How would the output values differ if the decoder were active-low?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "digital-logic-026",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How can you construct a 4-to-16 decoder using only two 3-to-8 decoders that feature an active-low enable pin? Explain how the extra input bit routes the enable signals.",
+    "level": "Entry level",
+    "answerKey": "Use the most significant input bit ($A_3$) and its inverse to drive the active-low enable pins ($E'$) of the two 3-to-8 decoders. Specifically, connect an inverted $A_3$ to the enable pin of the first decoder ($E_0' = A_3'$) so it is active when $A_3 = 0$, and connect $A_3$ directly to the enable pin of the second decoder ($E_1' = A_3$) so it is active when $A_3 = 1$.",
+    "essentialFacts": [
+      "The 4th input bit ($A_3$) acts as a block selector.",
+      "Inverter logic ensures only one 3-to-8 decoder is enabled at any time.",
+      "Outputs span 16 distinct minterms across the two devices."
+    ],
+    "acceptableAlternatives": [
+      "Connect $A_3$ directly to one enable and an inverted $A_3$ to the other."
+    ],
+    "partialCredit": [
+      "Describes using two decoders but fails to explain how enable pins partition the address space.",
+      "Omits the inverter on the enable line."
+    ],
+    "misconceptions": [
+      "Connecting the extra input to data lines instead of enable lines.",
+      "Enabling both decoders simultaneously."
+    ],
+    "probes": [
+      "How would you scale this to build a 5-to-32 decoder?",
+      "What happens if both enable pins are accidentally asserted low simultaneously?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-027",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a 16-to-1 multiplexer is constructed as a binary tree using 2-to-1 multiplexers, and each 2-to-1 multiplexer has a propagation delay of 2ns, what is the maximum total propagation delay from data inputs to the output?",
+    "level": "Entry level",
+    "answerKey": "A 16-to-1 multiplexer built as a binary tree of 2-to-1 multiplexers has $\\log_2(16) = 4$ levels of logic (requiring $8+4+2+1 = 15$ total 2-to-1 multiplexers). With 2ns per level, the maximum propagation delay is $4 \\times 2\\text{ns} = 8\\text{ns}$.",
+    "essentialFacts": [
+      "A 16-to-1 multiplexer binary tree has 4 stages of 2-to-1 multiplexers.",
+      "Propagation delay accumulates additively along the critical path.",
+      "Total delay = tree depth $\\times$ stage delay ($4 \\times 2\\text{ns} = 8\\text{ns}$).."
+    ],
+    "acceptableAlternatives": [
+      "8 nanoseconds",
+      "8ns"
+    ],
+    "partialCredit": [
+      "Multiplies an incorrect component count by 2ns instead of tree depth.",
+      "Calculates depth correctly but miscalculates multiplication."
+    ],
+    "misconceptions": [
+      "Assuming delay is the sum of all 15 multiplexer delays ($30\\text{ns}$).",
+      "Assuming delay is independent of tree depth."
+    ],
+    "probes": [
+      "How does the delay change if you use a single-stage 16-to-1 multiplexer IC instead?",
+      "What is the select-to-output versus data-to-output delay distinction?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-028",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a circuit using an 8-to-1 multiplexer to implement a 4-variable function F(A,B,C,D) where select lines are connected to A, B, C. What must be applied to data input D_5 if F = sum of minterms m(2, 5, 10, 13)?",
+    "level": "Experienced",
+    "answerKey": "With select lines $S_2 S_1 S_0 = ABC$, input $D_5$ corresponds to minterms where $ABC = 101$ (binary 5), which are minterms 1010 ($m_{10}$) and 1011 ($m_{11}$). Checking the function $F = \\sum m(2, 5, 10, 13)$, minterm 10 is present, but minterm 11 is not. Evaluating for $D$: when $D=0$, minterm 10 is present ($ABC\\cdot D' = 1010$). When $D=1$, minterm 11 is absent. Thus $D_5 = D'$.",
+    "essentialFacts": [
+      "Data input $D_5$ corresponds to minterms $m_{10}$ and $m_{11}$ ($ABC = 101$).",
+      "Evaluate function presence for $D=0$ ($m_{10}$) and $D=1$ ($m_{11}$).",
+      "Since $m_{10}$ is in $F$ and $m_{11}$ is not, $D_5 = D'$."
+    ],
+    "acceptableAlternatives": [
+      "$D$ inverted",
+      "active-low $D$"
+    ],
+    "partialCredit": [
+      "Identifies correct minterms for $D_5$ ($10, 11$) but incorrectly evaluates $D$ dependency.",
+      "Sets $D_5$ to a constant instead of a function of $D$."
+    ],
+    "misconceptions": [
+      "Assuming $D_5$ only corresponds to decimal minterm 5.",
+      "Ignoring the fourth variable $D$ entirely."
+    ],
+    "probes": [
+      "What would $D_5$ be if both minterm 10 and 11 were included in $F$?",
+      "How do you handle the remaining variables when implementing functions with more variables than select lines?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-029",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a Verilog always block, an incomplete case statement assigning a signal without a default branch or prior assignment synthesizes what hardware structure, and why does this risk a combinational loop or latch?",
+    "level": "Experienced",
+    "answerKey": "It synthesizes a transparent latch (or level-sensitive storage element) formed by implicit feedback because the output must retain its previous value when none of the case items match. This risks latch inference, unintended memory, and timing closure issues.",
+    "essentialFacts": [
+      "Incomplete assignments in combinational blocks infer latches.",
+      "Latches maintain state using internal feedback loops.",
+      "Synthesis tools warn about inferred latches due to potential race conditions."
+    ],
+    "acceptableAlternatives": [
+      "A transparent latch",
+      "Level-sensitive latch with feedback"
+    ],
+    "partialCredit": [
+      "Identifies latch inference but misexplains the feedback mechanism.",
+      "Mentions syntax error instead of hardware synthesis consequence."
+    ],
+    "misconceptions": [
+      "Assuming incomplete case statements default to 0 or 1 in synthesis.",
+      "Believing Verilog case statements without defaults create combinational multiplexers without memory."
+    ],
+    "probes": [
+      "How do you fix an incomplete case statement to ensure pure combinational logic?",
+      "What Yosys or Verilator warning flags report inferred latches?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-030",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do you implement the Boolean function F(A,B,C) = \\Pi M(1, 3, 6) using a 3-to-8 active-low decoder and a single external logic gate? State the gate type and connected pins.",
+    "level": "Entry level",
+    "answerKey": "A Product-of-Sums (POS) function represented by maxterms can be implemented using an active-low decoder whose outputs represent maxterms. Connect decoder outputs $Y_1$, $Y_3$, and $Y_6$ to an AND gate because active-low maxterm outputs ($Y_i = 0$ when active) combined via an AND gate implement the logical product of maxterms ($\\Pi M$). Specifically: an AND gate connected to pins $Y_1, Y_3, Y_6$.",
+    "essentialFacts": [
+      "Decoder active-low outputs naturally correspond to maxterms $M_i$.",
+      "Product-of-Sums requires combining maxterm conditions to produce 0 when any specified maxterm occurs.",
+      "Connecting active-low maxterm outputs to an AND gate implements $\\Pi M$."
+    ],
+    "acceptableAlternatives": [
+      "An AND gate connected to $Y_1, Y_3, Y_6$."
+    ],
+    "partialCredit": [
+      "Identifies the correct maxterm output lines ($Y_1, Y_3, Y_6$) but specifies an OR gate instead of an AND gate.",
+      "Uses correct gate but wrong output pins."
+    ],
+    "misconceptions": [
+      "Using an OR gate for Product-of-Sums implementation when decoder outputs are active-low.",
+      "Treating decoder outputs as minterms instead of maxterms."
+    ],
+    "probes": [
+      "How would implementation differ if the decoder had active-high outputs?",
+      "Why does a decoder naturally generate minterms or maxterms?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-031",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare the hardware area and critical path delay of implementing an arbitrary N-variable Boolean function using a 2^N-to-1 multiplexer versus a 2^N-to-1 decoder followed by an OR gate tree.",
+    "level": "Experienced",
+    "answerKey": "A $2^N$-to-1 multiplexer uses select lines for all $N$ variables and data inputs tied to constants 0 or 1, resulting in a transmission gate / mux tree structure with area proportional to $2^N$ and delay proportional to $N$ levels of logic. A $2^N$-to-1 decoder followed by an OR gate tree also scales exponentially in area ($2^N$ decoder outputs and a large $2^N$-input OR gate tree), but typically suffers from significantly worse critical path delay due to the massive fan-in OR gate tree requiring multi-level buffering.",
+    "essentialFacts": [
+      "$2^N$-to-1 Mux scales in complexity based on select configuration with predictable mux-tree delay ($O(N)$).",
+      "$2^N$ decoder + OR tree scales exponentially in hardware area ($O(2^N)$).",
+      "Critical path delay for the decoder approach is dominated by the large fan-in OR gate tree."
+    ],
+    "acceptableAlternatives": [
+      "Decoder approach has exponential area and worse OR-tree delay; Mux approach is more compact."
+    ],
+    "partialCredit": [
+      "Compares area correctly but misses the critical path delay trade-off.",
+      "Assumes decoder approach is faster without considering OR gate tree delay."
+    ],
+    "misconceptions": [
+      "Assuming decoders are always more compact than multiplexers.",
+      "Ignoring the delay of the OR gate tree in decoder-based implementations."
+    ],
+    "probes": [
+      "At what value of $N$ does the decoder + OR gate approach become completely impractical?",
+      "How does programmable logic (like LUTs in FPGAs) relate to this multiplexer vs decoder comparison?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-032",
+    "track": "digital-logic",
+    "competency": "multiplexers and decoders",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a 4-to-2 priority encoder where input D_3 has the highest priority and D_0 the lowest, what are the output binary values Y_1 Y_0 and the valid signal V if inputs are D_3 D_2 D_1 D_0 = 0110?",
+    "level": "Internship",
+    "answerKey": "Y1 Y0 = 10, V = 1 Priority encoder selects the highest index active input. Input D2 = 1 is the highest active bit since D3 = 0. Index 2 corresponds to binary output 10. Valid signal V = 1 because at least one input is active.",
+    "essentialFacts": [
+      "Priority encoder selects the highest index active input.",
+      "Input D2 = 1 is the highest active bit since D3 = 0.",
+      "Index 2 corresponds to binary output 10.",
+      "Valid signal V = 1 because at least one input is active."
+    ],
+    "acceptableAlternatives": [
+      "Y1=1, Y0=0, V=1"
+    ],
+    "partialCredit": [
+      "1.0 for fully correct outputs and valid flag. 0.5 if outputs are correct but valid flag is wrong. 0.0 otherwise."
+    ],
+    "misconceptions": [
+      "Assuming D0 or lowest index has priority.",
+      "Forgetting that V indicates any active input regardless of which one."
+    ],
+    "probes": [
+      "What would Y1 Y0 and V become if D3 also became 1?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-033",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 4-to-2 priority encoder with inputs D_3, D_2, D_1, D_0 (D_3 highest priority), write the simplified Boolean expression for output Y_1 in terms of the inputs.",
+    "level": "Internship",
+    "answerKey": "Y1 = D3 + D2 Y1 is asserted when either D3 or D2 is active, with D3 taking precedence. When D3 = 1, Y1 = 1 regardless of other inputs. When D3 = 0 and D2 = 1, Y1 = 1. Simplified SOP expression is D3 + D2.",
+    "essentialFacts": [
+      "Y1 is asserted when either D3 or D2 is active, with D3 taking precedence.",
+      "When D3 = 1, Y1 = 1 regardless of other inputs.",
+      "When D3 = 0 and D2 = 1, Y1 = 1.",
+      "Simplified SOP expression is D3 + D2."
+    ],
+    "acceptableAlternatives": [
+      "D3 | D2",
+      "D3 \\lor D2"
+    ],
+    "partialCredit": [
+      "1.0 for minimized expression D3 + D2. 0.5 for unminified SOP expression like D3 + D3'D2. 0.0 for incorrect minterms."
+    ],
+    "misconceptions": [
+      "Including D1 or D0 in the expression for Y1.",
+      "Treating priority encoder outputs as standard binary encoder without priority masking."
+    ],
+    "probes": [
+      "How does the expression change for Y0 of the same 4-to-2 encoder?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-034",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do you combine two 8-to-3 priority encoders to build a 16-to-4 priority encoder using an external 2-to-1 multiplexer or OR gate for the highest bit?",
+    "level": "Entry level",
+    "answerKey": "Connect inputs 0-7 to lower encoder and 8-15 to upper encoder. Use the valid output of the upper encoder to drive the MSB (Y3) of the 16-to-4 output and as the select line for a 2-to-1 multiplexer that selects between the lower and upper 3-bit outputs.",
+    "essentialFacts": [
+      "Split 16 inputs into two 8-input blocks (lower and upper).",
+      "Upper encoder valid output indicates if any input from 8-15 is active.",
+      "Use upper valid signal to select via mux between lower and upper encoder 3-bit outputs.",
+      "The MSB (Y3) is directly driven by the upper encoder's valid signal."
+    ],
+    "acceptableAlternatives": [
+      "Use an OR gate of all upper inputs to drive MSB and mux select."
+    ],
+    "partialCredit": [
+      "1.0 for complete cascade design with mux and MSB generation. 0.5 for correct block partitioning but missing mux selection logic. 0.0 otherwise."
+    ],
+    "misconceptions": [
+      "Connecting encoders directly without multiplexing lower/upper outputs.",
+      "Using standard decoders instead of priority encoders."
+    ],
+    "probes": [
+      "What happens if inputs from both lower and upper halves are active simultaneously?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-035",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given an 8-bit input vector `din`, write a Verilog procedural `always` block implementing an 8-to-3 priority encoder where bit 7 has highest priority.",
+    "level": "Entry level",
+    "answerKey": "always @(*) begin if (din[7]) out = 3'd7; else if (din[6]) out = 3'd6; else if (din[5]) out = 3'd5; else if (din[4]) out = 3'd4; else if (din[3]) out = 3'd3; else if (din[2]) out = 3'd2; else if (din[1]) out = 3'd1; else out = 3'd0; end",
+    "essentialFacts": [
+      "Procedural always @(*) block models combinational logic.",
+      "If-else chain evaluates from MSB (din[7]) down to LSB (din[0]) to establish priority.",
+      "A final else or default assignment ensures all branches are covered to prevent latch inference."
+    ],
+    "acceptableAlternatives": [
+      "Using casex or casez with wildcards."
+    ],
+    "partialCredit": [
+      "1.0 for correct if-else chain or casez construct covering all bits. 0.5 for correct priority logic but missing default assignment. 0.0 for incorrect syntax or inverted priority."
+    ],
+    "misconceptions": [
+      "Assuming parallel case statements provide priority ordering.",
+      "Omitting the final else branch in combinational always blocks."
+    ],
+    "probes": [
+      "How would you modify this code to also output a valid signal v?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "yosys"
+    ],
+    "id": "digital-logic-036",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does an incomplete `casez` statement in a Verilog priority encoder without a default branch risk inferring unintended transparent latches during synthesis?",
+    "level": "Entry level",
+    "answerKey": "Incomplete assignments in combinational blocks cause synthesis tools to infer storage elements (latches) to hold the output value stable when unassigned conditions occur.",
+    "essentialFacts": [
+      "Combinational logic requires every input combination to map to an output.",
+      "Missing branches in casez mean certain input states leave outputs unassigned.",
+      "Synthesis tools infer transparent latches to preserve previous state during unassigned periods."
+    ],
+    "acceptableAlternatives": [
+      "Synthesizer infers a latch because output value must be remembered when cases don't match."
+    ],
+    "partialCredit": [
+      "1.0 for explaining latch inference due to unassigned states. 0.5 for mentioning synthesis warning without explaining storage retention. 0.0 for incorrect explanations."
+    ],
+    "misconceptions": [
+      "Believing casez statements automatically default to zero.",
+      "Thinking latches are purely combinatorial."
+    ],
+    "probes": [
+      "How do you fix an incomplete casez block to guarantee pure combinational logic?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-037",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If an N-input priority encoder is implemented using a tree of smaller priority blocks, how does the worst-case propagation delay scale with N, and what limits deeper cascading?",
+    "level": "Experienced",
+    "answerKey": "Propagation delay scales logarithmically O(log_k N) with tree depth. Cascading is limited by the cumulative propagation delay of valid/enable propagation signals rippling through tree levels.",
+    "essentialFacts": [
+      "Tree architectures reduce depth from linear O(N) to logarithmic O(log N).",
+      "Valid and enable signals must propagate through each hierarchical level, adding combinational delay.",
+      "Excessive tree depth risks violating clock cycle timing constraints in synchronous systems."
+    ],
+    "acceptableAlternatives": [
+      "Delay grows as O(log N) due to tree structure, limited by valid signal propagation."
+    ],
+    "partialCredit": [
+      "1.0 for logarithmic scaling analysis and identifying valid/enable propagation limits. 0.5 for identifying O(log N) without explaining cascading bottlenecks. 0.0 otherwise."
+    ],
+    "misconceptions": [
+      "Assuming delay remains constant regardless of N.",
+      "Ignoring enable/valid ripple delay in hierarchical blocks."
+    ],
+    "probes": [
+      "How does pipelining affect the maximum throughput of a deeply cascaded priority encoder tree?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-038",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how dynamic hazards can occur in gate-level implementations of priority encoders when transitioning between adjacent active inputs, and how output registering mitigates downstream glitches.",
+    "level": "Experienced",
+    "answerKey": "Dynamic hazards occur when input transitions cross Karnaugh boundaries where product terms briefly drop out before new ones assert, creating transient glitches. Registering outputs samples signals after transients settle.",
+    "essentialFacts": [
+      "Gate-level SOP implementations can produce zero-glitches during certain input changes due to non-adjacent K-map transitions.",
+      "Combinational glitches can cause setup/hold violations or false clocking in downstream logic.",
+      "Placing registers on encoder outputs ensures downstream circuits only sample stable, synchronized values."
+    ],
+    "acceptableAlternatives": [
+      "Glitches happen during input transitions across product terms; registers filter them out."
+    ],
+    "partialCredit": [
+      "1.0 for explaining hazard mechanism and output register filtering. 0.5 for identifying glitches without explaining the circuit cause. 0.0 for unrelated answers."
+    ],
+    "misconceptions": [
+      "Assuming combinational logic is immune to hazards during multi-bit input changes.",
+      "Believing synchronization eliminates internal gate glitches."
+    ],
+    "probes": [
+      "Can you add redundant consensus terms to eliminate static hazards in a priority encoder?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-039",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do Verilator or synthesis linters detect unintentional priority logic when parallel `case` statements are used instead of priority `case`?",
+    "level": "Experienced",
+    "answerKey": "Linters check for overlapping case item expressions or missing default clauses. If clauses overlap in a parallel case statement, linters flag potential simulation-synthesis mismatches or unintended priority inference.",
+    "essentialFacts": [
+      "Standard case assumes mutually exclusive parallel branches, unlike priority case (casex/casez or if-else).",
+      "Linters analyze item expressions for overlap and coverage.",
+      "Overlapping cases without priority intent trigger warnings to prevent synthesis divergence."
+    ],
+    "acceptableAlternatives": [
+      "Linters detect overlapping patterns in parallel case statements and warn about priority divergence."
+    ],
+    "partialCredit": [
+      "1.0 for explaining linter checks on overlapping expressions and simulation-synthesis divergence. 0.5 for mentioning linter warnings without detailing overlap detection. 0.0 otherwise."
+    ],
+    "misconceptions": [
+      "Assuming Verilator treats all case statements as priority encoders.",
+      "Believing synthesis tools automatically resolve overlapping cases without warnings."
+    ],
+    "probes": [
+      "What is the difference in synthesis behavior between case and casex when overlapping inputs occur?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "digital-logic-040",
+    "track": "digital-logic",
+    "competency": "encoders and priority logic",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Using 4-bit two's complement representation, what is isothermal result of adding 0101 and 0110, and does an overflow occur? Explain why.",
+    "level": "Internship",
+    "answerKey": "The decimal result is -5 (binary 1011). 5 + 6 = 11, which exceeds the 4-bit signed range [-8, 7]. Overflow occurs because two positive numbers produce a negative sign bit.",
+    "essentialFacts": [
+      "0101 equals +5 and 0110 equals +6 in two's complement.",
+      "The raw bit sum is 1011, representing -5 due to sign bit wrap-around.",
+      "Adding two positive operands resulting in a negative sign bit is the classic definition of signed overflow."
+    ],
+    "acceptableAlternatives": [
+      "Explaining overflow via carry-in versus carry-out inequality at the most significant bit (C_in != C_out)."
+    ],
+    "partialCredit": [
+      "Correctly calculating the decimal sum without identifying the overflow condition.",
+      "Recognizing overflow occurred but incorrectly stating the decimal value."
+    ],
+    "misconceptions": [
+      "Believing overflow only occurs when the result exceeds unsigned limits (15).",
+      "Assuming any carry out of a 4-bit adder indicates overflow in signed arithmetic."
+    ],
+    "probes": [
+      "How would your answer change if the operands were treated as unsigned 4-bit integers instead?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-041",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For 8-bit unsigned binary numbers, subtract 00010010 (18) from 00000101 (5) using two's complement arithmetic. What is the resulting 8-bit hex value and the borrow status?",
+    "level": "Internship",
+    "answerKey": "5 - 18 = -13. In 8-bit two's complement: 18 is 00010010, inverted is 11101101, +1 = 11101110. Adding 00000101 + 11101110 gives 11110011 (0xF3). Carry-out is 0, indicating an unsigned borrow.",
+    "essentialFacts": [
+      "Two's complement negation of 18 is 11101110.",
+      "Summing 5 and -18 produces 11110011, which is 0xF3.",
+      "A zero carry-out (C_out = 0) signifies an unsigned borrow or underflow."
+    ],
+    "acceptableAlternatives": [
+      "Stating -13 in hex (0xF3) and explaining the borrow via inverted carry-out logic."
+    ],
+    "partialCredit": [
+      "Correct two's complement negation but an arithmetic addition error.",
+      "Correct decimal result (-13) without the hex representation."
+    ],
+    "misconceptions": [
+      "Confusing unsigned borrow conditions with signed overflow detection.",
+      "Assuming subtraction cannot yield high-bit set values in unsigned arithmetic."
+    ],
+    "probes": [
+      "How would this calculation differ if the operands were signed 8-bit integers instead?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "digital-logic-042",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 5-bit ripple-carry adder, add 10111 (-9) and 11010 (-6). What is the 5-bit sum, and how do the carry bits into and out of the MSB confirm overflow status?",
+    "level": "Entry level",
+    "answerKey": "10111 (-9) + 11010 (-6) = 10001 (-15). The carry-in to the MSB is 1 and the carry-out is 1. Since C_in = C_out = 1, XOR is 0, confirming no overflow.",
+    "essentialFacts": [
+      "The 5-bit two's complement sum is 10001, representing -15.",
+      "Carry-in to the MSB is 1 and carry-out from the MSB is 1.",
+      "Equality between C_in and C_out proves the result fits within the 5-bit signed range [-16, 15]."
+    ],
+    "acceptableAlternatives": [
+      "Verifying via decimal addition (-9 + -6 = -15) which falls within valid 5-bit signed limits."
+    ],
+    "partialCredit": [
+      "Correct sum calculation but incorrect overflow conclusion.",
+      "Correct application of the C_in XOR C_out rule with minor arithmetic errors."
+    ],
+    "misconceptions": [
+      "Assuming adding two negative numbers always causes signed overflow.",
+      "Confusing bit-width limits of signed versus unsigned systems."
+    ],
+    "probes": [
+      "What would happen if you added one more to this result (-15 + -1)?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-043",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A Verilog expression `wire [3:0] sum = a + b;` uses 4-bit operands where a = 4'b1100 (-4) and b = 4'b1100 (-4). What is the synthesized width of the addition and the value of sum?",
+    "level": "Entry level",
+    "answerKey": "The addition width in Verilog self-determined contexts matches the max operand width, which is 4 bits. -4 + -4 = -8, which truncates to 4 bits yielding 4'b1000 (-8).",
+    "essentialFacts": [
+      "Verilog expression sizing rules dictate that the addition is evaluated at 4 bits wide.",
+      "The mathematical sum is -8 (binary 10000), but the 5th bit is truncated.",
+      "The assigned value of `sum` is 4'b1000."
+    ],
+    "acceptableAlternatives": [
+      "Explaining self-determined expression sizing rules per the Verilog IEEE standard."
+    ],
+    "partialCredit": [
+      "Recognizing 4-bit truncation occurs but missing the resulting decimal value.",
+      "Correctly calculating -8 without referencing Verilog bit-width self-determination rules."
+    ],
+    "misconceptions": [
+      "Believing Verilog automatically extends addition bit-width to prevent overflow."
+    ],
+    "probes": [
+      "How would you modify the assignment to preserve the carry bit without truncation?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "hdlbits"
+    ],
+    "id": "digital-logic-044",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a hardware overflow detection circuit for a 4-bit unsigned adder generating sum bits S3:0 and carry-out Cout. Write the Boolean expression for the unsigned overflow flag.",
+    "level": "Entry level",
+    "answerKey": "For unsigned addition, overflow occurs strictly when there is a carry-out from the most significant bit. Thus, the overflow expression is simply Overflow = Cout.",
+    "essentialFacts": [
+      "Unsigned overflow is identical to the carry-out (C_out) of the MSB adder stage.",
+      "No complex XOR gate combinations of internal carries are required for unsigned overflow.",
+      "Exceeding the maximum unsigned value (15) directly asserts C_out."
+    ],
+    "acceptableAlternatives": [
+      "Specifying C_out directly or referencing the 9th bit of a widened addition."
+    ],
+    "partialCredit": [
+      "Using the signed overflow formula (C_in XOR C_out) instead of unsigned logic.",
+      "Stating C_out without explaining why unsigned arithmetic relies on carry-out."
+    ],
+    "misconceptions": [
+      "Confusing signed overflow logic (C_in XOR C_out) with unsigned overflow logic (C_out)."
+    ],
+    "probes": [
+      "How does the required overflow logic change if the operands are treated as signed two's complement numbers?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-045",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a pipelined 32-bit floating-point adder, what specific condition triggers exponent overflow, and how does IEEE 754 handle it compared to invalid operations (NaN)?",
+    "level": "Experienced",
+    "answerKey": "Exponent overflow occurs when the biased exponent sum exceeds the maximum representable value (255) with a non-zero fraction. IEEE 754 produces signed Infinity, whereas NaN results from invalid operations like 0 * infinity.",
+    "essentialFacts": [
+      "Overflow occurs when the exponent reaches its maximum value with a valid fraction.",
+      "The standard requires outputting a signed Infinity rather than truncating.",
+      "NaN represents indeterminate forms, whereas overflow represents valid magnitude exceedance."
+    ],
+    "acceptableAlternatives": [
+      "Referencing biased exponent value 255 and signaling versus quiet NaN distinctions."
+    ],
+    "partialCredit": [
+      "Mentioning exponent limits but confusing Infinity output with NaN generation.",
+      "Describing IEEE 754 format structure without addressing the overflow trigger condition."
+    ],
+    "misconceptions": [
+      "Believing any exponent overflow automatically results in a NaN.",
+      "Confusing mantissa rounding overflow with exponent overflow."
+    ],
+    "probes": [
+      "How does post-normalization rounding affect whether a near-overflow value actually triggers an infinity?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-046",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A synthesis tool issues a lint warning for potential truncation during `wire [7:0] p = signed(a) * signed(b);` where a and b are 8-bit. What is the full product width, and what causes the warning?",
+    "level": "Experienced",
+    "answerKey": "Multiplying two 8-bit signed numbers yields a 16-bit product. The warning occurs because the 16-bit result is implicitly truncated and assigned to an 8-bit wire, discarding upper bits and risking severe overflow.",
+    "essentialFacts": [
+      "The full mathematical product width of two N-bit numbers is 2N (16 bits).",
+      "Assignment to an 8-bit wire `p` causes high-order bit truncation.",
+      "Linters flag this mismatch due to potential catastrophic overflow and loss of sign/magnitude data."
+    ],
+    "acceptableAlternatives": [
+      "Describing bit-width mismatch and loss of upper product bits in signed multiplication."
+    ],
+    "partialCredit": [
+      "Identifying the 16-bit product width but missing why the linter flags the assignment.",
+      "Noting truncation without specifying signed multiplication expansion rules."
+    ],
+    "misconceptions": [
+      "Assuming multiplication of two 8-bit numbers always fits in 8 bits if inputs are small.",
+      "Thinking the `$signed()` system function automatically expands destination wire widths."
+    ],
+    "probes": [
+      "How would you rewrite the Verilog code to capture the full product without truncation warnings?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "digital-logic-047",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how saturating arithmetic differs from standard wrapping arithmetic during an overflow in an 8-bit signed adder. What hardware logic modifications are needed to implement saturation?",
+    "level": "Experienced",
+    "answerKey": "Wrapping arithmetic modulo wraps around boundaries, whereas saturating arithmetic clamps results at max limits (0x7F or 0x80). Hardware requires detecting signed overflow and multiplexing adder outputs with clamping constants based on sign.",
+    "essentialFacts": [
+      "Wrapping arithmetic wraps around modulo; saturating arithmetic clamps at extremes (0x7F or 0x80).",
+      "Saturation requires signed overflow detection (C_in XOR C_out).",
+      "Implementation uses multiplexers controlled by overflow and sign bits to select clamping constants."
+    ],
+    "acceptableAlternatives": [
+      "Describing clamping logic using conditional blocks or explicit mux trees driven by overflow flags."
+    ],
+    "partialCredit": [
+      "Explaining the behavioral difference without detailing the required hardware multiplexing and overflow detection logic."
+    ],
+    "misconceptions": [
+      "Assuming saturating arithmetic requires extra bits inside the core ripple-carry adder datapath rather than output clamping."
+    ],
+    "probes": [
+      "How does saturation logic impact critical path delay in a high-speed digital signal processing datapath?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-048",
+    "track": "digital-logic",
+    "competency": "binary arithmetic and overflow",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain the core difference in transparency between a positive-level D latch and a positive edge-triggered D flip-flop when the data input changes while the clock is high.",
+    "level": "Internship",
+    "answerKey": "A D latch is transparent while the clock is high, so changes on D immediately propagate to Q. A D flip-flop samples D only on the rising clock edge; changes while clock is high are ignored by Q.",
+    "essentialFacts": [
+      "D latch passes input to output continuously while clock is high.",
+      "D flip-flop samples input only on the active clock edge.",
+      "Latch is level-sensitive; flip-flop is edge-sensitive."
+    ],
+    "acceptableAlternatives": [
+      "Latches are level-sensitive and follow input changes during the enable window, whereas edge-triggered flip-flops store the input state strictly at the clock transition."
+    ],
+    "partialCredit": [
+      "Mentions level vs edge sensitivity without explaining output behavior.",
+      "Confuses latch transparency window with propagation delay."
+    ],
+    "misconceptions": [
+      "Believing a D flip-flop is just a fast latch.",
+      "Assuming latches sample on clock edges."
+    ],
+    "probes": [
+      "What happens to Q in a D latch if D changes three times while the clock is high?",
+      "How does this affect combinational feedback loops involving latches?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-049",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What does the setup time parameter of an edge-triggered D flip-flop specify regarding the data input relative to the active clock edge, and what fails if it is violated?",
+    "level": "Internship",
+    "answerKey": "Setup time specifies the minimum duration that the data input must remain stable before the active clock edge. If violated, the flip-flop may enter a metastable state, resulting in unpredictable output or capture failure.",
+    "essentialFacts": [
+      "Setup time is the minimum pre-clock stability window.",
+      "Violation can cause metastability or incorrect data capture."
+    ],
+    "acceptableAlternatives": [
+      "It is the required time data must be held steady prior to the clock edge; violation risks metastability."
+    ],
+    "partialCredit": [
+      "Mentions pre-clock time but omits the consequence of failure (metastability).",
+      "Confuses setup time with hold time."
+    ],
+    "misconceptions": [
+      "Thinking setup time applies after the clock edge.",
+      "Assuming data can change right at the clock edge without penalty."
+    ],
+    "probes": [
+      "How does combinational logic delay impact the setup time constraint in a synchronous path?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-050",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If a clock signal arrives 0.5ns later at the destination flip-flop than the source flip-flop (positive clock skew), does this help or hurt meeting the hold time requirement? Explain briefly.",
+    "level": "Entry level",
+    "answerKey": "Positive clock skew helps meet the hold time requirement because the destination flip-flop's clock edge is delayed by 0.5ns, giving the data more time (an extra 0.5ns window) to change without violating the minimum hold requirement.",
+    "essentialFacts": [
+      "Positive clock skew adds margin to the hold constraint.",
+      "Hold time requires data to remain stable for a minimum window after the clock edge.",
+      "Delayed destination clock edge relaxes hold constraints."
+    ],
+    "acceptableAlternatives": [
+      "It helps hold time because the destination capture edge happens later, providing extra margin before data can change."
+    ],
+    "partialCredit": [
+      "States 'helps' or 'hurts' correctly but provides incorrect physical reasoning about the capture edge.",
+      "Confuses setup and hold skew impacts."
+    ],
+    "misconceptions": [
+      "Believing clock skew only affects setup time.",
+      "Assuming positive skew always benefits all timing constraints equally."
+    ],
+    "probes": [
+      "How does that same positive clock skew affect the setup time margin for the same path?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-051",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does a single-stage flip-flop synchronizer fail to eliminate metastability when crossing asynchronous clock domains, and how does adding a second flip-flop in series reduce the failure rate?",
+    "level": "Entry level",
+    "answerKey": "A single flip-flop can output a metastable voltage that violates downstream setup/hold times. Adding a second flip-flop provides an additional full clock cycle for the metastable state to resolve to a stable 0 or 1 before downstream logic samples it.",
+    "essentialFacts": [
+      "Single stage can pass metastable states to logic.",
+      "Second stage provides resolution time (MTBF improvement).",
+      "Metastability cannot be completely eliminated, only its probability reduced."
+    ],
+    "acceptableAlternatives": [
+      "A single stage doesn't guarantee enough resolution time; a second stage gives another full clock period to settle to a valid logic level."
+    ],
+    "partialCredit": [
+      "Mentions reducing error rate without explaining the resolution time provided by the second stage.",
+      "Claims the second stage removes metastability entirely."
+    ],
+    "misconceptions": [
+      "Thinking two stages completely eliminate metastability mathematically.",
+      "Assuming synchronizers prevent all synchronization errors regardless of clock frequency ratio."
+    ],
+    "probes": [
+      "What happens to the latency of the signal when you add a second synchronizer stage?",
+      "Can you use a 3-stage synchronizer for ultra-high reliability?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-052",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A path has combinational delay T_comb = 3.2ns, flip-flop clock-to-Q delay T_cq = 0.5ns, and setup time T_setup = 0.4ns. With zero clock skew, what is the maximum clock frequency?",
+    "level": "Experienced",
+    "answerKey": "Minimum clock period T_min = T_cq + T_comb + T_setup = 0.5 + 3.2 + 0.4 = 4.1ns. Maximum frequency f_max = 1 / T_min = 1 / 4.1ns approx 243.9 MHz.",
+    "essentialFacts": [
+      "T_min = T_cq + T_comb + T_setup.",
+      "Calculation yields 4.1ns.",
+      "f_max = 1 / T_min approx 243.9 MHz."
+    ],
+    "acceptableAlternatives": [
+      "4.1ns period, corresponding to 243.9 MHz (or 244 MHz)."
+    ],
+    "partialCredit": [
+      "Calculates 4.1ns period correctly but forgets to compute the frequency.",
+      "Omits one of the delay components (e.g., forgetting T_cq or T_setup)."
+    ],
+    "misconceptions": [
+      "Including hold time in the maximum clock frequency calculation.",
+      "Subtracting delays instead of summing them."
+    ],
+    "probes": [
+      "How would a clock skew of +0.3ns change this maximum frequency calculation?",
+      "What if there was a negative setup time?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-053",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a flip-flop with an asynchronous active-low reset, what timing parameter must be met when the reset signal is deasserted relative to the active clock edge to prevent metastability?",
+    "level": "Experienced",
+    "answerKey": "The recovery time (T_rec) must be met, which specifies the minimum time the asynchronous reset signal must remain inactive (deasserted) before the active clock edge.",
+    "essentialFacts": [
+      "Recovery time specifies pre-clock timing for asynchronous control deassertion.",
+      "Violation during deassertion leads to reset metastability.",
+      "Distinct from removal time (post-clock timing)."
+    ],
+    "acceptableAlternatives": [
+      "Recovery time; it defines how long before the clock edge the reset release must occur."
+    ],
+    "partialCredit": [
+      "Identifies it as a reset timing parameter but confuses recovery time with removal time.",
+      "Mentions setup time (setup applies to synchronous data, recovery to asynchronous control)."
+    ],
+    "misconceptions": [
+      "Believing asynchronous resets never have timing constraints.",
+      "Confusing recovery time with propagation delay."
+    ],
+    "probes": [
+      "What is the counterpart parameter for when reset is asserted after the clock edge?",
+      "Why are asynchronous resets commonly synchronized internally or wrapped in synchronous deassertion circuits?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-054",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a Verilog always @(*) block, if a variable is assigned in some branches of an if-else statement but omitted in others, what hardware storage element does Yosys infer?",
+    "level": "Experienced",
+    "answerKey": "Yosys infers a transparent latch because incomplete combinational assignments require the previous state to be held when the condition is false, creating internal storage.",
+    "essentialFacts": [
+      "Incomplete assignments in combinational always blocks infer latches.",
+      "Latches maintain state when conditions are unassigned.",
+      "Synthesizers like Yosys/Verilator issue warnings for unintentional latch inference."
+    ],
+    "acceptableAlternatives": [
+      "A transparent latch is inferred to hold the previous value across unassigned branches."
+    ],
+    "partialCredit": [
+      "Mentions storage or memory without specifying a transparent latch.",
+      "States that a flip-flop is inferred."
+    ],
+    "misconceptions": [
+      "Assuming synthesis tools automatically default unassigned signals to zero or previous state without hardware.",
+      "Believing always @(*) blocks can never infer sequential elements."
+    ],
+    "probes": [
+      "How do you modify the Verilog code to prevent this latch inference?",
+      "What lint tool warning does Verilator typically emit for this case?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-055",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does a master-slave D flip-flop constructed from two gated D latches prevent transparency from input to output during a single clock pulse?",
+    "level": "Entry level",
+    "answerKey": "The master latch is enabled when the clock is low (capturing input), while the slave latch is enabled when the clock is high. Because their enables are inverted via an inverter, they are never both transparent simultaneously.",
+    "essentialFacts": [
+      "Uses two latches with complementary enable signals (clock inversion).",
+      "Master samples when clock is low; slave updates when clock is high.",
+      "Prevents transparent flow from input to output in one cycle."
+    ],
+    "acceptableAlternatives": [
+      "One latch is active when clock is low and the other when clock is high, ensuring data passes through only on complementary clock phases."
+    ],
+    "partialCredit": [
+      "Mentions two latches are used but fails to explain the complementary clock/enable control.",
+      "Confuses master and slave transparency phases."
+    ],
+    "misconceptions": [
+      "Thinking both latches are transparent at the same time.",
+      "Assuming a master-slave arrangement behaves identically to a single level-sensitive latch."
+    ],
+    "probes": [
+      "What is the main disadvantage of a standard master-slave latch design regarding clock pulse width?",
+      "How does an edge-triggered flip-flop improve upon master-slave designs?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-056",
+    "track": "digital-logic",
+    "competency": "latches and flip flops",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 4-bit ripple counter, each flip-flop's clock-to-Q propagation delay is 10ns. What is the maximum total propagation delay from the active clock edge to the final output bit Q3?",
+    "level": "Internship",
+    "answerKey": "40ns. Since each flip-flop triggers the next sequentially in a ripple counter (Q0 triggers Q1, Q1 triggers Q2, Q2 triggers Q3), the total propagation delay is cumulative across all 4 stages: 4 * 10ns = 40ns.",
+    "essentialFacts": [
+      "Ripple counters cascade the output of one flip-flop to clock the next stage.",
+      "Propagation delay accumulates across each cascaded stage (N * T_cq).",
+      "For 4 stages with 10ns delay each, total delay is 40ns."
+    ],
+    "acceptableAlternatives": [
+      "40 nanoseconds",
+      "40 ns"
+    ],
+    "partialCredit": [
+      "Mentions cumulative cascading delay but miscalculates the multiplication.",
+      "States 30ns by assuming 3 propagation intervals instead of 4."
+    ],
+    "misconceptions": [
+      "Believing ripple counters update all output bits simultaneously like synchronous counters.",
+      "Assuming the total delay is equal to a single flip-flop delay (10ns)."
+    ],
+    "probes": [
+      "How does a synchronous counter differ from a ripple counter regarding clock distribution and propagation delay?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-057",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A synchronous 3-bit binary counter has an active-high synchronous reset and counts from 000 to 101 (6 states). What is the next state after 101?",
+    "level": "Internship",
+    "answerKey": "110. Since it is a standard binary counter incrementing sequentially up to 101 (decimal 5), the next binary count is 110 (decimal 6) unless explicit modulus truncation logic forces a reset at 101.",
+    "essentialFacts": [
+      "Standard binary counters increment sequentially following binary arithmetic.",
+      "The count following 101 binary (5) is 110 binary (6).",
+      "Synchronous reset only takes effect on the clock edge when actively asserted."
+    ],
+    "acceptableAlternatives": [
+      "binary 110",
+      "6",
+      "3'b110"
+    ],
+    "partialCredit": [
+      "Identifies decimal 6 but fails to provide the binary representation.",
+      "States 000 assuming the counter automatically wraps at 101 without explicit instruction."
+    ],
+    "misconceptions": [
+      "Confusing synchronous reset with asynchronous reset behavior.",
+      "Assuming a 3-bit counter always wraps around at 111 regardless of specified state limits."
+    ],
+    "probes": [
+      "What logic changes are needed to make this counter reset immediately upon reaching 110 rather than 111?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "yosys"
+    ],
+    "id": "digital-logic-058",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a divide-by-6 frequency divider using a binary counter with a terminal count. What value must the counter reach before resetting to generate a 50% duty cycle output?",
+    "level": "Entry level",
+    "answerKey": "The counter must count from 0 to 5, meaning it reaches a terminal count of 5 (binary 101) before resetting on the next clock edge.",
+    "essentialFacts": [
+      "A divide-by-N counter requires N distinct states spanning from 0 to N-1.",
+      "For a divide-by-6 counter, the terminal count value is 5 (binary 101).",
+      "Modulus counters track state transitions using comparison logic or synchronous reset."
+    ],
+    "acceptableAlternatives": [
+      "5",
+      "binary 101",
+      "count up to 5"
+    ],
+    "partialCredit": [
+      "States 6, confusing the total number of states with the terminal count threshold.",
+      "States 3, misunderstanding the division factor calculation."
+    ],
+    "misconceptions": [
+      "Assuming the terminal count equals the divisor N rather than N-1.",
+      "Assuming any arbitrary counter automatically produces a 50% duty cycle without toggle logic."
+    ],
+    "probes": [
+      "How does generating a 50% duty cycle differ between even and odd division factors?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-059",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 4-bit Johnson counter initializes to 0000. After four clock pulses, what is its state, and how many unused states exist in its cycle?",
+    "level": "Entry level",
+    "answerKey": "The state is 1111, and there are 8 unused states. A 4-bit Johnson counter cycles through 8 valid states out of 16 total possible combinations.",
+    "essentialFacts": [
+      "An N-bit Johnson counter shifts inverted feedback into the shift register, producing 2N valid states.",
+      "Starting from 0000, 4 clock pulses shift four 1s into the register, resulting in 1111.",
+      "Total possible states for 4 bits is 16, leaving 16 - 8 = 8 unused states."
+    ],
+    "acceptableAlternatives": [
+      "1111 and 8 unused states",
+      "state 1111, 8 unused states"
+    ],
+    "partialCredit": [
+      "Correctly identifies state 1111 but miscalculates the number of unused states.",
+      "Correctly identifies 8 unused states but gets the resulting state wrong."
+    ],
+    "misconceptions": [
+      "Confusing a Johnson counter with a ring counter (which has only N states).",
+      "Assuming all 16 states are utilized in a Johnson counter."
+    ],
+    "probes": [
+      "What happens if a Johnson counter enters an unused state due to a transient hardware fault?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-060",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Verilog, a 3-bit counter is implemented as `always @(posedge clk) count <= count + 1;`. If `count` is 3'b111, what is its value on the next clock edge?",
+    "level": "Entry level",
+    "answerKey": "3'b000 (0). Due to hardware bit-width constraints, incrementing 3'b111 by 1 results in an arithmetic overflow that wraps around to zero.",
+    "essentialFacts": [
+      "Unsigned hardware arithmetic wraps around upon exceeding the maximum representable value.",
+      "A 3-bit vector stores values ranging from 0 to 7 (3'b000 to 3'b111).",
+      "Adding 1 to 3'b111 overflows and truncates the upper carry bit, resulting in 3'b000."
+    ],
+    "acceptableAlternatives": [
+      "3'b000",
+      "0",
+      "b000"
+    ],
+    "partialCredit": [
+      "States decimal 8 without accounting for 3-bit vector truncation.",
+      "States 3'b111 due to misunderstanding increment assignment behavior."
+    ],
+    "misconceptions": [
+      "Assuming Verilog automatically expands vector widths during addition inside procedural assignments.",
+      "Thinking overflow triggers a runtime error or trap instead of wrapping."
+    ],
+    "probes": [
+      "What lint warning might Verilator issue if `count` is compared against a literal wider than 3 bits?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "digital-logic-061",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "To implement a divide-by-5 frequency divider with a 50% duty cycle using a clock, why must you combine outputs triggered on both rising and falling edges of the input clock?",
+    "level": "Experienced",
+    "answerKey": "An odd integer divider cannot produce a 50% duty cycle using single-edge triggering alone because the cycle count cannot be split symmetrically. Combining rising and falling edge phase-shifted signals provides half-cycle resolution to balance high and low periods.",
+    "essentialFacts": [
+      "Odd divide-by-N counters using single-edge triggers yield asymmetric duty cycles.",
+      "Utilizing both clock edges provides half-cycle time resolution.",
+      "Combining toggle signals derived from positive and negative edge triggers achieves a true 50% duty cycle."
+    ],
+    "acceptableAlternatives": [
+      "Half-cycle resolution is needed for odd divisors",
+      "Single edge cannot split an odd number symmetrically"
+    ],
+    "partialCredit": [
+      "Explains that odd division makes duty cycles asymmetric, but fails to explain how dual-edge clocking resolves it."
+    ],
+    "misconceptions": [
+      "Believing any integer frequency divider can achieve a 50% duty cycle on a single clock edge without auxiliary logic."
+    ],
+    "probes": [
+      "How does dual-edge clocking impact static timing analysis and clock tree synthesis in ASIC design flows?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-062",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A custom linear feedback shift register (LFSR) counter enters an invalid all-zero state due to a transient fault. How do you modify its feedback logic to guarantee self-recovery?",
+    "level": "Experienced",
+    "answerKey": "Add combinational logic (such as a NOR gate detecting all-zeros) into the feedback path to force a 1 when the register is all-zero, ensuring it transitions to a valid state.",
+    "essentialFacts": [
+      "Maximal-length LFSRs skip the all-zero state, causing permanent lockout once entered.",
+      "Modifying feedback logic with additional detection gates routes the all-zero state to a valid seed.",
+      "This prevents permanent lockup caused by single-event upsets or glitch states."
+    ],
+    "acceptableAlternatives": [
+      "Add NOR gate detection to force a feedback bit",
+      "Include logic to inject a 1 when state is all zeros"
+    ],
+    "partialCredit": [
+      "Identifies that all-zero is a lockup state, but proposes using an asynchronous reset instead of modifying internal feedback logic."
+    ],
+    "misconceptions": [
+      "Assuming standard maximal-length LFSRs naturally include the all-zero state.",
+      "Thinking a standard power-on reset is sufficient to prevent transient faults during runtime."
+    ],
+    "probes": [
+      "How does adding self-recovery logic affect the maximum clock frequency and feedback path combinational delay of the LFSR?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-063",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A fast asynchronous counter terminal count signal is decoded combinationally to load a downstream register across clock domains. Why does this violate design rules, and what is the proper fix?",
+    "level": "Experienced",
+    "answerKey": "Asynchronous ripple delays create combinational glitches that cause severe metastability when sampled across clock domains. The fix is to use a synchronous counter design and synchronize control signals properly.",
+    "essentialFacts": [
+      "Combinational decoding of ripple counter outputs produces transient glitches due to unequal path delays.",
+      "Crossing asynchronous clock domains without synchronizers leads to metastability and data corruption.",
+      "Synchronous counters and multi-flop synchronizer chains are required for reliable cross-domain control."
+    ],
+    "acceptableAlternatives": [
+      "Causes glitches and metastability; use a synchronizer",
+      "Ripple logic glitches violate CDC rules; use synchronous design and synchronizers"
+    ],
+    "partialCredit": [
+      "Mentions clock domain crossing issues but misses the combinational glitch hazard inherent to asynchronous ripple counters."
+    ],
+    "misconceptions": [
+      "Assuming combinational outputs from any counter are clean enough for direct asynchronous sampling.",
+      "Believing single-flop synchronizers completely eliminate metastability."
+    ],
+    "probes": [
+      "What EDA tool checks catch clock domain crossing violations involving combinational logic cones before tapeout?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-064",
+    "track": "digital-logic",
+    "competency": "counters and dividers",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a 2-state Moore FSM that outputs 1 when the input sequence has seen two consecutive ones. What is the next-state logic equation for state S1?",
+    "level": "Internship",
+    "answerKey": "Let S0 be the state waiting for a 1, and S1 be the state after seeing one 1. If input x=1 in S1, the next state remains or transitions to output a high state. The next-state equation is D_S1 = S0 & x | S1 & x.",
+    "essentialFacts": [
+      "Moore FSM outputs depend only on the current state.",
+      "State S1 represents having seen at least one 1.",
+      "Next-state logic combines current state context with the input condition."
+    ],
+    "acceptableAlternatives": [
+      "D_S1 = x * (S0 + S1)",
+      "Next state is active when input is high and previous state condition is met."
+    ],
+    "partialCredit": [
+      "Correctly identifies state definition but gets transition logic wrong.",
+      "Correctly identifies Moore output definition without complete equation."
+    ],
+    "misconceptions": [
+      "Confusing Mealy and Moore output dependencies.",
+      "Believing the FSM needs three states for two consecutive ones."
+    ],
+    "probes": [
+      "How does a Moore machine output differ from a Mealy machine output here?",
+      "What is the output logic equation for this FSM?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-065",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an FSM with states S0=00, S1=01, S2=10, what happens to unassigned states like 11 if the case statement lacks a default branch in synthesis?",
+    "level": "Internship",
+    "answerKey": "State 11 becomes an incompletely specified condition, causing synthesis tools to infer unwanted latches or retain previous state storage, potentially locking the FSM in an invalid state.",
+    "essentialFacts": [
+      "Unassigned state values in case statements without defaults infer unintended storage or latches.",
+      "Synthesis tools handle unused encodings arbitrarily unless constrained.",
+      "Incomplete combinational assignments affect sequential logic behavior."
+    ],
+    "acceptableAlternatives": [
+      "Latches are inferred by the synthesizer.",
+      "The state can get stuck or behave unpredictably due to inferred memory elements."
+    ],
+    "partialCredit": [
+      "Recognizes that state 11 is unused but misses the latch inference consequence.",
+      "Mentions unpredictable behavior without specifying synthesis mechanics."
+    ],
+    "misconceptions": [
+      "Assuming unused states automatically default to S0 without explicit code.",
+      "Thinking synthesis ignores unassigned code branches completely without warning."
+    ],
+    "probes": [
+      "How would you modify the HDL to ensure safe recovery from state 11?",
+      "What lint warning would tools like Verilator or Yosys output?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-066",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Convert a Mealy FSM outputting on state transitions to a Moore machine. If the original machine has 3 states, what is the maximum number of states the equivalent Moore machine may require?",
+    "level": "Entry level",
+    "answerKey": "A Moore machine equivalent to an n-state Mealy machine can require up to n × m states, where m is the number of distinct input values, because outputs depend on both state and input transitions.",
+    "essentialFacts": [
+      "Moore machine outputs depend only on the state.",
+      "Converting Mealy to Moore may duplicate states for each incoming input condition.",
+      "The upper bound on state expansion is n times the number of input combinations."
+    ],
+    "acceptableAlternatives": [
+      "n times the number of input signals",
+      "Up to n multiplied by input alphabet size"
+    ],
+    "partialCredit": [
+      "States that it requires the same number of states (confusing Moore and Mealy equivalence limits).",
+      "Identifies that state count increases based on inputs without exact formula."
+    ],
+    "misconceptions": [
+      "Assuming Moore and Mealy machines always have a 1:1 state mapping.",
+      "Believing Mealy machines always have more states than Moore machines."
+    ],
+    "probes": [
+      "Why does outputting on transitions require more states in Moore machines?",
+      "Give an example input case where state duplication occurs."
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-067",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An FSM uses one-hot encoding for 5 states. How many flip-flops are required, and what is the primary area-versus-speed trade-off compared to a binary-encoded representation?",
+    "level": "Entry level",
+    "answerKey": "It requires 5 flip-flops (one per state). One-hot encoding trades off higher register area for simpler, faster next-state combinational logic because state decoding is trivial.",
+    "essentialFacts": [
+      "One-hot uses one flip-flop per state (5 FFs for 5 states).",
+      "Next-state logic is simpler and faster due to minimal decoding gates.",
+      "Binary encoding uses fewer FFs (ceil(log2(N))) but denser combinational logic."
+    ],
+    "acceptableAlternatives": [
+      "5 flip-flops; faster logic speed at the cost of more register area.",
+      "5 FFs; trade-off is more flip-flops for shallower combinational paths."
+    ],
+    "partialCredit": [
+      "Correctly states 3 flip-flops (confusing with binary) but explains one-hot trade-offs.",
+      "States 5 flip-flops but misses the combinational complexity trade-off."
+    ],
+    "misconceptions": [
+      "Assuming one-hot encoding uses fewer hardware resources overall.",
+      "Believing binary encoding always yields faster clock frequencies."
+    ],
+    "probes": [
+      "How many flip-flops would binary encoding require for 5 states?",
+      "Why does one-hot reduce combinational path delay?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-068",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Debug an RTL process block where an FSM missing a default state assignment infers a latch. How does this impact sequential timing closure?",
+    "level": "Entry level",
+    "answerKey": "Inferred latches introduce transparent window behavior and asynchronous feedback loops, complicating static timing analysis, violating synchronous design rules, and making timing closure difficult or impossible.",
+    "essentialFacts": [
+      "Incomplete assignments in procedural blocks infer transparent latches.",
+      "Latches break standard synchronous setup and hold timing assumptions.",
+      "Static timing analyzers cannot easily bound transparent latch transparent phases."
+    ],
+    "acceptableAlternatives": [
+      "Latches violate synchronous design practices and break STA tools.",
+      "Introduces unconstrained combinational feedback paths that fail timing."
+    ],
+    "partialCredit": [
+      "Mentions that latches are bad for timing without explaining STA impacts.",
+      "Explains latch inference but misses timing closure consequences."
+    ],
+    "misconceptions": [
+      "Assuming latches behave identically to edge-triggered flip-flops in timing reports.",
+      "Believing synthesis tools automatically fix inferred latches without affecting timing."
+    ],
+    "probes": [
+      "How do you rewrite the process block to eliminate the latch?",
+      "What synthesis tool message flags this issue?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-069",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a sequence detector FSM for '101' with overlapping detection. If the machine enters an illegal state due to a single-event upset, how do you handle recovery?",
+    "level": "Experienced",
+    "answerKey": "Include a mandatory default branch in the state transition logic that routes any illegal state back to the reset or idle state safely on the next clock edge.",
+    "essentialFacts": [
+      "Overlapping '101' detector requires tracking partial matches like '1' and '10'.",
+      "Illegal states caused by SEUs require explicit robust handling via default transitions.",
+      "Recovery logic must ensure the FSM doesn't lock up permanently in an unassigned state code."
+    ],
+    "acceptableAlternatives": [
+      "Add a default case statement pointing to the IDLE state.",
+      "Use explicit error state transitions or parity-checked states."
+    ],
+    "partialCredit": [
+      "Describes the overlapping 101 detector states but omits SEU recovery handling.",
+      "Mentions default reset without explaining overlapping state transitions."
+    ],
+    "misconceptions": [
+      "Assuming hardware FSMs automatically self-recover from unused state bitflips without explicit transitions.",
+      "Believing overlapping detection requires extra storage beyond state variables."
+    ],
+    "probes": [
+      "What are the states needed for overlapping '101' detection?",
+      "How does a Hamming code or parity bit compare to default transitions for SEU mitigation?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-070",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare gray-code state assignment versus binary encoding for a high-speed counter/FSM. Why does gray-code reduce dynamic power and glitch risk in downstream combinational logic?",
+    "level": "Experienced",
+    "answerKey": "Gray-code ensures only one bit changes per state transition. This minimizes switching activity, reducing dynamic power consumption and eliminating transient glitches in downstream combinational decoders.",
+    "essentialFacts": [
+      "Gray-code changes only a single bit between adjacent states.",
+      "Binary encoding can have multiple bits changing simultaneously, causing temporary invalid states (glitches).",
+      "Single-bit transitions lower dynamic power and prevent combinational hazards."
+    ],
+    "acceptableAlternatives": [
+      "Only one bit toggles per step, avoiding multi-bit transition glitches and lowering dynamic power.",
+      "Reduces transition activity on buses and combinational logic."
+    ],
+    "partialCredit": [
+      "Notes single-bit change but misses power or glitch implications.",
+      "Explains power reduction without mentioning single-bit transitions."
+    ],
+    "misconceptions": [
+      "Believing gray-code reduces sequential register count compared to binary.",
+      "Thinking glitches only happen in asynchronous circuits, not synchronous ones with binary FSMs."
+    ],
+    "probes": [
+      "When is gray-code encoding less beneficial or harder to implement?",
+      "What is the next Gray code after 011?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-071",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An asynchronous input drives an FSM state transition. Describe the exact metastability failure mode and specify how to insert a synchronizer chain without altering the logical state timing.",
+    "level": "Experienced",
+    "answerKey": "Asynchronous inputs can violate flip-flop setup/hold times, causing the output to linger in an indeterminate metastable voltage state. Insert a 2-stage DFF synchronizer on the input, adding 1 cycle of latency.",
+    "essentialFacts": [
+      "Metastability occurs when asynchronous signals violate setup/hold constraints.",
+      "Synchronizer chains (typically 2+ cascaded flip-flops) give time for the metastable state to resolve to a stable 0 or 1.",
+      "Adding a synchronizer introduces latency, requiring the FSM to account for the extra clock cycle delay."
+    ],
+    "acceptableAlternatives": [
+      "Use a two-flop synchronizer to resolve metastable voltages, accounting for the one-cycle delay in state transition timing.",
+      "Resolve setup/hold violations via multi-stage FFs."
+    ],
+    "partialCredit": [
+      "Identifies metastability and synchronizers but ignores the latency impact on FSM timing.",
+      "Explains setup/hold violation without detailing the resolution mechanism."
+    ],
+    "misconceptions": [
+      "Believing synchronizers completely eliminate metastability probability rather than reducing it exponentially.",
+      "Thinking metastability only affects combinational logic and not registers."
+    ],
+    "probes": [
+      "What is Mean Time Between Failures (MTBF) in the context of synchronizers?",
+      "How does pipeline depth affect synchronizer reliability?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-072",
+    "track": "digital-logic",
+    "competency": "finite state machines",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A two-bit input window d[1:0] feeds a combinational detector. Write the Boolean equation for detect, which stays high whenever the current window equals binary 11.",
+    "level": "Internship",
+    "answerKey": "detect = d[1] & d[0]. This combinational level remains high while both bits are one; producing a one-cycle pulse would require additional sequential state.",
+    "essentialFacts": [
+      "Uses bitwise AND operation on the 2-bit vector.",
+      "Output is combinational based on current window bits."
+    ],
+    "acceptableAlternatives": [
+      "detect = &d;"
+    ],
+    "partialCredit": [
+      "Using bitwise OR instead of AND.",
+      "Incorrect index selection such as d[1] | d[0]."
+    ],
+    "misconceptions": [
+      "Confusing bitwise logical operators with arithmetic operations."
+    ],
+    "probes": [
+      "How would this change if detection required overlapping occurrences over a serial stream instead of a parallel window?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "mit-cs"
+    ],
+    "id": "digital-logic-073",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25",
+      "editorialCheck": "Clarified combinational level versus a synchronous pulse."
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A Mealy sequence detector for '01' uses two states. If converted to a Moore machine, what is the minimum number of states required to detect the same sequence, and why?",
+    "level": "Internship",
+    "answerKey": "3 states. A Moore machine requires separate states to remember the prefix history because outputs depend solely on the current state, not the input transition.",
+    "essentialFacts": [
+      "Moore machine requires 3 states.",
+      "Outputs depend only on state, necessitating separate states for prefix history."
+    ],
+    "acceptableAlternatives": [
+      "Stating three states and mentioning state names like IDLE, SAW_0, SAW_01."
+    ],
+    "partialCredit": [
+      "Stating 2 states without justifying output dependency."
+    ],
+    "misconceptions": [
+      "Assuming Moore and Mealy machines always have the same number of states."
+    ],
+    "probes": [
+      "Where does the output differ between the Mealy and Moore implementations when processing the input stream '01'?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-074",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a synchronous FSM detecting the overlapping sequence '101', let state S_10 represent the prefix '10'. If the input is '1', what is the next state and output?",
+    "level": "Entry level",
+    "answerKey": "Output is high (1). Next state is S_1 (representing prefix '1') due to overlapping detection where the trailing '1' starts a new sequence.",
+    "essentialFacts": [
+      "Output asserts high upon detecting the complete sequence '101'.",
+      "Next state transitions to single '1' state to support overlapping sequences."
+    ],
+    "acceptableAlternatives": [
+      "Describing the next state numerically (e.g., state 1) with explicit output of 1."
+    ],
+    "partialCredit": [
+      "Correctly identifying the output but failing to account for overlapping next-state routing."
+    ],
+    "misconceptions": [
+      "Assuming the FSM resets to IDLE upon successful detection in an overlapping detector."
+    ],
+    "probes": [
+      "How would the next-state logic change if detection were non-overlapping?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-075",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a Verilog FSM process block for a sequence detector, omitting a default case branch inside a combinatorial always block causes what synthesis hazard, and what tool warning is typically emitted?",
+    "level": "Entry level",
+    "answerKey": "Latch inference hazard; synthesis tools infer transparent latches because assignments are incomplete across all input branches, triggering a latch inference warning.",
+    "essentialFacts": [
+      "Incomplete case assignments cause unintentional latch inference.",
+      "Creates combinatorial feedback storage elements.",
+      "Triggers standard lint or synthesis tool warnings."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning unused states holding previous values and generating lint warnings."
+    ],
+    "partialCredit": [
+      "Mentioning synthesis errors without specifying latch creation."
+    ],
+    "misconceptions": [
+      "Believing default branches are optional in combinatorial always blocks without consequence."
+    ],
+    "probes": [
+      "How do you modify the always block header or add a default assignment to prevent latch inference?"
+    ],
+    "sourceIds": [
+      "yosys",
+      "verilator"
+    ],
+    "id": "digital-logic-076",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare a 4-bit shift register detector versus a 4-state FSM for detecting a specific 4-bit serial pattern. Which uses fewer flip-flops, and what is the combinational logic trade-off?",
+    "level": "Entry level",
+    "answerKey": "The FSM uses fewer flip-flops (log2(4) = 2 vs 4), but requires more complex combinational next-state decoding logic compared to the simple multi-input AND gate of the shift register.",
+    "essentialFacts": [
+      "Shift register uses 4 flip-flops; binary-encoded FSM uses 2 flip-flops.",
+      "FSM trades register count for complex combinational next-state logic."
+    ],
+    "acceptableAlternatives": [
+      "Explaining state encoding minimization vs direct register matching."
+    ],
+    "partialCredit": [
+      "Identifying flip-flop counts incorrectly between FSM and shift register."
+    ],
+    "misconceptions": [
+      "Assuming FSMs always use more total hardware resources than shift registers."
+    ],
+    "probes": [
+      "At what pattern length does the flip-flop trade-off favor the FSM approach?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "hdlbits"
+    ],
+    "id": "digital-logic-077",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An asynchronous serial bitstream drives a sequence detector FSM directly. Explain the exact failure mode when setup/hold times are violated, and specify the standard structural fix before state logic.",
+    "level": "Experienced",
+    "answerKey": "Setup/hold violations cause metastability where flip-flop output oscillates or settles to an intermediate voltage, corrupting state transitions. The fix is a multi-stage synchronizer chain before the FSM inputs.",
+    "essentialFacts": [
+      "Setup/hold violation leads to metastability.",
+      "Intermediate or oscillating voltage corrupts downstream logic.",
+      "Resolved using a multi-flop synchronizer chain."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning MTBF improvement or synchronizer registers."
+    ],
+    "partialCredit": [
+      "Mentioning signal noise without addressing timing violation or synchronization."
+    ],
+    "misconceptions": [
+      "Believing combinatorial filter gates can resolve metastability."
+    ],
+    "probes": [
+      "How does adding a synchronizer chain impact the latency of your sequence detection?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-078",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A combinational logic block detects '101' directly on parallel data buses without a clock. Explain why static hazards in the gates can cause false sequence pulses, and how registering inputs prevents this.",
+    "level": "Experienced",
+    "answerKey": "Combinational propagation delays cause temporary differential signal skews during input transitions, creating transient output glitches. Registering inputs synchronizes all signals to a common clock edge, filtering out combinational glitches.",
+    "essentialFacts": [
+      "Propagation delay causes static hazards and glitches.",
+      "Glitches create false pulses on combinational outputs.",
+      "Registers sample stable signals at clock edges to eliminate glitches."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning Karnaugh map hazard covers or synchronous design principles."
+    ],
+    "partialCredit": [
+      "Describing propagation delay without mentioning glitches or registration."
+    ],
+    "misconceptions": [
+      "Assuming purely combinational circuits are immune to transient spikes."
+    ],
+    "probes": [
+      "Can you eliminate static hazards entirely through algebraic Karnaugh-map restructuring without adding registers?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-079",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a 16-state sequence detector FSM, contrast one-hot versus binary encoding regarding next-state logic complexity and flip-flop resource utilization. When is one-hot preferred in high-speed FPGAs?",
+    "level": "Experienced",
+    "answerKey": "One-hot uses 16 flip-flops with minimal next-state logic, while binary uses 4 flip-flops with dense decoding logic. One-hot is preferred in FPGAs because registers are abundant and shallow LUT paths improve timing closure.",
+    "essentialFacts": [
+      "One-hot uses 16 FFs with simple logic; binary uses 4 FFs with complex logic.",
+      "One-hot favors FPGA architectures due to abundant registers and shallow logic depths."
+    ],
+    "acceptableAlternatives": [
+      "Referencing FPGA fabric structure (LUT sizes) or clock frequency trade-offs."
+    ],
+    "partialCredit": [
+      "Correctly giving FF counts but missing the FPGA logic depth trade-off."
+    ],
+    "misconceptions": [
+      "Assuming binary encoding always yields better performance due to fewer flip-flops."
+    ],
+    "probes": [
+      "How does power consumption differ between one-hot and binary encoding under high toggle rates?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-080",
+    "track": "digital-logic",
+    "competency": "sequence detection",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A flip-flop has T_su = 1.5\\text{ns}, T_h = 0.5\\text{ns}, and T_co = 2.0\\text{ns}. With a 100 MHz clock (10\\text{ns} period) and zero clock skew, what is the maximum combinational path delay allowed between registers?",
+    "level": "Internship",
+    "answerKey": "Using the setup equation $T_{period} \\ge T_{co} + T_{logic} + T_{su}$, we have $10\\text{ns} \\ge 2.0\\text{ns} + T_{logic} + 1.5\\text{ns}$. Solving yields $T_{logic} \\le 6.5\\text{ns}$.",
+    "essentialFacts": [
+      "Setup constraint equation: $T_{period} \\ge T_{co} + T_{logic} + T_{su}$",
+      "Maximum combinational path delay is 6.5 ns",
+      "Hold time ($T_h$) is not part of the setup timing calculation"
+    ],
+    "acceptableAlternatives": [
+      "6.5 nanoseconds",
+      "6.5 ns"
+    ],
+    "partialCredit": [
+      "Correctly identifies the setup equation but makes an arithmetic error",
+      "Includes hold time instead of setup time in the equation"
+    ],
+    "misconceptions": [
+      "Believing hold time affects maximum frequency or setup calculations",
+      "Ignoring clock-to-Q delay in the timing budget"
+    ],
+    "probes": [
+      "How does clock skew affect this calculation if the destination clock arrives 1 ns later?",
+      "What happens to the maximum allowable delay if the clock frequency is increased to 200 MHz?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-081",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An asynchronous signal feeds a synchronous register, risking metastability. Why is a single flip-flop insufficient to prevent system failure, and how does adding a second cascaded register improve reliability?",
+    "level": "Internship",
+    "answerKey": "A single flip-flop can sample a metastable voltage and propagate an invalid logic level downstream. Adding a second register gives the first register an entire clock cycle to resolve to a stable binary state.",
+    "essentialFacts": [
+      "Single register can propagate metastable voltage levels",
+      "Second register provides a full clock cycle resolution window",
+      "Cascading exponentially reduces the probability of propagating metastability"
+    ],
+    "acceptableAlternatives": [
+      "Two flip-flops give time for the metastable state to settle before other logic reads it."
+    ],
+    "partialCredit": [
+      "Mentions metastability but fails to explain the resolution time window provided by the second stage"
+    ],
+    "misconceptions": [
+      "Assuming a synchronizer eliminates metastability entirely rather than reducing its probability of failure",
+      "Believing synchronizers fix setup violations on synchronous paths"
+    ],
+    "probes": [
+      "Under what conditions would a 2-stage synchronizer still be insufficient?",
+      "How does MTBF relate to the clock frequency in a synchronizer chain?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-082",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a clock period of 8 ns, T_co = 1.5\\text{ns}, T_su = 1.0\\text{ns}, and a positive clock skew T_skew = 0.8\\text{ns} (destination clock arrives later), calculate the maximum allowable combinational logic delay.",
+    "level": "Entry level",
+    "answerKey": "Setup equation with positive skew: $T_{period} + T_{skew} \\ge T_{co} + T_{logic} + T_{su}$. Thus, $8 + 0.8 \\ge 1.5 + T_{logic} + 1.0 \\implies 8.8 \\ge 2.5 + T_{logic}$, yielding $T_{logic} \\le 6.3\\text{ns}$.",
+    "essentialFacts": [
+      "Positive clock skew adds to the available time window for setup",
+      "Setup inequality: $T_{period} + T_{skew} \\ge T_{co} + T_{logic} + T_{su}$",
+      "Maximum combinational delay is 6.3 ns"
+    ],
+    "acceptableAlternatives": [
+      "6.3 ns",
+      "6.3 nanoseconds"
+    ],
+    "partialCredit": [
+      "Subtracts clock skew instead of adding it",
+      "Sets up the equation correctly but makes an arithmetic error"
+    ],
+    "misconceptions": [
+      "Believing positive skew hurts setup timing (confusing setup and hold)",
+      "Treating clock skew as part of combinational logic delay"
+    ],
+    "probes": [
+      "How would a negative clock skew of -0.5 ns impact this calculation?",
+      "Does clock skew affect the hold time constraint in the same direction?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-083",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A circuit violates a hold time constraint by 0.2 ns (T_hold = 0.6\\text{ns}, actual hold delay = 0.4 ns). With zero clock skew, how can you fix this violation without changing the clock frequency?",
+    "level": "Entry level",
+    "answerKey": "Add buffer cells or delay elements into the data path between the source and destination registers to increase the data path delay by at least 0.2 ns.",
+    "essentialFacts": [
+      "Hold time violations are independent of clock frequency",
+      "Fix requires adding delay (buffers) to the data path",
+      "Data path delay must exceed hold time requirement"
+    ],
+    "acceptableAlternatives": [
+      "Insert buffers in the data path",
+      "Add delay cells between registers"
+    ],
+    "partialCredit": [
+      "Suggests lowering the clock frequency (failing to recognize hold time independence)",
+      "Identifies adding buffers but specifies the wrong path (e.g., clock path instead of data path)"
+    ],
+    "misconceptions": [
+      "Thinking that reducing clock frequency resolves hold time failures",
+      "Believing hold violations can be fixed by altering setup time parameters"
+    ],
+    "probes": [
+      "What happens to the setup margin if you add buffers to fix the hold violation?",
+      "How does clock skew influence hold time margin?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-084",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 200 MHz system has a synchronizer MTBF failure rate issue. If you double the clock frequency while keeping the synchronizer depth at two stages, qualitatively and quantitatively how does the MTBF change?",
+    "level": "Experienced",
+    "answerKey": "MTBF is inversely proportional to $f_{clk}$ and depends exponentially on resolution time $t_{res}$. Doubling $f_{clk}$ to 400 MHz halves the available resolution time per cycle and doubles sampling frequency, causing an exponential/sharp decrease in MTBF.",
+    "essentialFacts": [
+      "MTBF formula depends exponentially on resolution time and inversely on clock frequency",
+      "Doubling clock frequency halves the time available for metastability resolution per stage",
+      "MTBF degrades exponentially, significantly worsening reliability"
+    ],
+    "acceptableAlternatives": [
+      "MTBF drops drastically because resolution time is halved and sampling rate is doubled."
+    ],
+    "partialCredit": [
+      "Recognizes that MTBF decreases but misses the exponential dependence on resolution time",
+      "States frequency increases without mentioning the impact on resolution window"
+    ],
+    "misconceptions": [
+      "Assuming MTBF scales linearly with clock frequency",
+      "Believing keeping synchronizer depth constant maintains the same failure rate when frequency increases"
+    ],
+    "probes": [
+      "What structural design change could you make to recover or improve the MTBF at 400 MHz?",
+      "How does data toggle rate affect the MTBF calculation?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-085",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A design has negative clock skew (T_skew = -0.4\\text{ns}, destination clock arrives earlier than source). Given T_co = 1.2\\text{ns}, T_su = 0.8\\text{ns}, and a 5 ns clock period, calculate the maximum allowable combinational delay.",
+    "level": "Experienced",
+    "answerKey": "Setup equation with negative skew: $T_{period} + T_{skew} \\ge T_{co} + T_{logic} + T_{su}$. Thus, $5 + (-0.4) \\ge 1.2 + T_{logic} + 0.8 \\implies 4.6 \\ge 2.0 + T_{logic}$, yielding $T_{logic} \\le 2.6\\text{ns}$.",
+    "essentialFacts": [
+      "Negative clock skew reduces the available setup time window",
+      "Setup equation: $T_{period} + T_{skew} \\ge T_{co} + T_{logic} + T_{su}$",
+      "Maximum combinational delay is 2.6 ns"
+    ],
+    "acceptableAlternatives": [
+      "2.6 ns",
+      "2.6 nanoseconds"
+    ],
+    "partialCredit": [
+      "Adds negative skew instead of subtracting it (or treats skew as positive)",
+      "Arithmetic error during subtraction"
+    ],
+    "misconceptions": [
+      "Assuming negative skew helps setup time",
+      "Ignoring clock skew in tight timing budgets"
+    ],
+    "probes": [
+      "How does this same negative clock skew affect the hold time constraint for the same path?",
+      "What physical layout factors typically cause negative clock skew?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-086",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why a synchronizer chain fails if an asynchronous signal transitions during the setup/hold window of the *second* flip-flop in a 2-stage synchronizer, and state the probabilistic design mitigation.",
+    "level": "Experienced",
+    "answerKey": "If the first flip-flop's metastable output resolves into the setup/hold window of the second flip-flop, the second flip-flop can also enter metastability and propagate an invalid level. Mitigation: add a third stage (3-flop synchronizer) to increase resolution time.",
+    "essentialFacts": [
+      "Second-stage sampling of an unresolved or poorly timed signal can cause second-stage metastability",
+      "Result is propagation of a corrupt value to the synchronous logic",
+      "Mitigation is increasing synchronizer depth (e.g., adding a 3rd stage)"
+    ],
+    "acceptableAlternatives": [
+      "Use a 3-stage synchronizer to provide additional settling time."
+    ],
+    "partialCredit": [
+      "Explains second-stage metastability but fails to state the mitigation",
+      "Suggests slowing down the clock without addressing structural depth"
+    ],
+    "misconceptions": [
+      "Assuming a 2-stage synchronizer guarantees zero failures",
+      "Believing metastability cannot occur past the first register stage"
+    ],
+    "probes": [
+      "How do you calculate the required number of synchronizer stages for a target MTBF?",
+      "Does increasing synchronizer depth introduce any trade-offs?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-087",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Define hold time and explain why a hold time violation cannot be fixed by lowering the clock frequency, unlike a setup time violation.",
+    "level": "Entry level",
+    "answerKey": "Hold time is the minimum time data must remain stable after the clock edge. Lowering frequency increases the clock period, which changes clock edge spacing but does not alter the relative delay between data and clock paths for a single edge.",
+    "essentialFacts": [
+      "Hold time is data stability requirement immediately following a clock edge",
+      "Hold time depends only on clock skew and path delays, not clock period",
+      "Lowering clock frequency modifies period/edge distance, leaving intra-cycle edge-to-data relationships unchanged"
+    ],
+    "acceptableAlternatives": [
+      "Hold time governs data stability post-clock edge and is independent of the clock period."
+    ],
+    "partialCredit": [
+      "Defines hold time correctly but gives a vague or incorrect explanation of why frequency changes don't fix it"
+    ],
+    "misconceptions": [
+      "Believing that slower clocks relax both setup and hold constraints",
+      "Confusing clock period with clock-to-data skew"
+    ],
+    "probes": [
+      "What design modifications would you make if a hold violation occurs in silicon?",
+      "Can a hold violation ever be caused by increasing the clock frequency? Why or why not?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-088",
+    "track": "digital-logic",
+    "competency": "setup hold and metastability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given `reg [3:0] a = 4'b1010;` and `reg [1:0] b = 2'b11;`, what is the exact width and value of `{b, a}` in binary?",
+    "level": "Internship",
+    "answerKey": "The width is 6 bits and the binary value is 6'b111010. Concatenation width is the sum of the operand widths (2 + 4 = 6), with the leftmost operand `b` occupying the most significant bits.",
+    "essentialFacts": [
+      "Concatenation width equals the sum of individual operand widths",
+      "Leftmost operand occupies the most significant bits of the result"
+    ],
+    "acceptableAlternatives": [
+      "6'b111010",
+      "Width: 6 bits, Value: 111010"
+    ],
+    "partialCredit": [
+      "Correct width (6 bits) but incorrect binary value concatenation",
+      "Correct binary value without specifying the 6-bit width"
+    ],
+    "misconceptions": [
+      "Assuming concatenation inherits the width of the left-hand side assignment target"
+    ],
+    "probes": [
+      "What happens to the result if `{b, a}` is assigned to a 4-bit register `reg [3:0]`?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "digital-logic-089",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If `reg [3:0] x = 4'd15;` and `reg [3:0] y = 4'd2;`, what is the 4-bit stored result of `x + y` due to self-determined carry truncation?",
+    "level": "Internship",
+    "answerKey": "The stored result is `4'd1` (or `4'b0001`). The mathematical sum is 17, which exceeds 4 bits; the upper bits are dropped without warning.",
+    "essentialFacts": [
+      "Addition operator size is determined by the max width of operands (both 4 bits)",
+      "Overflow causes upper carry bits to be silently truncated in self-determined contexts"
+    ],
+    "acceptableAlternatives": [
+      "4'b0001",
+      "1"
+    ],
+    "partialCredit": [
+      "Correctly calculates the mathematical sum of 17 but fails to apply 4-bit truncation"
+    ],
+    "misconceptions": [
+      "Assuming addition automatically widens to prevent overflow during assignment"
+    ],
+    "probes": [
+      "How would you modify the expression to preserve the carry-out bit?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "verilator"
+    ],
+    "id": "digital-logic-090",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the exact bit-width of the expression `{2{3'b101}, 4'b0}` in Verilog, and what is its binary value?",
+    "level": "Entry level",
+    "answerKey": "The width is 10 bits and the value is `10'b1011010000`. The replication `{2{3'b101}}` produces 6 bits (`6'b101101`), which are concatenated with `4'b0` to yield 10 bits total.",
+    "essentialFacts": [
+      "Replication operator `{k{expr}}` multiplies the width of `expr` by `k`",
+      "Total concatenation width is the sum of all nested sub-expression widths"
+    ],
+    "acceptableAlternatives": [
+      "10'b1011010000",
+      "10 bits, 1011010000"
+    ],
+    "partialCredit": [
+      "Correct bit-width (10 bits) but incorrect binary value",
+      "Correct replication expansion but incorrect concatenation sizing"
+    ],
+    "misconceptions": [
+      "Adding the replication count to the bit-width instead of multiplying it"
+    ],
+    "probes": [
+      "What happens if the replication count evaluates to zero?"
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "digital-logic-091",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 4-bit signed negative number `reg signed [3:0] s = 4'b1000;` is assigned to an 8-bit register `reg [7:0] r = s;`. What is the hexadecimal value of `r`?",
+    "level": "Entry level",
+    "answerKey": "The hexadecimal value is `8'hF8` (`8'b11111000`). Because `s` is declared `signed`, assignment to a wider target sign-extends using the MSB of `s` (which is 1).",
+    "essentialFacts": [
+      "Signed source signals undergo sign-extension when assigned to wider registers",
+      "The MSB of `4'b1000` is 1, so upper bits [7:4] are filled with 1s"
+    ],
+    "acceptableAlternatives": [
+      "8'b11111000",
+      "8'hF8"
+    ],
+    "partialCredit": [
+      "Zero-extends instead of sign-extending, yielding `8'h08`"
+    ],
+    "misconceptions": [
+      "Assuming all assignments in Verilog zero-extend regardless of source sign declarations"
+    ],
+    "probes": [
+      "What would `r` be if `s` were declared as an unsigned register?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "digital-logic-092",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Verilog, comparing a signed 4-bit `-1` (`4'sb1111`) with an unsigned 4-bit `15` (`4'b1111`) using `<`. Does the expression evaluate to true or false, and why?",
+    "level": "Entry level",
+    "answerKey": "It evaluates to `false`. In mixed-signedness expressions, if any operand is unsigned, Verilog casts the entire expression to unsigned, treating `4'sb1111` as unsigned `15`, making `15 < 15` false.",
+    "essentialFacts": [
+      "Mixed-signedness binary operations coerce both operands to unsigned",
+      "`4'sb1111` interpreted as unsigned equals positive 15"
+    ],
+    "acceptableAlternatives": [
+      "False because both operands become unsigned and equal 15"
+    ],
+    "partialCredit": [
+      "States false correctly but misidentifies the coercion direction"
+    ],
+    "misconceptions": [
+      "Assuming Verilog retains signed comparison semantics if at least one operand has a signed declaration"
+    ],
+    "probes": [
+      "How would you force the comparison to evaluate with signed semantics?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "digital-logic-093",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Evaluate `reg [3:0] res = 4'd2 + 3;`. What is the exact bit-width used for the internal addition before assignment truncation, and what is the final 4-bit value of `res`?",
+    "level": "Experienced",
+    "answerKey": "The internal addition width is 32 bits (because unsized decimal literal `3` defaults to a 32-bit integer). The addition evaluates in 32 bits to `5`, then truncates to `4'd5` (`4'b0101`).",
+    "essentialFacts": [
+      "Unsized integer literals in Verilog default to 32 bits",
+      "Expression evaluation width expands to accommodate the widest operand"
+    ],
+    "acceptableAlternatives": [
+      "32 bits internal width, 4'd5",
+      "32-bit internal width and 4'b0101"
+    ],
+    "partialCredit": [
+      "Identifies 4-bit width based only on the left-hand side or `4'd2`"
+    ],
+    "misconceptions": [
+      "Assuming integer literals adopt the smaller width of neighboring variables automatically"
+    ],
+    "probes": [
+      "What happens to the expression width if you change `3` to `3'd3`?"
+    ],
+    "sourceIds": [
+      "hdlbits",
+      "verilator"
+    ],
+    "id": "digital-logic-094",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given `reg [7:0] data = 8'b1000_1111;`, explain why `signed(data[7:4])` differs from `signed(data)[7:4]` when evaluating arithmetic right shifts in Verilog.",
+    "level": "Experienced",
+    "answerKey": "`$signed(data[7:4])` casts a 4-bit part-select (`4'b1000`) to signed, sign-extending its MSB. `$signed(data)` casts the entire 8-bit vector to signed first, then takes bits `[7:4]`, resulting in unsigned bit-slice extraction behavior because part-selects yield unsigned results.",
+    "essentialFacts": [
+      "Part-selects in Verilog are always unsigned regardless of parent vector signedness",
+      "Casting a part-select with `$signed()` treats that extracted slice as signed"
+    ],
+    "acceptableAlternatives": [
+      "Part-selects are inherently unsigned; casting the part-select preserves its signedness as a 4-bit value whereas slice extraction from a cast vector discards sign."
+    ],
+    "partialCredit": [
+      "Confuses part-select width behavior with full vector width casting rules"
+    ],
+    "misconceptions": [
+      "Assuming part-selects inherit the signedness of the parent register automatically"
+    ],
+    "probes": [
+      "How does this distinction affect arithmetic right shift (`>>>`) behavior?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "digital-logic-095",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why evaluating `~'b1` in Verilog produces a 32-bit result rather than a 1-bit result, and how this causes width mismatch warnings during assignment to a 1-bit wire.",
+    "level": "Experienced",
+    "answerKey": "Unbased un-sized literals like `'b1` default to 32-bit integers in Verilog. The unary operator `~` inverts all 32 bits (`32'hFFFFFFFF`). Assigning this to a 1-bit wire truncates it and triggers lint warnings.",
+    "essentialFacts": [
+      "Unbased and unsized literals like `'b1` default to 32-bit integers",
+      "Unary operators preserve or expand operand widths based on standard sizing rules"
+    ],
+    "acceptableAlternatives": [
+      "Unsized unbased literals default to 32 bits, causing bitwise inversion across 32 bits."
+    ],
+    "partialCredit": [
+      "Explains truncation on assignment but misses the 32-bit default rule for unbased literals"
+    ],
+    "misconceptions": [
+      "Assuming `'b1` is 1 bit wide because it represents a single binary digit"
+    ],
+    "probes": [
+      "How do you format the literal to perform a strict 1-bit bitwise inversion?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "digital-logic-096",
+    "track": "digital-logic",
+    "competency": "Verilog widths and signedness",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given the Boolean function F = A B + \\bar{A} C, identify whether a static-1 or static-0 hazard occurs when A transitions from 1 to 0 while B=1 and C=1, and state the intermediate transient value.",
+    "level": "Internship",
+    "answerKey": "A static-1 hazard occurs because product term $AB$ turns off before $\\bar{A}C$ turns on, causing a momentary transient glitch to 0.",
+    "essentialFacts": [
+      "Static-1 hazard identification",
+      "Product term $AB$ drops before $\\bar{A}C$ rises",
+      "Transient glitch to 0"
+    ],
+    "acceptableAlternatives": [
+      "Identifies a 1-0-1 glitch due to missing consensus term $BC$"
+    ],
+    "partialCredit": [
+      "Correctly identifies the hazard as a static-1 hazard but fails to explain the transient value."
+    ],
+    "misconceptions": [
+      "Believing two-level AND-OR logic is inherently free of static-1 hazards."
+    ],
+    "probes": [
+      "How would you modify the gate-level implementation to eliminate this hazard?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-097",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For the sum-of-products expression F = x_1 x_2 + \\bar{x}_1 x_3, write the exact consensus term required to eliminate the static-1 hazard during the transition of x_1 from 1 to 0 when x_2=1 and x_3=1.",
+    "level": "Internship",
+    "answerKey": "The consensus term is $x_2 x_3$. The hazard-free expression is $F = x_1 x_2 + \\bar{x}_1 x_3 + x_2 x_3$.",
+    "essentialFacts": [
+      "Consensus term $x_2 x_3$",
+      "Added product term covers transition boundary on K-map",
+      "Preserves logical equivalence"
+    ],
+    "acceptableAlternatives": [
+      "$x_2 \\land x_3$"
+    ],
+    "partialCredit": [
+      "Identifies that a redundant product term is required but specifies incorrect literals."
+    ],
+    "misconceptions": [
+      "Assuming adding any product term maintains logical equivalence without K-map coverage."
+    ],
+    "probes": [
+      "Verify algebraically that adding this term does not change the truth table of $F$."
+    ],
+    "sourceIds": [
+      "hdlbits"
+    ],
+    "id": "digital-logic-098",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A combinational circuit has unequal path delays leading to a gate input. If the output pulses twice (0 \\to 1 \\to 0 \\to 1) in response to a single input transition, name this specific hazard type and explain its root cause.",
+    "level": "Entry level",
+    "answerKey": "This is a dynamic hazard. It is caused by differing propagation delays along multiple paths from a single input change, creating multiple transitions instead of a monotonic one.",
+    "essentialFacts": [
+      "Dynamic hazard identification",
+      "Multiple path propagation delay mismatch",
+      "Multiple output transitions (glitching)"
+    ],
+    "acceptableAlternatives": [
+      "Multi-level logic propagation delay mismatch causing multiple transitions"
+    ],
+    "partialCredit": [
+      "Identifies it as a static hazard instead of a dynamic hazard."
+    ],
+    "misconceptions": [
+      "Confusing dynamic hazards (multiple transitions) with static hazards (single momentary pulse)."
+    ],
+    "probes": [
+      "Can a two-level AND-OR circuit exhibit a dynamic hazard? Why or why not?"
+    ],
+    "sourceIds": [
+      "mit-cs"
+    ],
+    "id": "digital-logic-099",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "During formal equivalence checking of a combinational block, a tool reports a mismatch where reference logic evaluates to 1 and implementation evaluates to 0. What boolean assignment does the SAT solver output as a counterexample witness?",
+    "level": "Entry level",
+    "answerKey": "The SAT solver outputs a satisfying primary input vector (minterm) for which Reference = 1 and Implementation = 0.",
+    "essentialFacts": [
+      "SAT solver counterexample witness",
+      "Primary input assignment vector",
+      "Reference = 1 and Implementation = 0 condition"
+    ],
+    "acceptableAlternatives": [
+      "Input vector where the XOR miter output evaluates to 1"
+    ],
+    "partialCredit": [
+      "Mentions an input vector is output but omits the specific output mismatch values."
+    ],
+    "misconceptions": [
+      "Believing a counterexample gives internal gate values instead of primary inputs."
+    ],
+    "probes": [
+      "How does the equivalence checker construct the miter circuit to formulate this SAT problem?"
+    ],
+    "sourceIds": [
+      "yosys"
+    ],
+    "id": "digital-logic-100",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Write a SystemVerilog immediate assertion that checks a combinational output `valid` remains stable whenever input `enable` is asserted and input `data` changes.",
+    "level": "Entry level",
+    "answerKey": "`assert property (@(data or enable or valid) enable |-> $stable(valid));` or equivalent combinational stability check.",
+    "essentialFacts": [
+      "Combinational stability assertion",
+      "Sensitivity to input changes (`data`, `enable`, `valid`)",
+      "Use of `$stable()` or state comparison"
+    ],
+    "acceptableAlternatives": [
+      "`assert (!enable || (valid == $past(valid)));` inside an always block"
+    ],
+    "partialCredit": [
+      "Writes correct property logic but omits necessary event triggers or sensitivity variables."
+    ],
+    "misconceptions": [
+      "Assuming immediate assertions can evaluate sensitivity lists without proper event triggers."
+    ],
+    "probes": [
+      "What happens if `enable` and `data` transition simultaneously in the same simulation delta cycle?"
+    ],
+    "sourceIds": [
+      "verilator"
+    ],
+    "id": "digital-logic-101",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Formulate a Boolean satisfiability (Tseitin transformation) condition to detect if a combinational gate netlist can produce a static-1 hazard on output Z when input A toggles while inputs B and C are held constant.",
+    "level": "Experienced",
+    "answerKey": "Instantiate two copies of the netlist with $A_1 \\neq A_2$ ($B_1=B_2, C_1=C_2$), and solve for a satisfying assignment where $Z_1 = 1$ and $Z_2 = 0$ despite steady-state equivalence.",
+    "essentialFacts": [
+      "Dual circuit evaluation (miter / two time-frames)",
+      "Differing input $A$, identical stable inputs $B, C$",
+      "Differing output $Z$ transient check condition"
+    ],
+    "acceptableAlternatives": [
+      "Miter-based analysis with dual input vectors for transient hazard checking"
+    ],
+    "partialCredit": [
+      "Describes single-point equivalence but misses the dual-input transient constraint."
+    ],
+    "misconceptions": [
+      "Assuming standard combinational equivalence checking checks for dynamic/static hazards automatically."
+    ],
+    "probes": [
+      "How do internal gate delay models affect the accuracy of this SAT formulation?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "yosys"
+    ],
+    "id": "digital-logic-102",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When verifying a combinational multiplier, formal property checking times out. Propose two structural abstraction or decomposition techniques to make the proof tractable without losing bug-hunting capability for overflow hazards.",
+    "level": "Experienced",
+    "answerKey": "Use cone-of-influence reduction combined with intermediate inductive invariant lemmas (such as Booth-multiplier partial product bounds) or unrolling arithmetic sub-blocks.",
+    "essentialFacts": [
+      "Cone-of-influence reduction",
+      "Inductive invariants / lemma strengthening",
+      "Bit-blasting decomposition for arithmetic blocks"
+    ],
+    "acceptableAlternatives": [
+      "Bit-level abstraction with SMT word-level solvers"
+    ],
+    "partialCredit": [
+      "Suggests random simulation instead of formal structural decomposition."
+    ],
+    "misconceptions": [
+      "Assuming black-boxing the multiplier preserves overflow bug detection."
+    ],
+    "probes": [
+      "How do you verify that your inductive invariants do not accidentally mask a real overflow bug?"
+    ],
+    "sourceIds": [
+      "verilator",
+      "yosys"
+    ],
+    "id": "digital-logic-103",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A 5-input combinational function has 3 input combinations that create a static-1 glitch during specific transitions. If you insert a 1-stage register to filter the output, what is the exact trade-off regarding system latency and hazard immunity?",
+    "level": "Experienced",
+    "answerKey": "Inserting a register completely filters all combinational glitches because setup/hold constraints and clock edge sampling ensure only the settled steady-state value is propagated, at the cost of increasing pipeline latency by 1 clock cycle.",
+    "essentialFacts": [
+      "Complete hazard elimination via register sampling",
+      "1 clock cycle pipeline latency penalty",
+      "Setup/hold filtering mechanism"
+    ],
+    "acceptableAlternatives": [
+      "Retiming combinational paths into registered paths adds 1 cycle latency while removing glitches"
+    ],
+    "partialCredit": [
+      "Mentions latency penalty but fails to explain how sampling eliminates combinational hazards."
+    ],
+    "misconceptions": [
+      "Believing registers reduce combinational propagation delay rather than hiding intermediate transients."
+    ],
+    "probes": [
+      "Does registering the output solve internal hazards that propagate to other combinational logic within the same clock cycle?"
+    ],
+    "sourceIds": [
+      "mit-cs",
+      "verilator"
+    ],
+    "id": "digital-logic-104",
+    "track": "digital-logic",
+    "competency": "combinational hazards and verification",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  }
+]

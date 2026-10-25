@@ -1,34 +1,49 @@
-# Feature inventory
+# Cadence feature inventory
 
-## Conversational continuation (2026-10-24)
+Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](GEMINI_OPERATIONS.md) and [current QA](qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
-Implemented: default spoken back-and-forth studio with continuous optional recording; energy-based turn detection, manual completion, pause/resume, interruption, skips and early finish; one optional follow-up per topic; Gemini adaptive follow-ups for consented fictional/non-sensitive transcripts; larger local English ASR with guarded refinement; role-first practical question bank and in-session repeat suppression; reference-limited knowledge checks with explicit unverified claims; stricter visual evidence coverage and no gesture penalty; global clip ranges and local transcript corrections.
-
-Limits: turn-based latency rather than a duplex streaming voice API; English only; physical device/real-person accuracy still unverified; finite banks can repeat after alternatives are exhausted; recent-question memory resets on page reload; reference coverage is deliberately small, no live web search; real personal answers cannot use unpaid Gemini. Sites publication still requires access to the original project.
+Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
 
 
-Status as of October 24, 2026. Read HANDOFF.md before continuing.
-The recording-first rows describe current source; publication is pending access
-to the existing Site's owner/editor account. The old hosted build is unchanged.
+October 25 refinement: rubric v3 separates behavioral and technical expectations. Behavioral responses never count toward technical content/accuracy or receive probes. Gemini grading uses high thinking with literal evidence and actionable justification checks. Scored criteria generate visible critique; clip reasons match speech evidence with a labeled local fallback. See [current QA](qa/FEEDBACK_GROUNDING_2026-10-25.md).
 
-| Requested capability | Included implementation / boundary |
+Updated October 24, 2026: `c13107c` plus local adaptive/rubric work on
+`codex/adaptive-interview-rubric`. Read [HANDOFF](HANDOFF.md) first.
+These are source capabilities. The last recorded hosted build predates recording/
+conversation work; owner/editor access is needed to publish the existing Site.
+See [architecture](ARCHITECTURE.md) for contracts and [audit](REPOSITORY_AUDIT.md)
+for verification and known gaps.
+
+| Capability | Current source / boundary |
 | --- | --- |
-| Resume or custom prompt | PDF/TXT browser reading, editable text preview, role/context input, 3-6 questions and focus/level settings. PDF limits/errors in HANDOFF.md. |
-| Personal resumes | Accepted locally. Free personal mode shares only approved generic role/skill labels for AI questions; personal answers use browser rubric. Full personal-text AI analysis is not enabled. |
-| AI-generated questions | Gemini 3.5 Flash-Lite with configured 3.1 fallback; latest live question generation verified. Optional OpenAI adapter retained. Strict JSON plus runtime checks. |
-| Retrieved questions | Local curated bank with keyword relevance. No external interview-question search/index implemented. |
-| Audio/video practice | Explicit consent, camera/mic preview, mic meter, per-answer MediaRecorder, three-minute cap, stop, retake, device-off, text-only option. Physical-device verification remains. |
-| Speech transcription | On-device English Whisper; live captions in ~12-second batches, automatic finalization on stop, optional corrections/retry. First-use model download required. Legacy eligible cloud API adapters retained. |
-| Content/comprehension | AI estimates for fictional cloud practice; browser heuristic estimates for personal/free or AI-off practice. Missing answers unscored. Not hiring decisions. |
-| Confidence | Labeled weighted delivery heuristic: pace, pauses, fillers/possible word repetitions, camera-facing head position, upper-body framing/movement when available. Missing cues excluded; breakdown shown. No feelings or stuttering diagnosis. |
-| Body/facial/mouth observations | Local face/pose landmarks measure observable head position and upper-body framing/movement, including under unpaid policy. No identity, expressions, lip-reading, eye-contact certainty, or hiring fitness. Separate eligible opt-in cloud notes retained. |
-| Best/worst moments | Multiple strong/improvement excerpts with approximate speech timestamps, variable durations, bounded replay and separate local video/audio exports. One sufficiently long answer can supply both. Whole-answer fallback retained. |
-| Reports | Session scores, per-answer strengths/improvements/evidence, metrics, clips, JSON export; heuristic/AI limitations labeled. |
-| Privacy | Browser memory, no durable recording database; consent/provider checks; server-only keys; personal profile allowlists; raw personal/cloud input separation. |
-| Hosting | Existing private Sites deployment, preserved manifest/worker integration, source in Sameer's GitHub. Public/anonymous access, GoDaddy domain, SEO/indexing not completed. |
-| Team continuation | AGENTS.md, TEAM_CONTEXT.md, architecture, demo checklist, HANDOFF.md, this inventory, fictional PDF/TXT samples. No active mailbox. |
-| Adaptive interview conversation | Not implemented; questions are generated as a set. No synchronized realtime avatar/voice interviewer. |
-| Advanced analysis | Acoustic pitch/prosody scoring, continuous lip tracking, exact clip alignment, custom training, and validated gesture/gaze assessment remain unimplemented. Local sampled pose landmarks and amplitude-based pauses are included. |
-| Accounts/history/production controls | No durable user/session history, custom auth, per-user quota system, billing, or public abuse-control rollout. Sites private access is the current boundary. |
+| Resume/prompt setup | PDF/TXT browser extraction and editable text, target role/context, 3–6 main topics, focus and level; conversation generates only an opener at setup. PDF: 2 MiB, 10 pages, 18,000 chars, 30 seconds; no OCR. |
+| Personal resumes on unpaid Gemini | Resume/context stays local; optional questions send reviewed fixed skill labels and a broad role. Full personal-text analysis is blocked. |
+| Curated question retrieval | 448 original sourced technical tasks, 112 per track (AI/ML, software, hardware, digital logic), plus behavioral/legacy roles. Answer keys resolve by ID. No live question search. |
+| AI questions | Gemini Interactions or optional OpenAI Responses, strict JSON/runtime validation, safe errors, at most one transient retry. Configured Gemini fallback applies to the second attempt. |
+| Question variety | Cryptographic shuffle, difficulty/topic diversity, exact category quotas, up to 240 recent bank IDs and 36 recent prompts per role in browser memory. Finite banks can repeat; reload clears recent history. |
+| Conversational interview (default) | Questions spoken with an available local English voice; text fallback, continuous optional recording, automatic/manual turn completion, interruption, skip and early finish. Recorded turn limit 3 minutes; session limit 20 minutes. Text turns submit manually. |
+| Pause/resume | Pauses transcription/listening; continuous recorder and physical devices remain active until finish. |
+| Adaptive questions | One opener, then every subsequent consented AI probe/main question generated from the latest answer, role, approved topics, focus/level and recent history. Optional exact quotes are highlighted; repeated/invented questions/quotes are rejected. Local fallback labeled; up to one probe per substantive technical answer. No duplex voice/avatar. |
+| Free Gemini conversation | Explicit fictional/non-sensitive attestation, provider consent, broad role, approved topic labels, focus/level and at most four prior question/answer pairs with ≤4 feedback strings of ≤1,000 chars each per turn. No resume/audio/frame forwarding. Obvious-contact checks are not anonymization. |
+| Individual answer mode | Optional camera/mic preview/meter, separate video and audio recorders, 3-minute cap, stop/retake, transcription retry and text-only practice. |
+| Local transcription | Quantized Whisper Base English in an isolated same-origin worker, 16 kHz mono worklet capture, ~12-second batches, automatic finalization. Guarded complete-answer refinement in conversation. English only; model download/compute latency varies. |
+| Content feedback | Mandatory versioned rubric on every AI grade: relevance 25%, reasoning 30%, evidence 25%, completeness 20%, anchored 0–4. Server validates version/literal evidence and computes scores. Specific critical feedback, deduplication across recent feedback and safe bold emphasis. Local practice remains heuristic; skips unscored. |
+| Factual accuracy | Nullable existing JSON `scores.comprehension`; literal source excerpts required. Supported/partial/contradicted credit weighted by severity; major/critical contradictions cap accuracy and content at 59/25. 32 executable reference exercises plus cash checks override AI. Separate verification adjudicates contradictions/unresolved coverage. AI-reviewed keys are labeled; no human certification, live fact search or proof of personal achievements. |
+| Confidence / delivery | Labeled local weighted pace, repetitions/fillers, interior low-volume gaps, head position and upper-body framing. Insufficient/missing channels excluded. Ordinary movement has no penalty. |
+| Local visual observations | Sampled face/pose geometry with smoothing; scoring requires 8 usable samples and 70% coverage. No face identity, expressions, lip-reading, eye-contact certainty, feelings or hiring judgment. Real-person accuracy remains unverified. |
+| Cloud visual observations | Optional individual-answer JPEG samples under eligible provider/data policy. Separate consent; these notes do not affect scores. Blocked on unpaid Gemini. |
+| Strong/improvement moments | Up to three distinct variable-length excerpts per category from one or multiple answers, approximate timestamps, bounded replay and local video/audio export. Global offsets for continuous recording; whole-answer fallback when timestamps are missing. |
+| Reports | Available-score means, per-answer critical feedback/evidence/reference checks/delivery breakdown, expandable rubric criteria and applied caps, correction/appeal regrading, high-thinking session synthesis and clip coaching, on-demand drills, token/model/latency ledger, full recording download and JSON export without Blob URLs or raw audio/vision arrays. |
+| Storage and privacy | Browser-memory state/recordings; no durable history. Consent checks, server-only keys, bounded requests, provider-safe errors and unpaid profile allowlists. Models may cache; recordings are not intentionally persisted. |
+| Cloud transcription API | Retained consented `/api/transcribe` adapter for eligible clients. Current UI transcribes locally. Paid/live media adapters have mocked coverage only. |
+| Hosting | Existing last-recorded owner-private Sites deployment; D1/R2 disabled. Source on GitHub. Later publication blocked by original Site access. No public launch, custom domain or indexing rollout. |
+| Team continuation | Startup instructions, shared context, handoff, audit, architecture, demo, credentials and dated QA artifacts. No active rover mailbox. |
 
-Do not remove working features or present unverified/deferred features as complete.
+Deferred: durable accounts/history, custom app authentication/quotas/abuse controls,
+public launch/domain setup, non-English ASR, duplex streaming voice, precise
+word/frame editing, pitch/prosody scoring, continuous lip tracking, validated
+gesture/gaze assessment and custom model training.
+
+Verification remains separate for physical-device permissions/cleanup, real speech
+and landmarks, cross-browser performance, full screen-reader use and live paid
+media. Preserve dated QA observations and do not mark these complete from unit tests.

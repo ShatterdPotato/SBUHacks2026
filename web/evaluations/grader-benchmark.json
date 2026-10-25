@@ -1,0 +1,288 @@
+{
+  "date": "2026-10-25",
+  "scope": "Eight fixed factual holdouts, independently specified keys. Not a human expert rubric-agreement or production latency benchmark. No automatic model promotion.",
+  "summary": [
+    {
+      "model": "gemini-3.5-flash-lite",
+      "cases": 8,
+      "correct": 8,
+      "grounded": 8,
+      "failures": 0,
+      "falseCriticism": 0,
+      "missedErrors": 0,
+      "meanSuccessfulLatencyMs": 3123
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "cases": 8,
+      "correct": 3,
+      "grounded": 3,
+      "failures": 5,
+      "falseCriticism": 0,
+      "missedErrors": 0,
+      "meanSuccessfulLatencyMs": 32023
+    }
+  ],
+  "results": [
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "ml-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 3377,
+        "inputTokens": 1753,
+        "outputTokens": 76,
+        "thoughtTokens": 839,
+        "totalTokens": 2668,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "ml-wrong",
+      "expected": "contradicted",
+      "actual": "contradicted",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 2562,
+        "inputTokens": 1755,
+        "outputTokens": 83,
+        "thoughtTokens": 619,
+        "totalTokens": 2457,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "software-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 2560,
+        "inputTokens": 1754,
+        "outputTokens": 69,
+        "thoughtTokens": 804,
+        "totalTokens": 2627,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "software-wrong",
+      "expected": "contradicted",
+      "actual": "contradicted",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 2867,
+        "inputTokens": 1752,
+        "outputTokens": 76,
+        "thoughtTokens": 883,
+        "totalTokens": 2711,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "hardware-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 2507,
+        "inputTokens": 1762,
+        "outputTokens": 100,
+        "thoughtTokens": 720,
+        "totalTokens": 2582,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "hardware-wrong",
+      "expected": "contradicted",
+      "actual": "contradicted",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 3534,
+        "inputTokens": 1770,
+        "outputTokens": 98,
+        "thoughtTokens": 1087,
+        "totalTokens": 2955,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "logic-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 5735,
+        "inputTokens": 1744,
+        "outputTokens": 62,
+        "thoughtTokens": 1892,
+        "totalTokens": 3698,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "id": "logic-wrong",
+      "expected": "contradicted",
+      "actual": "contradicted",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.5-flash-lite",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 1839,
+        "inputTokens": 1748,
+        "outputTokens": 90,
+        "thoughtTokens": 347,
+        "totalTokens": 2185,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "ml-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.8-flash",
+        "status": "completed",
+        "attempts": 2,
+        "latencyMs": 41680,
+        "inputTokens": 1753,
+        "outputTokens": 83,
+        "thoughtTokens": 338,
+        "totalTokens": 2174,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "ml-wrong",
+      "expected": "contradicted",
+      "actual": "contradicted",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.8-flash",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 28902,
+        "inputTokens": 1755,
+        "outputTokens": 97,
+        "thoughtTokens": 328,
+        "totalTokens": 2180,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "software-correct",
+      "expected": "supported",
+      "actual": "supported",
+      "correct": true,
+      "grounded": true,
+      "usage": {
+        "operation": "grader_verification_benchmark",
+        "model": "gemini-3.8-flash",
+        "status": "completed",
+        "attempts": 1,
+        "latencyMs": 25488,
+        "inputTokens": 1754,
+        "outputTokens": 68,
+        "thoughtTokens": 370,
+        "totalTokens": 2192,
+        "incomplete": false
+      }
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "software-wrong",
+      "expected": "contradicted",
+      "actual": "request_failed",
+      "correct": false,
+      "grounded": false
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "hardware-correct",
+      "expected": "supported",
+      "actual": "request_failed",
+      "correct": false,
+      "grounded": false
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "hardware-wrong",
+      "expected": "contradicted",
+      "actual": "request_failed",
+      "correct": false,
+      "grounded": false
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "logic-correct",
+      "expected": "supported",
+      "actual": "request_failed",
+      "correct": false,
+      "grounded": false
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "id": "logic-wrong",
+      "expected": "contradicted",
+      "actual": "request_failed",
+      "correct": false,
+      "grounded": false
+    }
+  ]
+}

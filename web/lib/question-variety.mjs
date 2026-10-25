@@ -22,9 +22,12 @@ export function freshQuestions(candidates, previous = []) {
     for (const q of candidates) if (![...previous, ...result.map(q => q.prompt)].some(p => similarQuestion(p, q.prompt))) result.push(q);
     return result;
 }
-export function shuffled(values, random = Math.random) {
+export function secureRandom() { return crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296; }
+export function shuffled(values, random = secureRandom) {
     const result = [...values]; for (let i = result.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [result[i], result[j]] = [result[j], result[i]]; } return result;
 }
 const recent = new Map();
+const seenBankIds=new Set();
+export function recentBankIds(){return [...seenBankIds];}
 export function recentQuestions(role) { return recent.get(questionKey(role)) ?? []; }
-export function rememberQuestions(role, questions) { recent.set(questionKey(role), [...recentQuestions(role), ...questions.map(q => q.prompt)].slice(-36)); }
+export function rememberQuestions(role, questions) { for(const q of questions)if(q.bankId){seenBankIds.add(q.bankId);if(seenBankIds.size>240)seenBankIds.delete(seenBankIds.values().next().value);}  recent.set(questionKey(role), [...recentQuestions(role), ...questions.map(q => q.prompt)].slice(-36)); }

@@ -8,7 +8,7 @@ export type Delivery = {
     notes: string[];
 };
 export type Moment = { id: string; answerIndex: number; start: number; end: number; transcript: string; score: number; reason: string; url: string; mime: string };
-type Take = { recordingOffset?:number; hasRecording: boolean; url: string | null; transcript: string; duration: number; mime: string; question: { focus: string[] }; analysis: { mode?:string; knowledge?:{checks:{quote:string;status:string}[]}; scores: { confidence: number | null; content: number | null; comprehension: number | null } }; words?: Word[]; audioEvidence?: Audio[]; visionEvidence?: Vision[] };
+type Take = { recordingOffset?:number; hasRecording: boolean; url: string | null; transcript: string; duration: number; mime: string; question: { focus: string[];prompt?:string;category?:string }; analysis: { mode?:string; knowledge?:{checks:{quote:string;status:string}[]}; scores: { confidence: number | null; content: number | null; comprehension: number | null } }; words?: Word[]; audioEvidence?: Audio[]; visionEvidence?: Vision[] };
 export function timedWords(chunks: unknown, duration: number, offset?: number): Word[];
 export function recordedDelivery(input: { transcript: string; duration: number; words?: Word[]; audio?: Audio[]; vision?: Vision[] }): Delivery;
 export function answerMoments(take: Take, answerIndex: number): Moment[];

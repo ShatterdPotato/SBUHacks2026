@@ -52,15 +52,15 @@ export function validateGenericProfile(profile) {
     return { roleFamily: profile.roleFamily, skills: [...new Set(profile.skills)] };
 }
 
-export function personalQuestionRequest({ profile, count, type, level, provider, cloudConsent, variation }) {
-    return { privacyMode: 'personal', profile: validateGenericProfile(profile), count, type, level, providerConsent: provider, cloudConsent: cloudConsent === true, ...(variation ? { variation } : {}) };
+export function personalQuestionRequest({ profile, count, type, level, provider, cloudConsent, variation, format }) {
+    return { privacyMode: 'personal', profile: validateGenericProfile(profile), count, type, level, providerConsent: provider, cloudConsent: cloudConsent === true, ...(variation ? { variation } : {}), ...(format ? { format } : {}) };
 }
 
 export function personalQuestionSetup(body) {
-    const allowed = ['privacyMode', 'profile', 'count', 'type', 'level', 'providerConsent', 'cloudConsent', 'variation'];
+    const allowed = ['privacyMode', 'profile', 'count', 'type', 'level', 'providerConsent', 'cloudConsent', 'variation', 'format'];
     if (Object.keys(body).some(key => !allowed.includes(key)))
         throw new InputError('Personal-resume questions accept generic topic labels only. Keep resume text, files, and answers in the browser.');
     const profile = validateGenericProfile(body.profile);
     return { role: profile.roleFamily, context: `Generic interview topics: ${profile.skills.join(', ') || 'general interview practice'}.`,
-        count: body.count, type: body.type, level: body.level, cloudConsent: body.cloudConsent, variation: body.variation };
+        count: body.count, type: body.type, level: body.level, cloudConsent: body.cloudConsent, variation: body.variation, format: body.format };
 }

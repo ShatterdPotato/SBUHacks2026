@@ -1,95 +1,147 @@
 # Cadence: shared team context
 
-## Conversational interview update (2026-10-24)
+Current premium implementation (October 25): separate high-thinking planning, adaptive interviewer and background grader; selective verification, regrading/appeals, session synthesis, evidence-aligned clip coaching and on-demand drills. Four technical banks include original sourced questions with explicit AI-review provenance and independently executable exercises. Strict randomized coverage, retries, preserved answers and a session usage ledger are implemented. [Operation map](docs/GEMINI_OPERATIONS.md) and [current QA](docs/qa/PREMIUM_2026-10-25.md) supersede older configuration/route/count notes below. No human expert certification or hosted deployment is claimed.
 
-The default studio is now a back-and-forth conversation with spoken local English questions, automatic end-of-turn detection (5/7/10-second wait), optional adaptive follow-ups, and one continuous local video. Individual answer practice remains available. Whisper Base English replaces Tiny; multi-batch answers receive a guarded whole-answer refinement. Recent questions are suppressed in session memory and target-role practical questions take priority over unrelated resume skills.
-
-Free Gemini remains unpaid. A separate explicit fictional/non-sensitive answer opt-in enables /api/interview-turn; this sends question/transcript history (maximum four previous turns) and a broad role, never the actual resume, audio or frames. Personal answers remain local without this opt-in. No billing was enabled.
-
-The third displayed dimension is Knowledge / accuracy (the existing comprehension field in JSON). It scores only claims checked against a small supplied reference pack; unknown claims and personal stories remain unverified. No live web search is implemented. Cash-change arithmetic is deterministic and overrides contradictory AI prose. Video scores require eight usable samples and 70% coverage; movement is described without a penalty, and visual weights are reduced. Session clip ranges include each answer's global recording offset.
+Latest October 25 configuration: all Gemini API operations request high thinking. Models, consent and unpaid policy remain unchanged; current ceilings are 8,192 for planning/interviewing and 16,384 for deep assessment operations. The [premium interview design](docs/PREMIUM_INTERVIEW_DESIGN.md) separates implemented settings from the proposed product architecture.
 
 
+October 25, 2026 update: rubric v3 has separate behavioral anchors and technical-only accuracy. Introductions and all behavioral questions never receive probes. Technical and behavioral content averages are separate; answer headers show content without delivery inflation. Clip reasons quote matching speech and criterion evidence, with a labeled local excerpt fallback. Gemini grading uses high thinking and requires actionable justifications; report prose is built from the same criteria as scores. See [feedback QA](docs/qa/FEEDBACK_GROUNDING_2026-10-25.md).
+
+Updated October 24, 2026, America/New_York, from repository source
+`c13107c0deedfe91c0df9e7890d440f5925d642b`, the repository audit and the
+adaptive interview/rubric implementation on `codex/adaptive-interview-rubric`.
 **Read this first every session. Orchestrator: `aiden.sol`.**
 
-Continuation snapshot: [docs/HANDOFF.md](docs/HANDOFF.md). Read it for the exact
-latest deployment, verified flows, user decisions, missing features, and next steps.
-See [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md) for the full capability inventory.
+Repository: https://github.com/ShatterdPotato/SBUHacks2026. Canonical branch:
+`main`. Team: Aiden Li Productions. Cadence is the working product name.
+The human retired XTrain, hardware roles and the rover mailbox. Do not revive
+them or change unrelated repositories.
 
-- Repository: https://github.com/ShatterdPotato/SBUHacks2026; canonical branch `main`.
-- Updated: 2026-10-24, America/New_York. Team: Aiden Li Productions.
-- Cadence is a working name. The human discontinued XTrain for hardware limitations
-  and authorized replacing this project's files. Rover code remains in Git history.
-  Do not change unrelated repositories.
+## Context map
 
-## Product and architecture
+- [HANDOFF](docs/HANDOFF.md): latest stopping point, publication identity and next steps.
+- [Repository audit](docs/REPOSITORY_AUDIT.md): source map, gaps and current validation.
+- [Feature status](docs/FEATURE_STATUS.md): implemented source versus deferred work.
+- [Architecture](docs/ARCHITECTURE.md): API, privacy, scoring and media contracts.
+- [Demo](docs/DEMO.md): verification procedure and dated evidence index.
+- [Credentials](docs/CREDENTIALS.md): local/hosted access and secret handling.
+- [Grading rubric](docs/GRADING_RUBRIC.md) and [Gemini agent](web/agents/GEMINI.md):
+  mandatory versioned AI grading and conversational question contract.
+- `docs/qa/`: historical evidence; earlier counts and behaviors belong to those revisions.
 
-Upload a resume or describe a target interview; retrieve curated questions or
-generate tailored questions. Practice with optional webcam/microphone, review
-transcripts, receive content/comprehension/delivery feedback, and replay/download
-the strongest and weakest recorded answers. This is voluntary personal coaching.
+## Current product
 
-- `web/`: React/Vinext, Sites integration, Cloudflare Worker.
-- `web/lib/service.mjs`: business API, consent, validation.
-- `web/lib/provider.mjs`: Gemini Interactions and OpenAI Responses adapters.
-- `web/lib/interviewer-instructions.mjs`: shared coaching contract for both providers.
-- `web/lib/interview.mjs`: curated retrieval, practice rubric, delivery metrics.
-- `web/app/page.tsx`: setup, studio, report; actual per-answer MediaRecorder clips.
-- `docs/ARCHITECTURE.md`: API/media contracts. `docs/DEMO.md`: verification.
-- `GET /api/health`; `POST /api/questions`, `/api/analyze`, `/api/transcribe`.
-- `AI_PROVIDER=gemini` uses server-only `GEMINI_API_KEY`; model defaults to
-  `gemini-3.5-flash-lite`. `AI_PROVIDER=openai` uses `OPENAI_API_KEY`. Missing keys mean
-  labeled practice rubric mode. Chat subscriptions do not supply API credentials.
-- `web/lib/pdf-resume.ts`: PDF.js text extraction in a bundled browser worker.
-- Recording-first update: `recording-coach.ts`, `speech.worker.ts`, and the audio
-  worklet run English Whisper transcription locally in ~12-second batches.
-  `scripts/build-speech-worker.mjs` isolates the speech worker from Vinext's page
-  transforms at dev/build startup; the browser loads `/vendor/speech/speech.worker.js`.
-  `public/vision-capture.worker.js` runs local landmark measurements. Model files
-  download from Hugging Face/Google; media is not sent to those download hosts.
-- `recorded-delivery.mjs` calculates labeled delivery components and selects
-  variable-duration speech excerpts; `components/moment-clip.tsx` and
-  `lib/export-clip.ts` replay/export separate strong and improvement clips.
-- `web/lib/resume-profile.mjs`: fixed skill labels, broad roles, generic request validation.
-- Gemini defaults to `GEMINI_DATA_POLICY=unpaid`: personal PDF/TXT resumes are read
-  in the browser. Optional AI questions use only reviewed generic skill labels and
-  a broad role; personal answers use the browser rubric. No raw personal resume,
-  answer, contact, employer, or project data goes to the free API. Fictional sample
-  mode can send made-up text for AI feedback. Raw PDFs/audio/frames remain blocked.
+Sessions target 3–6 main topics. Conversation setup creates one role-first opener;
+each subsequent consented AI question is written from the latest answer, role,
+approved skill topics, focus/level and recent conversation, rather than a preset
+slate. Short exact response quotes can be highlighted; repeats/invented quotes
+are rejected. Without AI opt-in, local retrieval/templates are labeled. The default
+`ConversationStudio` supports local spoken English questions, typed answers or
+optional continuous camera/microphone recording, energy-based turn completion
+after 5/7/10 seconds, manual completion, interruption, pause/resume, skips, early
+finish and one optional follow-up per substantive technical topic. Pause stops listening while
+recording continues. Limits: three minutes per recorded answer/turn and twenty
+minutes per conversation. Text turns are submitted manually. Individual answer
+practice remains available with separate clips
+and retakes.
 
-## Privacy and evidence
+Whisper Base English runs locally with roughly twelve-second caption batches.
+Conversational multi-batch answers get guarded whole-answer refinement; losing
+more than 20% of live recognized words or over two seconds at the recognized end
+keeps live captions. Reports support local transcript corrections. Delivery and
+alignment retain original recording evidence.
 
-Media requires consent and a click; text-only practice is available. Videos remain
-in browser memory and disappear on page close unless downloaded. Cloud processing
-has a separate opt-in for resume/context, transcript, audio, and sampled frames.
-The selected provider's data policies apply; both structured adapters use
-`store:false`. Free Gemini inputs/outputs may improve Google products and be
-reviewed by people. Do not send personal, sensitive, or confidential information.
-Only use a paid data policy after the owner arranges appropriate Google billing
-and data handling; an environment flag cannot enable billing. No server recording
-database is implemented. The API is independent of Codex chat/subscription usage.
+AI content quality uses `cadence-content-v3`: relevance 25%, reasoning 30%,
+specific support 25%, completeness 20%, each anchored 0–4. Every grading request
+injects the full rubric through `web/agents/interview-grader.mjs`; missing/stale
+versions or fabricated criterion evidence fail closed. The server computes the
+weighted score. Local content feedback remains a labeled lexical estimate.
+Feedback is answer-specific, critical, deduplicated and safely bolded. Bounded
+previous feedback helps prevent boilerplate across responses. The JSON field
+`scores.comprehension` displays **Factual accuracy** and is null without checked
+claims. Checks require exact source excerpts; supported/partial/contradicted
+claims receive severity-weighted credit. Major/critical errors cap content and
+accuracy at 59/25. The report explains criteria and caps. The four technical banks contain 448 questions (112 per track), including 32
+executable reference checks and 416 AI-reviewed answer keys. Legacy cash, allergen,
+Python and leakage references remain. AI can classify quoted claims against
+supplied keys/references; human expert certification is not claimed. No live search or verification of
+personal stories is implemented.
 
-Confidence is a labeled local delivery estimate using pace, pauses, possible
-word repetitions/fillers, camera-facing head position, upper-body framing and
-movement when measurable. Missing channels are excluded and weights renormalize.
-These are coaching heuristics, not feelings or personality. Content/comprehension
-use the recognized transcript (with optional corrections); demo keyword
-heuristics cannot establish correctness. Visual feedback describes framing,
-posture/gestures, head orientation, and face/mouth visibility. Head direction
-does not establish eye contact. No face recognition, lip-reading, emotion/trait
-inference, voice identification, or hiring decisions. Missing evidence is
-unavailable, never fabricated. Multiple strong/improvement excerpts can come
-from one recording or several. Speech alignment and export boundaries remain
-approximate; whole-answer fallback remains when timestamps are unavailable.
+Delivery is a labeled local heuristic. Missing cues are excluded; visual scoring
+needs at least eight usable samples and 70% detection coverage. Ordinary movement
+is an observation without a penalty. Strong/improvement excerpts use approximate
+speech ranges, local ranking and real local exports. Continuous-session clips
+add each turn's recording offset. Whole-answer fallback remains when timing is
+missing; one full-interview download is offered.
+
+## Architecture and privacy
+
+`web/` contains React 19 / Vinext, a Cloudflare Worker and Sites integration.
+`app/page.tsx` handles setup, individual practice and report;
+`components/conversation-studio.tsx` handles conversation;
+`lib/service.mjs` routes twelve API endpoints through `worker/index.ts`;
+`lib/premium-service.mjs` implements the seven new interview/review routes.
+See the architecture for the module and request map. D1/R2 are disabled; the
+database/auth/connector utilities are retained scaffolding, not account history.
+
+Keep Gemini unpaid. Default model: `gemini-3.5-flash-lite`; the example config
+sets `gemini-3.1-flash-lite` for the one retry. OpenAI is an optional adapter.
+Structured provider calls use server-only credentials and `store:false`.
+The repository audit found no local key file. Subsequently the user authorized
+local Gemini setup: ignored `web/.dev.vars` is now configured. The value was
+provided through hidden stdin, never read back or printed. Live generic question
+and fictional rubric-turn checks both returned HTTP 200. See
+[local Gemini verification](docs/qa/LOCAL_GEMINI_SETUP_2026-10-24.md).
+
+- Personal PDF/TXT resumes are read in the browser. Under unpaid Gemini, optional
+  AI question requests contain only validated generic role/skill labels.
+- Personal answers remain local. Conversational AI has an independent opt-in;
+  unpaid Gemini requires fictional, non-sensitive question/answer text and sends
+  a broad role, approved skill topics, focus/level and at most four prior turns
+  with bounded feedback. Attestation/contact checks are not
+  anonymization. Do not include real personal data in this path.
+- Fictional setup mode can send invented extracted text/answers with consent.
+  Raw PDFs/audio/frames are blocked on unpaid cloud routes. Paid configuration
+  needs explicit owner authorization and appropriate billing/data handling;
+  changing a flag does not enable billing.
+- Media requires consent and a click. Models download from Hugging Face/Google;
+  recognition and landmark inference run locally. The current UI never uploads
+  original recordings. Separate eligible cloud JPEG notes exist only in individual mode.
+- Session state and clips are memory-only. Download before reload/reset/close.
+  No face identification, lip-reading, emotion/personality/protected-trait
+  inference, psychological diagnosis or hiring judgment is allowed.
+
+## Source, deployment and verification
+
+Conversational source is merged on local `main` at `c13107c`; recording work and
+the standalone-worker fix are also merged. The prior documentation audit remains
+preserved. Current application work is on `codex/adaptive-interview-rubric`.
+See HANDOFF for the latest GitHub publication status.
+
+Last recorded hosted source: `add43d0445ad419509d717ca4316eac4b32f0741`, private
+audience. Later attempts returned `Sites project not found`. Visitor access
+does not grant publishing rights. Preserve the existing Site ID/audience/secrets;
+do not create a replacement. The connector was rechecked during adaptive/rubric
+work and again returned
+`Sites project not found`; remote settings/publication were not available.
+The handoff preserves all publication IDs.
+
+Current checks: **113 tests, TypeScript and production build pass**. The bank
+validator confirms 112 items in each of four tracks. Live synthetic-text checks
+passed planning, adaptive interviewing, grading, independent verification,
+regrading, reports, clips and drills. Browser QA verified mixed coverage,
+retry preservation, regrading, usage display and live evidence-specific clips.
+See [premium QA](docs/qa/PREMIUM_2026-10-25.md). Physical devices, paid media and
+expert bank certification remain unverified. Earlier QA retains its dated scope.
 
 ## Team workflow
 
-Hardware roles and the rover mailbox are retired. `aiden.sol` owns integration
-until humans reassign frontend, AI/backend, and recording/QA roles. Do not invent
-assignments or message delivery. Use branch -> commit -> push -> PR -> review ->
-merge -> pull. Preserve teammate work and update contracts here. Keep personal
-interview data, keys, and ignored private `.coordination/` state out of Git.
+`aiden.sol` owns integration until humans reassign roles. Preserve teammate work
+and coordinate shared contracts. Use branch -> commit -> push -> PR -> review ->
+merge -> pull for integration. Keep keys, personal interview data, generated
+artifacts and ignored private `.coordination/` state out of Git.
 
-Without a connected mailbox, give a manual handoff:
+Without a connected mailbox, use a manual handoff and never invent delivery:
 
 ```text
 From / To:
@@ -100,22 +152,7 @@ Question or blocker:
 Proposed interface or next action:
 ```
 
-Paid provider calls and physical recording hardware require separate end-to-end
-checks. Mocked tests do not establish live AI or real camera/microphone behavior.
-Report actual verification results and remaining setup in the handoff.
-
-2026-10-24: 31 tests, type check, and production build passed. Exact supplied PDF
-accepted (4,198 characters); hosted personal generic-AI questions and browser-rubric
-report verified. Fictional PDF generated AI questions; final fictional answer check
-was interrupted. Physical media and paid media adapters remain separately unverified.
-
-Latest browser-audit checkpoint: 44 tests, type check, and production build PASS.
-Primary Gemini 3.5 Flash-Lite, configured retry fallback 3.1 Flash-Lite, unpaid
-policy preserved. Latest deployed source add43d0445ad419509d717ca4316eac4b32f0741.
-Personal and fictional PDF live question generation passed. The continuation
-completed fictional answer feedback, report, and JSON export, and reran all 44
-tests, type check, and build successfully. See docs/HANDOFF.md and
-docs/qa/RESUME_BROWSER_AUDIT_2026-10-24.md for 125 manual scenarios, fixes, and limits.
-Current continuation evidence: docs/qa/CONTINUATION_VERIFICATION_2026-10-24.md.
-No application redeployment was required. Physical media and full Firefox /
-screen-reader checks remain unverified; focused responsive/help checks passed.
+From `web/`, run `pnpm test`, `pnpm exec tsc --noEmit` and `pnpm build` for
+application changes. Model-worker assets are generated by the package scripts;
+restart dev after editing speech-worker source. Mocked tests and synthetic
+recording fixtures do not establish live AI or physical-device success.

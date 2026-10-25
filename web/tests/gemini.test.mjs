@@ -1,3 +1,4 @@
+import { rubricFixture } from './fixtures/grading.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { handleApi } from '../lib/service.mjs';
@@ -6,7 +7,7 @@ const env = { AI_PROVIDER: 'gemini', GEMINI_API_KEY: 'test-secret', GEMINI_DATA_
 const request = (path, body) => new Request(`https://cadence.test/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ providerConsent: 'gemini', cloudConsent: true, demoDataOnly: true, ...body }) });
 const output = (data, status = 'completed') => Response.json({ status, steps: [{ type: 'thought', summary: [{ type: 'text', text: 'Never parse reasoning.' }] }, { type: 'model_output', content: [{ type: 'text', text: JSON.stringify(data) }] }] });
 const questions = Array.from({ length: 3 }, (_, i) => ({ prompt: `Describe fictional project ${i + 1}.`, category: 'Technical', focus: ['project'] }));
-const feedback = { content: 70, comprehension: 80, summary: 'The fictional example includes a result.', strengths: ['A measured result'], improvements: ['Explain the baseline'], evidence: ['I built a pretend project', 'invented evidence'], visual: ['Invented visual'] };
+const feedback = { content: 70, comprehension: 80, summary: 'The fictional example includes a result.', strengths: ['A measured result'], improvements: ['Explain the baseline'], evidence: ['I built a pretend project', 'invented evidence'], visual: ['Invented visual'], rubric:rubricFixture('I built a pretend project'), checks:[] };
 const answer = 'In this fictional example I built a pretend project to sort blocks. First I measured a baseline. Then I tested the change and the result improved by 20 percent.';
 const body = { question: { prompt: 'Describe a fictional project.', focus: ['project'] }, answer, mode: 'live' };
 const never = async () => { assert.fail('No upstream request should be made.'); };
@@ -31,6 +32,7 @@ test('Gemini questions use header auth, structured JSON, shared instructions, an
         assert.equal(options.headers.Authorization, undefined);
         const sent = JSON.parse(options.body);
         assert.equal(sent.store, false);
+        assert.equal(sent.generation_config.thinking_level, 'high');
         assert.equal(sent.model, 'gemini-3.5-flash-lite');
         assert.equal(sent.response_format.mime_type, 'application/json');
         assert.equal(sent.response_format.schema.additionalProperties, false);
@@ -64,7 +66,7 @@ test('Gemini feedback filters ungrounded evidence and visuals and preserves text
     const data = await response.json();
     assert.equal(response.status, 200);
     assert.equal(data.mode, 'live');
-    assert.equal(data.scores.content, 70);
+    assert.equal(data.scores.content, 75);
     assert.equal(data.scores.confidence, null);
     assert.deepEqual(data.evidence, ['I built a pretend project']);
     assert.deepEqual(data.visual, []);
@@ -106,6 +108,7 @@ test('paid Gemini transcription forwards actual audio only with matching consent
         const sent = JSON.parse(options.body);
         assert.equal(sent.store, false);
         assert.equal(sent.input[1].mime_type, 'audio/webm');
+        assert.equal(sent.generation_config.thinking_level, 'high');
         assert.equal(atob(sent.input[1].data), 'test audio');
         return output({ text: 'A synthetic test transcript.' });
     });

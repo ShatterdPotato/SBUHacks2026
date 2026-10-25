@@ -6,6 +6,8 @@ export const ROLE_RULES = [
       topics: ['Teamwork', 'Reliability', 'Safety', 'Inventory'], guidance: 'Prioritize accuracy, safe handling, inventory, teamwork and reliable work. Avoid unrelated coding questions.' },
     { family: 'AI/ML engineering', pattern: /\b(machine learning|ai[ /-]*ml|ai|ml|pytorch|tensorflow|nlp)\b/i, guidance: 'Prioritize model evaluation, data quality, leakage, experiments and job-relevant engineering.' },
     { family: 'Data science', pattern: /data science|data scientist|data analyst/i, guidance: 'Prioritize data analysis, statistical reasoning, experiments and business interpretation.' },
+    { family: 'Digital logic', pattern: /digital logic|logic design|fpga|verilog|vhdl/i, guidance: 'Use Boolean logic, combinational and sequential circuits, finite-state machines, timing and RTL analysis with concrete answerable tasks.' },
+    { family: 'Hardware engineering', pattern: /hardware|computer architecture|vlsi/i, guidance: 'Use architecture, cache calculations, pipelines, timing, RTL and verification with concrete constraints and answer keys.' },
     { family: 'Electrical engineering', pattern: /electrical|circuits?|embedded/i, guidance: 'Prioritize measurement, circuits, debugging and safe engineering reasoning.' },
     { family: 'Product management', pattern: /product manager|product management|user research/i, guidance: 'Prioritize user needs, prioritization, communication, tradeoffs and measurable outcomes.' },
     { family: 'Software engineering', pattern: /software|developer|programmer|python|javascript/i, guidance: 'Prioritize software design, debugging, tests, data structures and job-relevant implementation.' },

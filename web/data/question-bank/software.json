@@ -1,0 +1,3816 @@
+[
+  {
+    "prompt": "If a dynamic array doubles its capacity when full, what is the worst-case time complexity of a single append, and what is the amortized time complexity per append over N consecutive appends starting empty? Briefly explain why.",
+    "level": "Internship",
+    "answerKey": "Worst-case time complexity is $O(N)$ when a resize occurs, requiring a full array copy. Amortized time complexity is $O(1)$ per append because costly resizes happen infrequently enough that the sum of all resize costs is linear over $N$ operations.",
+    "essentialFacts": [
+      "Worst-case append is $O(N)$ due to copying during resize.",
+      "Amortized cost per append is $O(1)$.",
+      "Geometric resizing spreads out the cost of copies."
+    ],
+    "acceptableAlternatives": [
+      "O(N) peak and O(1) average per insertion using aggregate analysis."
+    ],
+    "partialCredit": [
+      "Identifies O(1) amortized but fails to explain worst-case resize cost."
+    ],
+    "misconceptions": [
+      "Assuming every append takes $O(N)$ time because of resizing.",
+      "Thinking resizing adds $O(1)$ overhead each time."
+    ],
+    "probes": [
+      "How would the amortized complexity change if the array grew by a fixed constant size instead of doubling?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-001",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a hash table using chaining, how does the worst-case time complexity for a lookup change when all keys hash to the exact same bucket, and what determines the average lookup time?",
+    "level": "Internship",
+    "answerKey": "Worst-case lookup degrades to $O(N)$ because the chain acts like a linked list containing all elements. Average lookup time is determined by the load factor $\\alpha = N / K$, assuming a uniform hash function.",
+    "essentialFacts": [
+      "Worst-case is $O(N)$ with all keys in one bucket.",
+      "Average lookup depends on the load factor.",
+      "Uniform hash distribution keeps average chains short."
+    ],
+    "acceptableAlternatives": [
+      "O(N) for degenerate collisions; O(1) average with low load factor."
+    ],
+    "partialCredit": [
+      "Mentions O(N) worst-case but omits load factor explanation."
+    ],
+    "misconceptions": [
+      "Believing hash map lookups are always $O(1)$ regardless of collisions."
+    ],
+    "probes": [
+      "What happens to open addressing performance under heavy collisions compared to chaining?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-002",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a sorted array of integers and a target sum, describe how to find a pair that adds up to the target using two pointers in O(N) time and O(1) space, and explain the pointer movement logic.",
+    "level": "Entry level",
+    "answerKey": "Place one pointer at the start (index 0) and the other at the end (index N-1). If their sum equals the target, return them. If the sum is less than the target, increment the left pointer. If greater, decrement the right pointer.",
+    "essentialFacts": [
+      "Requires a sorted array to guarantee correctness.",
+      "Pointers start at opposite ends (left=0, right=N-1).",
+      "Sum smaller moves left pointer right; sum larger moves right pointer left."
+    ],
+    "acceptableAlternatives": [
+      "Left and right indices converging inward based on comparison with target sum."
+    ],
+    "partialCredit": [
+      "Identifies pointer placement but lacks condition logic for moving them."
+    ],
+    "misconceptions": [
+      "Trying to use two-pointer opposite ends on an unsorted array without sorting first."
+    ],
+    "probes": [
+      "How would you modify this approach if the array were unsorted and you needed $O(N)$ time?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-003",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given an array of integers, write the logic to find the first element that repeats. What are the time and space complexities using a hash set, and why can't we use a simple counter variable?",
+    "level": "Entry level",
+    "answerKey": "Iterate through the array, checking if the current element is in a hash set. If it is, return it as the first duplicate. Otherwise, add it to the set. Time is $O(N)$ and space is $O(N)$. A single counter cannot track multiple unique elements simultaneously.",
+    "essentialFacts": [
+      "Iterates through elements checking presence in a hash set.",
+      "Time complexity is $O(N)$ and space complexity is $O(N)$.",
+      "A counter variable lacks capacity to store seen element identities."
+    ],
+    "acceptableAlternatives": [
+      "Using a hash map to store seen elements during a single pass."
+    ],
+    "partialCredit": [
+      "Correctly gives time/space complexity but fails to explain why a counter fails."
+    ],
+    "misconceptions": [
+      "Thinking an array search for previous elements yields $O(N)$ overall time instead of $O(N^2)$."
+    ],
+    "probes": [
+      "What if you need the element that appears *most frequently* rather than the first repeating one?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-004",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how to construct a prefix sum array from a 1D array of length N to answer range sum queries [i, j] in O(1) time. What are the preprocessing time and space complexities?",
+    "level": "Entry level",
+    "answerKey": "Construct a prefix array where `P[k] = P[k-1] + A[k]`. A range sum $[i, j]$ is computed as `P[j] - P[i-1]` (with `P[-1] = 0`). Preprocessing takes $O(N)$ time and $O(N)$ auxiliary space.",
+    "essentialFacts": [
+      "Prefix sum formula: `P[j] - P[i-1]` for range sum $[i, j]$.",
+      "Preprocessing requires $O(N)$ time.",
+      "Auxiliary space complexity is $O(N)$."
+    ],
+    "acceptableAlternatives": [
+      "Building cumulative sums iteratively in linear time for constant-time lookups."
+    ],
+    "partialCredit": [
+      "Correct formula for query but incorrect preprocessing complexity."
+    ],
+    "misconceptions": [
+      "Assuming range sum queries require iterating from $i$ to $j$ every time."
+    ],
+    "probes": [
+      "How does this extend to a 2D matrix for submatrix sum queries?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-005",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When a hash map exceeds its maximum load factor, it triggers rehashing. Explain the worst-case latency impact on write operations during this resize, and how amortized analysis guarantees O(1) inserts despite this.",
+    "level": "Experienced",
+    "answerKey": "Resizing allocates a larger backing array and re-hashes all existing keys into new buckets, causing a single $O(N)$ latency spike. Amortized analysis spreads this $O(N)$ cost across the $K$ insertions since the next resize requires another doubling of capacity.",
+    "essentialFacts": [
+      "Rehashing involves allocating a new table and re-inserting all existing entries ($O(N)$ spike).",
+      "Triggers when load factor exceeds threshold.",
+      "Amortized cost remains $O(1)$ per insert due to exponential capacity growth."
+    ],
+    "acceptableAlternatives": [
+      "Linear proportional resize cost distributed across exponential growth intervals."
+    ],
+    "partialCredit": [
+      "Explains rehashing spike but misses amortized distribution proof."
+    ],
+    "misconceptions": [
+      "Believing rehashing can be performed in-place without additional memory allocation."
+    ],
+    "probes": [
+      "How might a real-time system mitigate the tail latency spike caused by a massive hash table resize?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-006",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given an unsorted array of integers, explain how to find the total number of continuous subarrays whose sum equals K in O(N) time using a hash map for prefix sums.",
+    "level": "Experienced",
+    "answerKey": "Maintain a running prefix sum. Store the frequency of each prefix sum in a hash map. For each element, check if `prefix_sum - K` exists in the hash map; if so, add its frequency to your count.",
+    "essentialFacts": [
+      "Maintain running prefix sum and a frequency map of prefix sums.",
+      "Check for existence of `prefix_sum - K` in the map at each step.",
+      "Achieves $O(N)$ time and $O(N)$ space complexity."
+    ],
+    "acceptableAlternatives": [
+      "Using a hash map to track cumulative sum frequencies for single-pass lookup."
+    ],
+    "partialCredit": [
+      "Uses prefix sum but loops through array subarrays nestedly, resulting in $O(N^2)$ time."
+    ],
+    "misconceptions": [
+      "Assuming two pointers work on unsorted arrays with negative numbers for sum problems."
+    ],
+    "probes": [
+      "Why does this prefix sum hash map approach fail if the array contains positive numbers only and we try to use sliding window instead?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-007",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If an application uses a weak string hash function to populate a hash map from untrusted external user input, what vulnerability is exposed, and what algorithmic complexity attack can malicious clients execute?",
+    "level": "Experienced",
+    "answerKey": "It exposes the application to Hash Collision Denial of Service (DoS) attacks. Malicious clients can supply specially crafted strings that all hash to the same bucket, degrading hash map operations from $O(1)$ to $O(N)$ and exhausting CPU resources.",
+    "essentialFacts": [
+      "Vulnerable to Hash Collision Denial of Service (DoS).",
+      "Attackers craft colliding inputs to degrade performance to $O(N)$ per operation.",
+      "Exhausts CPU by forcing long linked-list traversals or tree searches in buckets."
+    ],
+    "acceptableAlternatives": [
+      "Algorithmic complexity attack causing worst-case O(N^2) or O(N log N) behavior via intentional hash collisions."
+    ],
+    "partialCredit": [
+      "Identifies DoS risk but fails to explain the $O(N)$ operational degradation mechanism."
+    ],
+    "misconceptions": [
+      "Assuming hash maps always use cryptographic hashes that resist collision attacks by default."
+    ],
+    "probes": [
+      "How do modern languages like Python or Java mitigate hash collision Denial of Service attacks in their standard dictionary implementations?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-008",
+    "track": "software",
+    "competency": "arrays and hashing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Write the pointer update steps to reverse a singly linked list iteratively in place. What are the time and space complexities?",
+    "level": "Internship",
+    "answerKey": "Maintain three pointers: prev (initially null), curr (head), and next. In a loop while curr is not null: save next = curr.next, update curr.next = prev, shift prev = curr and curr = next. Time complexity is O(N) and space complexity is O(1).",
+    "essentialFacts": [
+      "Requires three pointers (prev, curr, next) to avoid losing references during pointer reversal",
+      "Time complexity is O(N) and space complexity is O(1) in-place"
+    ],
+    "acceptableAlternatives": [
+      "Using pointer swapping or recursive stack frames with O(N) space"
+    ],
+    "partialCredit": [
+      "Correctly identifies the need for pointers but misses the exact update sequence",
+      "Gets time complexity right but misses space complexity details"
+    ],
+    "misconceptions": [
+      "Thinking recursion takes O(1) space",
+      "Modifying pointers without saving next reference, causing a memory leak or lost nodes"
+    ],
+    "probes": [
+      "What happens to the head pointer after the loop finishes?",
+      "How does the space complexity change if you implement this recursively?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-009",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a string of parentheses ()[]{} check validity using a stack. What is pushed onto the stack when you encounter an opening bracket?",
+    "level": "Internship",
+    "answerKey": "When encountering an opening bracket, push it onto the stack. When encountering a closing bracket, pop from the stack and check if it matches the corresponding opening bracket type. Time complexity is O(N), space is O(N).",
+    "essentialFacts": [
+      "Push opening brackets onto the stack",
+      "Pop and validate against the top of the stack when a closing bracket appears"
+    ],
+    "acceptableAlternatives": [
+      "Using an array or list as a LIFO stack wrapper"
+    ],
+    "partialCredit": [
+      "Knows to use a stack for brackets but confuses push and pop conditions"
+    ],
+    "misconceptions": [
+      "Pushing closing brackets onto the stack instead of opening brackets",
+      "Checking only count rather than nesting order"
+    ],
+    "probes": [
+      "What does the stack contain when the string is successfully validated?",
+      "What is the final check needed when the string traversal ends?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-010",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Describe how to find the middle node of a singly linked list in a single pass using two pointers moving at different speeds. State their speeds.",
+    "level": "Entry level",
+    "answerKey": "Use a slow pointer and a fast pointer both starting at the head. The slow pointer moves 1 step at a time, while the fast pointer moves 2 steps at a time. When the fast pointer reaches the end, the slow pointer is at the middle.",
+    "essentialFacts": [
+      "Slow pointer moves 1 step per iteration",
+      "Fast pointer moves 2 steps per iteration"
+    ],
+    "acceptableAlternatives": [
+      "Counting the total nodes first in one pass, then traversing to N/2 in a second pass"
+    ],
+    "partialCredit": [
+      "Identifies using two pointers but gets their relative speeds wrong"
+    ],
+    "misconceptions": [
+      "Moving both pointers at the same speed",
+      "Failing to handle even vs odd length list termination conditions"
+    ],
+    "probes": [
+      "How does the algorithm behave differently on lists with an even number of nodes versus an odd number?",
+      "Why is this single-pass approach preferred over counting first?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-011",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how to implement a FIFO queue using two stacks. What is the worst-case time complexity of a dequeue operation, and why?",
+    "level": "Entry level",
+    "answerKey": "Use two stacks: inStack for pushes and outStack for pops. When dequeuing, if outStack is empty, pop all elements from inStack and push them into outStack. Worst-case time complexity for dequeue is O(N) when outStack is empty, but amortized time is O(1) per operation because each element is moved at most twice between stacks.",
+    "essentialFacts": [
+      "inStack handles push operations, outStack handles dequeue/pop operations",
+      "Amortized time complexity for dequeue is O(1) despite O(N) worst-case"
+    ],
+    "acceptableAlternatives": [
+      "Making enqueue O(N) and dequeue O(1) by reversing elements on every push"
+    ],
+    "partialCredit": [
+      "Explains the two stacks but incorrectly states dequeue is always O(N) without mentioning amortized analysis"
+    ],
+    "misconceptions": [
+      "Assuming every dequeue takes O(N) time",
+      "Moving elements between stacks on every single operation unnecessarily"
+    ],
+    "probes": [
+      "Under what exact condition does a dequeue operation trigger an O(N) transfer?",
+      "Why does amortized analysis result in O(1) per operation over a sequence of calls?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-012",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain Floyd's cycle-finding algorithm to detect a cycle in a singly linked list. What is the time complexity and space complexity of this approach?",
+    "level": "Entry level",
+    "answerKey": "Use two pointers, slow and fast. Slow moves 1 step, fast moves 2 steps. If there is a cycle, fast will eventually meet slow. Time complexity is O(N), space complexity is O(1).",
+    "essentialFacts": [
+      "Slow pointer advances by 1 step, fast pointer by 2 steps",
+      "Time complexity is O(N) and space complexity is O(1)"
+    ],
+    "acceptableAlternatives": [
+      "Using a hash set to store visited node references with O(N) space"
+    ],
+    "partialCredit": [
+      "Mentions two pointers but omits the step sizes or cycle confirmation logic"
+    ],
+    "misconceptions": [
+      "Assuming space complexity must be O(N) to track visited nodes",
+      "Believing the fast pointer can jump arbitrarily without missing a cycle"
+    ],
+    "probes": [
+      "How would you find the exact starting node of the cycle after detecting it?",
+      "Why does the fast pointer not overshoot the slow pointer inside the cycle?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-013",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an LRU cache using a hash map and a doubly linked list, why must nodes be doubly linked rather than singly linked for O(1) eviction?",
+    "level": "Experienced",
+    "answerKey": "A doubly linked list allows O(1) removal of an arbitrary node when given a direct reference to it (from the hash map), because you can access its predecessor and successor immediately. With a singly linked list, removing a node requires traversing from the head to find its predecessor, taking O(N) time.",
+    "essentialFacts": [
+      "Doubly linked list provides direct predecessor and successor access",
+      "Singly linked list requires O(N) traversal to find the predecessor for deletion"
+    ],
+    "acceptableAlternatives": [
+      "Storing predecessor pointers in a separate structure"
+    ],
+    "partialCredit": [
+      "Recognizes performance is better for doubly linked lists but fails to explain predecessor access during arbitrary deletion"
+    ],
+    "misconceptions": [
+      "Thinking a hash map alone can maintain queue order without a linked list",
+      "Believing singly linked lists support O(1) node removal given only the node pointer"
+    ],
+    "probes": [
+      "What role does the hash map play in achieving O(1) lookup and update times?",
+      "How do you handle edge cases when evicting the tail node?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-014",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a stack supporting push, pop, and retrieving the minimum element in O(1) time. Describe the state stored in the auxiliary stack during a push of a larger value.",
+    "level": "Experienced",
+    "answerKey": "Maintain a main stack for all values and an auxiliary min stack. When pushing a value, push it to the main stack and push either the value or the current minimum onto the min stack (whichever is smaller). Thus, the top of the min stack always holds the current minimum in O(1) time.",
+    "essentialFacts": [
+      "Uses an auxiliary stack alongside the main stack",
+      "Auxiliary stack stores the minimum value seen so far for each depth"
+    ],
+    "acceptableAlternatives": [
+      "Storing tuples of (value, current_min) in a single stack"
+    ],
+    "partialCredit": [
+      "Mentions an auxiliary stack but fails to explain how duplicate or larger values are handled on push"
+    ],
+    "misconceptions": [
+      "Keeping a single global minimum variable, which fails when the minimum element is popped",
+      "Pushing only new minimums to the auxiliary stack without matching stack depth"
+    ],
+    "probes": [
+      "What happens to the auxiliary stack during a pop operation?",
+      "How does storing every value versus storing only new minimums affect space complexity?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-015",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how to remove the n-th node from the end of a singly linked list in one pass using a two-pointer gap. What is the initial distance between pointers?",
+    "level": "Experienced",
+    "answerKey": "Use two pointers, first and second, starting at the head. Advance the first pointer n steps ahead. Then advance both pointers together until first reaches the end. The second pointer will be at the node before the target, allowing deletion in one pass. The initial distance is n steps.",
+    "essentialFacts": [
+      "Advance the first pointer n steps ahead to create a gap",
+      "Traverse both pointers until the first pointer hits the end, placing the second pointer at the predecessor node"
+    ],
+    "acceptableAlternatives": [
+      "Counting total nodes first, then making a second pass to delete L - n"
+    ],
+    "partialCredit": [
+      "Identifies two pointers but creates the wrong initial gap or misidentifies the target deletion node"
+    ],
+    "misconceptions": [
+      "Starting pointers at different locations instead of using a step offset",
+      "Failing to account for removing the head node itself"
+    ],
+    "probes": [
+      "How do you handle the edge case where n equals the total length of the list (removing the head)?",
+      "Why does this satisfy the requirement of doing it in a single pass?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-016",
+    "track": "software",
+    "competency": "linked lists and stacks",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Insert values 5, 3, 7, 1 into an initially empty binary search tree. What is the exact in-order traversal result, and why does this specific traversal order produce a sorted sequence?",
+    "level": "Internship",
+    "answerKey": "In-order traversal visits left subtree, root, then right subtree. Inserting 5, 3, 7, 1 creates a BST with root 5, left child 3 (with left child 1), and right child 7. The in-order traversal visits 1, then 3, then 5, then 7. By definition, a BST invariant ensures all left descendants are smaller than the root and right descendants are larger, making in-order traversal strictly sorted in ascending order.",
+    "essentialFacts": [
+      "In-order traversal sequence is [1, 3, 5, 7].",
+      "BST invariant ensures left < root < right, guaranteeing a sorted output sequence."
+    ],
+    "acceptableAlternatives": [
+      "Describing the node visiting order explicitly as left-root-right yielding 1, 3, 5, 7."
+    ],
+    "partialCredit": [
+      "Correct traversal sequence without explaining why in-order yields sorted order.",
+      "Correct tree structure with a minor ordering mistake in traversal output."
+    ],
+    "misconceptions": [
+      "Assuming in-order traversal gives level-order traversal.",
+      "Believing any binary tree traversal yields a sorted sequence."
+    ],
+    "probes": [
+      "How would the tree structure and traversal result change if 1 was inserted before 5?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-017",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a min-heap represented as array [2, 5, 8, 10, 15], what is the array after inserting the value 3? State the index swaps performed during the bubble-up operation.",
+    "level": "Internship",
+    "answerKey": "Value 3 is appended at the next available array index (index 5). Parent of index 5 is at index (5-1)//2 = 2 (value 8). Since 3 < 8, swap them. Array becomes [2, 5, 3, 10, 15, 8]. Next, compare 3 with its new parent at index (2-1)//2 = 0 (value 2). Since 3 > 2, stop. Final array is [2, 5, 3, 10, 15, 8], with index 5 swapped with index 2.",
+    "essentialFacts": [
+      "Value 3 is appended at the end of the array.",
+      "Swapped with parent 8 at index 2.",
+      "Final array is [2, 5, 3, 10, 15, 8]."
+    ],
+    "acceptableAlternatives": [
+      "Describing the parent-child index math explicitly with identical swap steps."
+    ],
+    "partialCredit": [
+      "Correct final array without detailing the specific index swap steps.",
+      "Correct swap logic but arithmetic error when calculating parent indices."
+    ],
+    "misconceptions": [
+      "Min-heap arrays must be fully sorted left-to-right.",
+      "New elements are inserted at the root and sifted down."
+    ],
+    "probes": [
+      "What happens to the array structure if you extract the minimum element from this resulting heap?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-018",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why worst-case search time in a standard binary search tree is O(N) while a balanced BST guarantees O(log N). What topological property causes the degradation?",
+    "level": "Entry level",
+    "answerKey": "A standard BST can degenerate into a linear chain (like a linked list) if inserted in sorted order, resulting in height N and O(N) search time. Balanced BSTs (such as AVL or Red-Black trees) enforce height invariants using rotations to maintain a height of O(log N). The topological degradation is caused by an unbalanced, highly skewed shape.",
+    "essentialFacts": [
+      "Unbalanced BST height degrades to N, leading to O(N) search.",
+      "Balanced BSTs maintain height O(log N) using rotations.",
+      "Skewed linear height is the topological property causing degradation."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning tree imbalance or height skewness."
+    ],
+    "partialCredit": [
+      "Stating O(N) vs O(log N) without explaining the topological degradation."
+    ],
+    "misconceptions": [
+      "All BSTs automatically self-balance.",
+      "Hash collisions cause binary search tree degradation."
+    ],
+    "probes": [
+      "How do AVL trees detect when a rotation is required during insertion?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-019",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given an array of N elements, what is the time complexity of building a binary heap using bottom-up heapify versus N successive insertions? Explain the asymptotic difference.",
+    "level": "Entry level",
+    "answerKey": "Bottom-up heapify takes O(N) time because most nodes reside near the bottom and sift down at most 1 or 2 levels. N successive insertions take O(N log N) time because each insertion performs a bubble-up taking up to log N worst-case steps.",
+    "essentialFacts": [
+      "Bottom-up heapify is O(N).",
+      "Successive insertions are O(N log N).",
+      "Leaf nodes dominate the height distribution, making heapify linear."
+    ],
+    "acceptableAlternatives": [
+      "Mathematical summation explanation of node distribution across tree heights."
+    ],
+    "partialCredit": [
+      "Stating correct complexities without explaining why heapify is faster."
+    ],
+    "misconceptions": [
+      "Both approaches take O(N log N) time.",
+      "Heapify operates top-down from the root."
+    ],
+    "probes": [
+      "Derive why the height summation evaluates to O(N)."
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-020",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a max-heap of size N, describe the exact steps to replace the maximum element with a new value X and restore heap order in O(log N) time.",
+    "level": "Entry level",
+    "answerKey": "Instead of extracting and inserting separately, overwrite the root with X. Then, perform a sift-down (bubble-down) operation by comparing X with its children, swapping with the larger child, and repeating down the tree until heap order is restored.",
+    "essentialFacts": [
+      "Overwrite the root directly with X.",
+      "Perform a sift-down operation from the root.",
+      "Swap with the larger child at each step."
+    ],
+    "acceptableAlternatives": [
+      "Referring to the combined operation as an optimized extract-then-insert."
+    ],
+    "partialCredit": [
+      "Mentioning root replacement but incorrectly performing a bubble-up instead of sift-down."
+    ],
+    "misconceptions": [
+      "You must completely remove the root and rebuild the entire heap from scratch."
+    ],
+    "probes": [
+      "What is the complexity if you mistakenly sift-up instead of sift-down after replacing the root?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-021",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an augment-balanced BST supporting order-statistic operations (finding the k-th smallest element), what metadata must be stored in each node, and how is it updated during tree rotations?",
+    "level": "Experienced",
+    "answerKey": "Each node must store the size of its subtree (or left subtree size). During a left or right rotation, the subtree sizes of the rotated nodes must be updated locally in O(1) time using the sizes of their updated children.",
+    "essentialFacts": [
+      "Store subtree size (or left child count) in each node.",
+      "Update sizes locally in O(1) time during rotations.",
+      "Enables O(log N) selection."
+    ],
+    "acceptableAlternatives": [
+      "Storing left-subtree weight or total node count per subtree."
+    ],
+    "partialCredit": [
+      "Identifying that size is needed but omitting how rotations update metadata."
+    ],
+    "misconceptions": [
+      "You can find the k-th element in O(1) without metadata by random traversal."
+    ],
+    "probes": [
+      "How does the search algorithm use subtree size metadata to find the k-th element?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-022",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how to implement a streaming median finder using two heaps (a max-heap for the lower half and a min-heap for the upper half). What is the balancing invariant and time complexity per insertion?",
+    "level": "Experienced",
+    "answerKey": "Max-heap stores the lower half, min-heap stores the upper half. Invariant: maxHeap.size() == minHeap.size() or maxHeap.size() == minHeap.size() + 1. Insert into max-heap, move root to min-heap, rebalance if sizes violate invariant. Time complexity is O(log N) per insertion.",
+    "essentialFacts": [
+      "Two heaps: max-heap for lower half, min-heap for upper half.",
+      "Size invariant: equal sizes or max-heap has one extra element.",
+      "Insertion complexity is O(log N)."
+    ],
+    "acceptableAlternatives": [
+      "Detailed balance check steps matching the size invariant."
+    ],
+    "partialCredit": [
+      "Mentioning two heaps without stating the size balancing invariant."
+    ],
+    "misconceptions": [
+      "Both heaps must be exactly the same size even for odd total numbers of elements."
+    ],
+    "probes": [
+      "How do you handle duplicate values across the two heaps?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-023",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Design a cache eviction policy using a min-heap and hash map to evict items based on expiration timestamps in O(log N) time. What data inconsistency occurs if an item's expiration is updated without heap restructuring?",
+    "level": "Experienced",
+    "answerKey": "Hash map stores key to (value, heap_index), min-heap stores keys ordered by expiration timestamp. Updating expiration without restructuring leaves the heap in an invalid state, causing stale keys to be evicted prematurely or missed entirely.",
+    "essentialFacts": [
+      "Hash map maps key to heap position.",
+      "Min-heap orders by expiration timestamp.",
+      "Updating without heap fix breaks heap invariant and causes stale eviction order."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning lazy deletion or decrease-key operations."
+    ],
+    "partialCredit": [
+      "Explaining hash map and heap roles but missing the consequence of stale heap entries."
+    ],
+    "misconceptions": [
+      "Heap updates are O(1) simply because you have a hash map pointing to the node."
+    ],
+    "probes": [
+      "How does lazy deletion affect memory usage, and how do you mitigate it?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-024",
+    "track": "software",
+    "competency": "trees and heaps",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an unweighted graph with nodes A, B, C, D and edges (A,B), (B,C), (A,C), (C,D), what is the exact shortest path length from node A to node D using BFS?",
+    "level": "Internship",
+    "answerKey": "The shortest path length is 2, taking the path A -> C -> D.",
+    "essentialFacts": [
+      "BFS guarantees the shortest path in unweighted graphs.",
+      "Node C is reached at level 1 via edge (A,C).",
+      "Node D is reached from C at level 2."
+    ],
+    "acceptableAlternatives": [
+      "Path length 2 via A -> C -> D."
+    ],
+    "partialCredit": [
+      "Recognizing BFS finds shortest paths, but miscalculating the path length as 3 by taking A -> B -> C -> D."
+    ],
+    "misconceptions": [
+      "Assuming any valid traversal order yields the shortest path.",
+      "Confusing BFS level-order discovery with DFS depth-first exploration."
+    ],
+    "probes": [
+      "How does BFS guarantee shortest path finding compared to DFS in unweighted graphs?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-025",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a directed graph with edges (1,2), (2,3), and (3,1), state whether a cycle exists using DFS and explain which tracking states identify the back edge.",
+    "level": "Internship",
+    "answerKey": "A cycle exists. A back edge is identified when visiting node 3 points to node 1, which is currently in the active recursion stack (gray/visiting state).",
+    "essentialFacts": [
+      "Directed cycles are detected by encountering a neighbor currently in the current recursion stack.",
+      "Edges pointing to fully processed (black) nodes do not indicate cycles."
+    ],
+    "acceptableAlternatives": [
+      "Cycle exists because node 3 points back to an ancestor currently being explored in recursion."
+    ],
+    "partialCredit": [
+      "Correctly identifying that a cycle exists without explaining the recursion stack state."
+    ],
+    "misconceptions": [
+      "Assuming any previously visited node indicates a cycle in a directed graph, ignoring cross edges."
+    ],
+    "probes": [
+      "Why isn't a simple boolean visited array sufficient for cycle detection in directed graphs?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-026",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Dijkstra's algorithm, given current distance D(B)=5, edge B -> C with weight 3, and D(C)=10, what is the updated distance to C after relaxation?",
+    "level": "Entry level",
+    "answerKey": "The updated distance to C is 8.",
+    "essentialFacts": [
+      "Edge relaxation checks if D(u) + weight(u,v) < D(v).",
+      "Here, 5 + 3 = 8, which is less than 10, so D(C) is updated to 8."
+    ],
+    "acceptableAlternatives": [
+      "D(C) becomes 8."
+    ],
+    "partialCredit": [
+      "Stating 8 correctly without explicitly showing the addition step."
+    ],
+    "misconceptions": [
+      "Adding the edge weight to the destination's existing distance instead of the source distance."
+    ],
+    "probes": [
+      "What happens if the existing distance D(C) was 7 instead of 10?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-027",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given tasks A, B, C with directed dependency edges A -> B, A -> C, and B -> C, what is a valid topological ordering of execution?",
+    "level": "Entry level",
+    "answerKey": "A, B, C Topological sort produces a linear ordering of vertices in a DAG such that for every directed edge u -> v, u comes before v. A has in-degree 0 and must be first; removing A leaves B with in-degree 0, followed by C.",
+    "essentialFacts": [
+      "Topological sort produces a linear ordering of vertices in a DAG such that for every directed edge u -> v, u comes before v.",
+      "A has in-degree 0 and must be first; removing A leaves B with in-degree 0, followed by C."
+    ],
+    "acceptableAlternatives": [
+      "A, B, C is the unique valid topological sort for this graph."
+    ],
+    "partialCredit": [
+      "Placing A first but incorrectly swapping B and C, violating the B -> C dependency."
+    ],
+    "misconceptions": [
+      "Believing topological sort can be computed on graphs that contain cycles."
+    ],
+    "probes": [
+      "How does Kahn's algorithm compute this topological sort using in-degrees?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-028",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Kruskal's algorithm, how do you determine whether adding the next lowest-weight edge creates a cycle, and what data structure maintains this efficiently?",
+    "level": "Entry level",
+    "answerKey": "Use a Disjoint Set Union (DSU) / Union-Find data structure to check if the two endpoints share the same root.",
+    "essentialFacts": [
+      "Edges are processed in increasing order of weight.",
+      "Union-Find with path compression and union by rank checks connectivity in nearly constant time."
+    ],
+    "acceptableAlternatives": [
+      "Union-Find data structure using find() operations."
+    ],
+    "partialCredit": [
+      "Mentioning cycle detection via graph traversal without naming the Union-Find structure."
+    ],
+    "misconceptions": [
+      "Running a full BFS/DFS traversal for every candidate edge to check connectivity."
+    ],
+    "probes": [
+      "What is the time complexity of Union-Find operations when using path compression?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-029",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does Bellman-Ford require relaxing all |V|-1 edges |V|-1 times, and how does a further relaxation iteration detect a negative weight cycle?",
+    "level": "Experienced",
+    "answerKey": "Simple shortest paths in a graph with |V| vertices can contain at most |V|-1 edges. An extra iteration that still successfully relaxes an edge proves a negative weight cycle exists.",
+    "essentialFacts": [
+      "A simple path has at most |V|-1 edges.",
+      "Iterating |V|-1 times guarantees propagation of shortest paths.",
+      "A successful relaxation on the |V|-th iteration indicates paths can infinitely decrease in cost."
+    ],
+    "acceptableAlternatives": [
+      "Any path with >= |V| edges in a simple graph contains a cycle; a further relaxation indicates a negative cycle."
+    ],
+    "partialCredit": [
+      "Describing negative cycles correctly without explaining the |V|-1 bound."
+    ],
+    "misconceptions": [
+      "Believing Bellman-Ford can compute shortest paths when reachable negative cycles exist."
+    ],
+    "probes": [
+      "Why does Dijkstra fail when negative edge weights are present?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-030",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In the Floyd-Warshall algorithm, state the dynamic programming recurrence relation used to update the shortest path matrix D[i][j] considering an intermediate vertex k.",
+    "level": "Experienced",
+    "answerKey": "D[i][j] = min(D[i][j], D[i][k] + D[k][j])",
+    "essentialFacts": [
+      "The recurrence evaluates whether routing through intermediate vertex k yields a shorter path than the direct path between i and j."
+    ],
+    "acceptableAlternatives": [
+      "D[k][i][j] = min(D[k-1][i][j], D[k-1][i][k] + D[k-1][k][j])"
+    ],
+    "partialCredit": [
+      "Writing the minimum formulation correctly without defining indices i, j, and k."
+    ],
+    "misconceptions": [
+      "Placing the loop for the intermediate vertex k in the innermost position instead of the outermost."
+    ],
+    "probes": [
+      "Why must the intermediate vertex k be the outermost loop in Floyd-Warshall?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-031",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In Ford-Fulkerson, explain why augmenting paths require adding reverse edges with residual capacity equal to the flow sent along the forward edge.",
+    "level": "Experienced",
+    "answerKey": "Reverse edges allow the algorithm to undo greedy routing decisions made in earlier augmenting paths by canceling flow if a better overall path is found.",
+    "essentialFacts": [
+      "Residual graphs maintain reverse edges with capacity equal to current flow.",
+      "This mechanism enables flow cancellation and guarantees convergence to the maximum flow."
+    ],
+    "acceptableAlternatives": [
+      "Reverse edges provide backtracking capability for flow routing adjustments."
+    ],
+    "partialCredit": [
+      "Stating that reverse edges track capacity without explaining flow cancellation."
+    ],
+    "misconceptions": [
+      "Assuming maximum flow can be found by adding capacities along forward paths without maintaining backward residual capacities."
+    ],
+    "probes": [
+      "What guarantees polynomial time complexity in Edmonds-Karp compared to basic Ford-Fulkerson?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-032",
+    "track": "software",
+    "competency": "graph algorithms",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In merge sort dividing an array of size N, write the recurrence relation T(N) for time complexity. What is the closed-form big-O time complexity, and why does division take O(1) while combining takes linear time?",
+    "level": "Internship",
+    "answerKey": "The recurrence relation is T(N) = 2T(N/2) + O(N), with a closed-form complexity of O(N log N). Division takes O(1) time because it only computes the midpoint index, whereas combining (merging) two sorted halves element-by-element takes linear O(N) time.",
+    "essentialFacts": [
+      "Recurrence relation is T(N) = 2T(N/2) + O(N).",
+      "Closed-form time complexity is O(N log N).",
+      "Division takes constant O(1) time by splitting indices.",
+      "Combining step takes linear O(N) time."
+    ],
+    "acceptableAlternatives": [
+      "Using Master Theorem notation like T(n) = 2T(n/2) + cn."
+    ],
+    "partialCredit": [
+      "Correct recurrence relation and closed-form complexity, but missing explanation of division vs combine steps."
+    ],
+    "misconceptions": [
+      "Believing division takes O(N) time because the array is physically split."
+    ],
+    "probes": [
+      "What happens to the recurrence if the array is split unevenly into N/3 and 2N/3 portions?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-033",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the worst-case time complexity of Quicksort, and what specific input pattern causes this behavior when selecting the first element as the pivot? How does randomized pivot selection mitigate this?",
+    "level": "Entry level",
+    "answerKey": "The worst-case time complexity is O(N^2). An already sorted or reverse-sorted array causes this when picking the first element, producing unbalanced partitions of size 0 and N-1. Randomization ensures expected O(N log N) time by avoiding predictable worst-case input patterns.",
+    "essentialFacts": [
+      "Worst-case time complexity is O(N^2).",
+      "Sorted or reverse-sorted input with first-element pivot causes O(N^2).",
+      "Unbalanced partitions of size 0 and N-1 occur.",
+      "Randomized pivot selection yields expected O(N log N) performance."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning median-of-three partitioning as an alternative mitigation strategy."
+    ],
+    "partialCredit": [
+      "Correctly identifies O(N^2) worst-case and input pattern, but omits how randomization helps."
+    ],
+    "misconceptions": [
+      "Believing Quicksort's worst-case complexity is O(N log N)."
+    ],
+    "probes": [
+      "How does median-of-three pivot selection alter the probability of encountering the worst case?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-034",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given N integers ranging from 0 to K-1, state the time and space complexities of Counting Sort. Under what condition on K relative to N does Counting Sort outperform O(N \\log N) comparison sorts?",
+    "level": "Internship",
+    "answerKey": "Time complexity is O(N + K) and space complexity is O(K). Counting sort outperforms comparison sorts when K is o(N log N) or proportional to N.",
+    "essentialFacts": [
+      "Time complexity is O(N + K).",
+      "Space complexity is O(K).",
+      "Outperforms comparison sorts when K is O(N) or sub-logarithmic relative to N log N."
+    ],
+    "acceptableAlternatives": [
+      "Stating K must be smaller than N log N for asymptotic advantage."
+    ],
+    "partialCredit": [
+      "States O(N + K) time complexity but misses space complexity or the condition on K."
+    ],
+    "misconceptions": [
+      "Believing counting sort time complexity is independent of the range K."
+    ],
+    "probes": [
+      "What happens to the space complexity if the integer range starts at -K instead of 0?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-035",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why is Heapsort not a stable sorting algorithm? Explain how swapping elements during the extract-max phase destroys the relative order of identical keys in un-matched original array positions.",
+    "level": "Entry level",
+    "answerKey": "Heapsort is unstable because heap operations (such as swapping the root with the last leaf during extract-max) move non-adjacent elements across long distances, jumping over identical keys and altering their relative initial order.",
+    "essentialFacts": [
+      "Heapsort is an unstable sorting algorithm.",
+      "Swapping root with the last element during extraction moves elements across long distances.",
+      "Identical keys can have their relative input order reversed."
+    ],
+    "acceptableAlternatives": [
+      "Explaining that parent-child tree index jumps do not preserve duplicate key order."
+    ],
+    "partialCredit": [
+      "States Heapsort is unstable but gives a vague reason without mentioning long-distance swaps."
+    ],
+    "misconceptions": [
+      "Believing any in-place sorting algorithm is automatically stable."
+    ],
+    "probes": [
+      "Can you modify the comparison function to make Heapsort stable without auxiliary storage?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-036",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Define a stable sorting algorithm. If you sort a list of records by primary key using an unstable sort, how can you preserve secondary key order, and what is the extra space required?",
+    "level": "Entry level",
+    "answerKey": "A stable sort preserves the relative input order of records with equal keys. To preserve secondary key order using an unstable sort, sort first by secondary key then by primary key using a stable sort, or encode both keys into a composite key.",
+    "essentialFacts": [
+      "Stable sort preserves relative order of equal keys.",
+      "Secondary key order is preserved by sorting by secondary key first then primary key.",
+      "Composite key encoding is a valid alternative approach."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning multi-pass sorting from least significant to most significant key."
+    ],
+    "partialCredit": [
+      "Defines stability correctly but fails to explain how to handle secondary keys with unstable sorts."
+    ],
+    "misconceptions": [
+      "Believing unstable sorts can maintain secondary key order without auxiliary techniques or multi-key ordering."
+    ],
+    "probes": [
+      "Why must the primary sort be stable if you sort by secondary key first?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-037",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An external sorting algorithm merges sorted runs of size M from a file of size N using B buffer blocks. What is the number of passes required in a multiway merge phase?",
+    "level": "Experienced",
+    "answerKey": "The number of passes required is ceiling of log_{B-1}(N / M). Each multiway merge pass uses B-1 input buffers and 1 output buffer, reducing the number of runs by a factor of B-1 per pass.",
+    "essentialFacts": [
+      "Pass count formula is ceiling of log_{B-1}(N / M).",
+      "Each multiway merge pass uses B-1 input buffers and 1 output buffer.",
+      "Run count decreases by a factor of B-1 per pass."
+    ],
+    "acceptableAlternatives": [
+      "Expressing base as B if output buffering assumptions differ slightly."
+    ],
+    "partialCredit": [
+      "Identifies logarithmic relationship but uses base 2 instead of B-1."
+    ],
+    "misconceptions": [
+      "Assuming external sort pass count depends linearly on N rather than logarithmically with buffer base."
+    ],
+    "probes": [
+      "How does increasing available memory block count B affect total I/O cost?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-038",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Prove the \\Omega(N \\log N) lower bound for comparison-based sorting using a decision tree model. How many leaf nodes must the tree have for N distinct elements, and what does tree height represent?",
+    "level": "Experienced",
+    "answerKey": "A decision tree has at least N! leaf nodes for N distinct elements. Since a binary tree of height h has at most 2^h leaves, 2^h >= N!, meaning h >= log2(N!) = Omega(N log N) by Stirling's approximation. Tree height represents the worst-case number of comparisons.",
+    "essentialFacts": [
+      "Decision tree must have at least N! leaves.",
+      "Tree height h satisfies 2^h >= N!.",
+      "log2(N!) evaluates to Omega(N log N).",
+      "Height represents worst-case comparisons."
+    ],
+    "acceptableAlternatives": [
+      "Using Stirling's approximation formula explicitly to derive N log N - N log e."
+    ],
+    "partialCredit": [
+      "States N! leaves and Omega(N log N) bound but fails to connect tree height to worst-case comparisons."
+    ],
+    "misconceptions": [
+      "Believing non-comparison sorts are restricted by the decision tree lower bound."
+    ],
+    "probes": [
+      "Does this lower bound apply if the input contains duplicate elements? Explain."
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-039",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given N uniformly distributed floating-point numbers in [0, 1), explain how Bucket Sort achieves expected O(N) time complexity. What is the worst-case time complexity if all elements fall into a single bucket?",
+    "level": "Experienced",
+    "answerKey": "Bucket sort distributes elements into N buckets, sorts each bucket (e.g., using insertion sort in O(n_i^2)), and concatenates them. Uniform distribution ensures expected items per bucket is O(1), yielding expected O(N) time. Worst-case time is O(N^2) if all elements fall into one bucket.",
+    "essentialFacts": [
+      "Expected time complexity is O(N) under uniform distribution.",
+      "Elements are distributed into N buckets and sorted individually.",
+      "Worst-case time complexity is O(N^2) when all elements cluster in a single bucket."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning using another O(N) sort for internal bucket sorting."
+    ],
+    "partialCredit": [
+      "Explains expected O(N) time correctly but omits the worst-case O(N^2) degradation."
+    ],
+    "misconceptions": [
+      "Believing bucket sort is always O(N) regardless of input distribution."
+    ],
+    "probes": [
+      "How would you modify bucket sort to guarantee O(N log N) worst-case time without violating expected O(N) behavior?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-040",
+    "track": "software",
+    "competency": "sorting and complexity",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "To compute the n-th Fibonacci number using O(1) auxiliary space instead of O(n) array storage, how many previous state variables must you track, and what is the time complexity?",
+    "level": "Internship",
+    "answerKey": "You must track 2 previous state variables ($F(n-1)$ and $F(n-2)$). The time complexity is $O(n)$.",
+    "essentialFacts": [
+      "Tracking 2 preceding scalar variables",
+      "Time complexity is O(n)",
+      "Auxiliary space is O(1)"
+    ],
+    "acceptableAlternatives": [
+      "Two variables representing current and previous values",
+      "Linear time with constant space"
+    ],
+    "partialCredit": [
+      "Correctly states time complexity $O(n)$ but fails to specify the number of state variables",
+      "Mentions storing variables without specifying how many"
+    ],
+    "misconceptions": [
+      "Thinking you need an array of size $n$ for space optimization",
+      "Assuming time complexity is $O(1)$ because space is $O(1)$"
+    ],
+    "probes": [
+      "How do you update the two variables in each iteration of the loop?",
+      "What happens to your variable assignments if you update them in the wrong order?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-041",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For a staircase of N steps where you can take 1 or 2 steps at a time, write the base cases for N=1 and N=2, and state the recurrence relation.",
+    "level": "Internship",
+    "answerKey": "Base cases: $DP[1] = 1$ and $DP[2] = 2$. Recurrence relation: $DP[N] = DP[N-1] + DP[N-2]$ for $N > 2$.",
+    "essentialFacts": [
+      "Base case DP[1] = 1",
+      "Base case DP[2] = 2",
+      "Recurrence relation DP[N] = DP[N-1] + DP[N-2]"
+    ],
+    "acceptableAlternatives": [
+      "DP[0] = 1, DP[1] = 1 with DP[N] = DP[N-1] + DP[N-2]",
+      "F(1)=1, F(2)=2 with F(n)=F(n-1)+F(n-2)"
+    ],
+    "partialCredit": [
+      "Provides the correct recurrence relation but incorrect base cases",
+      "Correctly identifies base cases but writes incorrect recurrence"
+    ],
+    "misconceptions": [
+      "Assuming DP[2] = 1 because you can take two steps in one jump",
+      "Confusing permutations with combinations or treating step order differently"
+    ],
+    "probes": [
+      "Why is DP[2] equal to 2 instead of 1?",
+      "How would the base cases change if you could also take 3 steps at a time?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-042",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given coin denominations [1, 3, 4] and target sum 6, what is the minimum number of coins needed, and what entry does the DP table initialization start with for unreachable values?",
+    "level": "Entry level",
+    "answerKey": "Minimum coins needed is 2 (using coins 3 and 3). The DP table initialization for unreachable values starts with infinity ($+\\infty$) or $N+1$.",
+    "essentialFacts": [
+      "Minimum coins is 2",
+      "Table initialized to infinity or target+1",
+      "Optimal combination is 3 + 3"
+    ],
+    "acceptableAlternatives": [
+      "2 coins (3+3)",
+      "Initialized to infinity ($\\infty$) or target value plus one"
+    ],
+    "partialCredit": [
+      "Gets the correct coin count but doesn't explain table initialization",
+      "Identifies infinity initialization but miscalculates the minimum coins"
+    ],
+    "misconceptions": [
+      "Initializing unreachable DP table entries to 0",
+      "Greedily picking the largest coin first"
+    ],
+    "probes": [
+      "Why does a greedy approach fail for denomination set [1, 3, 4] with target 6?",
+      "How do you handle table entries where a subproblem sum cannot be formed?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-043",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In the 0/1 Knapsack problem with items of weights [2, 3, 4] and capacity 5, define the 2D DP state dimensions and state what the value DP[i][w] represents.",
+    "level": "Entry level",
+    "answerKey": "Dimensions are $(N+1) \\times (W+1)$ where $N=3$ and $W=5$. $DP[i][w]$ represents the maximum value achievable using a subset of the first $i$ items with a total weight capacity of $w$.",
+    "essentialFacts": [
+      "Dimensions are 4 by 6 (items count + 1 by capacity + 1)",
+      "DP[i][w] represents max value using first i items within weight w",
+      "Capacity constraint is strictly enforced"
+    ],
+    "acceptableAlternatives": [
+      "Matrix of size (number of items + 1) by (capacity + 1)",
+      "Max value with subset of first i items and weight limit w"
+    ],
+    "partialCredit": [
+      "Defines dimensions correctly but gives vague definition for table values",
+      "Accurately defines table values but misses the +1 offset for zero items/weight"
+    ],
+    "misconceptions": [
+      "Assuming DP table dimensions depend on item values rather than weights",
+      "Confusing 0/1 knapsack with fractional knapsack where items can be split"
+    ],
+    "probes": [
+      "How do you transition from $DP[i-1][w]$ when the current item's weight exceeds $w$?",
+      "Why do we include zero-weight and zero-item base rows and columns?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-044",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "For array [-2, 1, -3, 4, -1, 2], what is the maximum contiguous subarray sum, and what is the recurrence relation for the local maximum ending at index i?",
+    "level": "Entry level",
+    "answerKey": "Maximum contiguous subarray sum is 5 (subarray $[4, -1, 2]$). Recurrence relation: $current\\_max[i] = \\max(arr[i], current\\_max[i-1] + arr[i])$.",
+    "essentialFacts": [
+      "Maximum subarray sum is 5",
+      "Recurrence relation incorporates max of current element alone vs extending previous max",
+      "Subarray elements are [4, -1, 2]"
+    ],
+    "acceptableAlternatives": [
+      "Max sum is 5",
+      "DP[i] = max(A[i], DP[i-1] + A[i])"
+    ],
+    "partialCredit": [
+      "Identifies the correct maximum sum but writes an incorrect recurrence relation",
+      "Correctly writes the Kadane recurrence relation but miscalculates the sum"
+    ],
+    "misconceptions": [
+      "Including negative previous sums without resetting when starting a new subarray",
+      "Confusing contiguous subarrays with non-contiguous subsequences"
+    ],
+    "probes": [
+      "When does the recurrence relation decide to abandon the previous subarray sum and start fresh at index $i$?",
+      "What is the overall time complexity of this approach?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-045",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given array [10, 9, 2, 5, 3, 7, 101, 18], what is the length of the Longest Increasing Subsequence, and how does the patience sorting approach reduce time complexity from O(N^2) to O(N \\log N)?",
+    "level": "Experienced",
+    "answerKey": "Length of LIS is 4 (e.g., $[2, 3, 7, 101]$). Patience sorting uses binary search ($O(\\log N)$) to find the insertion position of each element into the active tails array instead of scanning all previous elements linearly ($O(N)$).",
+    "essentialFacts": [
+      "LIS length is 4",
+      "Binary search used on active tails array",
+      "Reduces inner scan from O(N) to O(log N)"
+    ],
+    "acceptableAlternatives": [
+      "Length 4; binary search on tails array for $O(N \\log N)$",
+      "4 elements; maintaining smallest tail for each subsequence length using binary search"
+    ],
+    "partialCredit": [
+      "States the correct LIS length but fails to explain how binary search achieves $O(N \\log N)$",
+      "Explains binary search optimization but gives incorrect LIS length"
+    ],
+    "misconceptions": [
+      "Assuming the tails array itself represents a valid subsequence",
+      "Confusing Longest Increasing Subsequence with Longest Common Substring"
+    ],
+    "probes": [
+      "Why does replacing an element in the tails array via binary search maintain correct subsequence lengths without preserving exact subsequence content?",
+      "What does each entry in the tails array represent?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-046",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compute the Levenshtein distance between strings 'cat' and 'cast'. What is the cost assigned to the cell representing the deletion operation from 'cat' to match prefix 'cas'?",
+    "level": "Experienced",
+    "answerKey": "Levenshtein distance is 1 (insert 's'). The deletion cell representing converting 'cat' to 'cas' has a cost of 1 (since previous cost was 0 for 'ca' to 'ca', plus 1 deletion).",
+    "essentialFacts": [
+      "Total Levenshtein distance is 1",
+      "Cost of deletion operation is 1",
+      "DP state transitions account for insertion, deletion, and substitution"
+    ],
+    "acceptableAlternatives": [
+      "Distance is 1; deletion cost is 1",
+      "1 insertion/deletion difference, cost = 1"
+    ],
+    "partialCredit": [
+      "Calculates final distance correctly but misidentifies the intermediate cell cost",
+      "Sets up the DP table correctly but miscounts operations"
+    ],
+    "misconceptions": [
+      "Treating substitution cost as always 0",
+      "Assuming edit distance requires matching exact character positions without gaps"
+    ],
+    "probes": [
+      "How are the three operations (insertion, deletion, substitution) represented as recurrence transitions?",
+      "What is the time and space complexity of computing edit distance for strings of length $M$ and $N$?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-047",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In matrix chain multiplication with dimensions 10 \\times 20, 20 \\times 30, and 30 \\times 40, what is the cost of the split evaluating (A_1 A_2) A_3 versus A_1 (A_2 A_3)?",
+    "level": "Experienced",
+    "answerKey": "For $(A_1 A_2) A_3$: cost is $10 \\times 20 \\times 30 + 10 \\times 30 \\times 40 = 6,000 + 12,000 = 18,000$. For $A_1 (A_2 A_3)$: cost is $20 \\times 30 \\times 40 + 10 \\times 20 \\times 40 = 24,000 + 8,000 = 32,000$. Split $(A_1 A_2) A_3$ costs 18,000.",
+    "essentialFacts": [
+      "Cost of (A1 A2)A3 is 18,000",
+      "Cost of A1(A2 A3) is 32,000",
+      "Matrix multiplication scalar cost formula is dimensions product"
+    ],
+    "acceptableAlternatives": [
+      "18000 for left grouping, 32000 for right grouping",
+      "Left split: 6000 + 12000 = 18000; Right split: 24000 + 8000 = 32000"
+    ],
+    "partialCredit": [
+      "Calculates one grouping correctly but makes an arithmetic error on the other",
+      "Sets up the formula correctly but multiplies incorrect dimension pairs"
+    ],
+    "misconceptions": [
+      "Assuming matrix multiplication is associative for operation count",
+      "Using matrix dimensions incorrectly when computing resulting product dimensions"
+    ],
+    "probes": [
+      "How does interval DP iterate over chain lengths to build up optimal parenthesizations?",
+      "What is the asymptotic time complexity of the dynamic programming solution for $N$ matrices?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-048",
+    "track": "software",
+    "competency": "dynamic programming",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "def append_to(element, target=[]): target.append(element); return target. What does print(append_to(1)); print(append_to(2)) output, and why is this a common Python semantics pitfall?",
+    "level": "Internship",
+    "answerKey": "Outputs [1] then [1, 2]. Default arguments are evaluated once at function definition time, not at call time, so the same list object is shared across calls.",
+    "essentialFacts": [
+      "Default arguments are evaluated once when the function is defined.",
+      "The list object is mutable and shared across subsequent calls if not specified."
+    ],
+    "acceptableAlternatives": [
+      "Explaining that the default list is bound to the function's __defaults__ attribute."
+    ],
+    "partialCredit": [
+      "Correctly states the output [1] and [1, 2] but lacks explanation of definition-time evaluation."
+    ],
+    "misconceptions": [
+      "Believing the default list is recreated on every function invocation."
+    ],
+    "probes": [
+      "How would you rewrite the function signature to avoid this shared state while preserving the default empty list behavior?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-049",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given t = ([1, 2], 3), executing t[0].append(4) succeeds while t[0] = [1, 2, 4] raises TypeError. Explain why the first operation succeeds given tuple immutability.",
+    "level": "Internship",
+    "answerKey": "A tuple's immutability means its references cannot be changed (reassigned), but the referenced objects themselves (like the list at index 0) can be mutated in place.",
+    "essentialFacts": [
+      "Tuples store references to objects, not the objects themselves.",
+      "Tuple immutability forbids changing which object a slot points to, not mutating the target object if mutable."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning container immutability vs object mutability."
+    ],
+    "partialCredit": [
+      "Explains that lists are mutable without clarifying that tuple slots hold references."
+    ],
+    "misconceptions": [
+      "Assuming tuples are deeply immutable and prohibit modifying any nested structure."
+    ],
+    "probes": [
+      "If you want true immutability throughout the data structure, what container type should replace the inner list?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-050",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Inside a nested function, assigning to a variable name without nonlocal shadows the outer scope instead of mutating it. What exception occurs if you read it before assignment in the inner scope?",
+    "level": "Entry level",
+    "answerKey": "An UnboundLocalError occurs because Python compiles assignment to a variable as local to that scope, masking the outer variable even before execution reaches the assignment statement.",
+    "essentialFacts": [
+      "Assignment makes a variable local to the current scope.",
+      "Reading a local variable before binding raises UnboundLocalError."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning Python's static scoping rule where any assignment makes the name local."
+    ],
+    "partialCredit": [
+      "Identifies that scoping changes, but names the wrong exception type (e.g., NameError)."
+    ],
+    "misconceptions": [
+      "Assuming Python checks scope dynamically at runtime during variable lookup."
+    ],
+    "probes": [
+      "How does adding the nonlocal keyword change how the bytecode compiler treats that variable name?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-051",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the exact difference in memory and execution behavior between returning a list versus yielding from a generator function when processing a billion integers?",
+    "level": "Entry level",
+    "answerKey": "A list allocates memory for all billion integers simultaneously, whereas a generator yields values one at a time lazily, keeping memory footprint constant O(1) at the cost of computation per step.",
+    "essentialFacts": [
+      "Lists store all elements in memory eagerly.",
+      "Generators produce items on demand using iterator protocol (__iter__ and __next__)."
+    ],
+    "acceptableAlternatives": [
+      "Explaining lazy evaluation vs eager materialization."
+    ],
+    "partialCredit": [
+      "Mentions memory difference without explaining the iterator protocol or lazy evaluation."
+    ],
+    "misconceptions": [
+      "Assuming generators store items compressed in memory rather than computing them on the fly."
+    ],
+    "probes": [
+      "Can you index or slice a generator object directly like a standard list? Why or why not?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-052",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does using a list as a dictionary key raise a TypeError, and what specific protocol must an object satisfy to be a valid dictionary key in Python?",
+    "level": "Entry level",
+    "answerKey": "Lists are unhashable because they are mutable; if mutated, their hash value would change, breaking hash table integrity. Valid keys must be hashable (__hash__) and comparable (__eq__).",
+    "essentialFacts": [
+      "Dictionary keys must be hashable and immutable.",
+      "Lists are mutable, so their hash is not defined (__hash__ is None)."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning that dictionaries rely on fixed hash values for O(1) bucket lookups."
+    ],
+    "partialCredit": [
+      "States that lists are mutable but omits the requirement for __hash__ and __eq__ methods."
+    ],
+    "misconceptions": [
+      "Believing dictionaries only check if an object is immutable rather than checking its __hash__ attribute."
+    ],
+    "probes": [
+      "If you create a custom class, what two methods must you implement so instances can serve as dictionary keys?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-053",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do descriptors implement managed attributes in Python, and what are the specific protocol methods (__get__, __set__, __delete__) that distinguish a data descriptor from a non-data descriptor?",
+    "level": "Experienced",
+    "answerKey": "Descriptors customize attribute access. A data descriptor implements __set__ or __delete__ (and optionally __get__), taking precedence over instance dictionary entries. A non-data descriptor implements only __get__.",
+    "essentialFacts": [
+      "Data descriptors define __set__ or __delete__.",
+      "Data descriptors override instance dictionary attributes, whereas instance dictionaries override non-data descriptors."
+    ],
+    "acceptableAlternatives": [
+      "Describing attribute lookup precedence rules (data descriptor > instance dict > non-data descriptor > class attr)."
+    ],
+    "partialCredit": [
+      "Defines __get__ and __set__ but fails to explain the precedence difference between data and non-data descriptors."
+    ],
+    "misconceptions": [
+      "Assuming all descriptors have equal precedence during attribute lookup on an instance."
+    ],
+    "probes": [
+      "Where do properties (@property) fall in this classification—are they data or non-data descriptors?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-054",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a custom context manager implemented via a class, what does returning True from the __exit__ method accomplish regarding exceptions raised inside the with block?",
+    "level": "Experienced",
+    "answerKey": "Returning True suppresses the exception that occurred inside the with block, preventing it from propagating outward. Returning False (or None) allows the exception to propagate.",
+    "essentialFacts": [
+      "__exit__ receives exception type, value, and traceback if an error occurs.",
+      "A truthy return value suppresses the exception."
+    ],
+    "acceptableAlternatives": [
+      "Explaining that returning True acts like a try...except block swallowing the error."
+    ],
+    "partialCredit": [
+      "Knows that __exit__ handles cleanup, but incorrectly believes it stops execution without affecting exception propagation."
+    ],
+    "misconceptions": [
+      "Assuming returning True restarts the with block execution from the beginning."
+    ],
+    "probes": [
+      "What are the arguments passed to __exit__ when an exception is raised inside the block?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-055",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does Python's garbage collector handle circular references between objects when reference counts alone cannot drop to zero, and which module manages this cycle detection?",
+    "level": "Experienced",
+    "answerKey": "The gc module uses a generational garbage collector that tracks container objects, isolates cyclic graphs by temporarily decrementing reference counts, and collects unreachable reference cycles.",
+    "essentialFacts": [
+      "Reference counting alone fails on circular references.",
+      "The built-in gc module runs generational cyclic garbage collection."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning generation lists (generation 0, 1, 2) and trial reference count decrements."
+    ],
+    "partialCredit": [
+      "Mentions reference counting but fails to identify the gc module or generational cycle detection."
+    ],
+    "misconceptions": [
+      "Assuming reference counting automatically detects and frees circular references without a separate collector."
+    ],
+    "probes": [
+      "Why doesn't Python rely solely on tracing garbage collection like Java instead of combining reference counting with generational collection?"
+    ],
+    "sourceIds": [
+      "python",
+      "cs-curriculum"
+    ],
+    "id": "software-056",
+    "track": "software",
+    "competency": "Python semantics",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In what order are console logs printed for: `console.log(1); setTimeout(() => console.log(2), 0); Promise.resolve().then(() => console.log(3)); console.log(4);`?",
+    "level": "Internship",
+    "answerKey": "1, 4, 3, 2. Synchronous statements execute first (logs 1 and 4). Microtasks queue next via Promises (logs 3). Macrotasks queue last via setTimeout (logs 2).",
+    "essentialFacts": [
+      "Synchronous code executes immediately in call stack order.",
+      "Microtasks (Promises) run before macrotasks (setTimeout).",
+      "Macrotasks execute in subsequent event loop ticks."
+    ],
+    "acceptableAlternatives": [
+      "1, 4, 3, then 2"
+    ],
+    "partialCredit": [
+      "Correctly identifies synchronous logs 1 and 4 first, but confuses microtask and macrotask order."
+    ],
+    "misconceptions": [
+      "Believing setTimeout(..., 0) runs immediately before synchronous code.",
+      "Assuming Promises are processed as macrotasks."
+    ],
+    "probes": [
+      "What happens to the execution order if you add `queueMicrotask()` right before `console.log(1)`?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-057",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What does an `async function f() { return 5; }` return when called, and how is its return value wrapped internally?",
+    "level": "Internship",
+    "answerKey": "It returns a Promise object resolved with the value 5. Non-promise return values are implicitly wrapped using Promise.resolve().",
+    "essentialFacts": [
+      "Async functions always return a Promise.",
+      "Primitive return values are wrapped in a resolved Promise.",
+      "Calling an async function does not block synchronous execution."
+    ],
+    "acceptableAlternatives": [
+      "A resolved promise containing 5"
+    ],
+    "partialCredit": [
+      "States it returns 5 without mentioning it is wrapped in a Promise."
+    ],
+    "misconceptions": [
+      "Thinking an async function returns a raw primitive value directly."
+    ],
+    "probes": [
+      "How would the return value change if you returned a rejected promise instead of 5 inside `f`?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-058",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain why queueing a callback via `queueMicrotask()` executes before a `setTimeout(..., 0)` timer, referencing the JavaScript event loop phases.",
+    "level": "Entry level",
+    "answerKey": "The event loop empties the microtask queue entirely after the call stack clears and before processing macrotasks like setTimeout timers.",
+    "essentialFacts": [
+      "Microtask queue has higher priority than macrotask queue.",
+      "Microtasks run immediately after the current task finishes.",
+      "setTimeout schedules a macrotask."
+    ],
+    "acceptableAlternatives": [
+      "Microtasks run before macrotasks in the event loop cycle."
+    ],
+    "partialCredit": [
+      "Explains that promises have priority but doesn't mention the event loop execution phases."
+    ],
+    "misconceptions": [
+      "Assuming setTimeout(..., 0) executes in zero actual milliseconds without waiting for the event loop queue."
+    ],
+    "probes": [
+      "Can a microtask queue infinite tasks and starve the event loop?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-059",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain the difference in execution flow when returning a Promise inside `.then()` versus nesting a `.then()` call inside another `.then()` callback.",
+    "level": "Entry level",
+    "answerKey": "Returning a promise flattens the promise chain, causing the outer `.then()` to wait for that returned promise's settlement. Nesting creates separate inner microtask queues without flattening.",
+    "essentialFacts": [
+      "Returning a promise flattens the promise chain.",
+      "Nesting `.then()` delays registration of the inner handler until the outer handler executes.",
+      "Promise flattening prevents deeply nested callback pyramids."
+    ],
+    "acceptableAlternatives": [
+      "Returning a promise chains resolution automatically, whereas nesting creates independent sub-chains."
+    ],
+    "partialCredit": [
+      "Recognizes that both handle asynchronous sequences but misses the flattening behavior."
+    ],
+    "misconceptions": [
+      "Believing nested `.then()` calls behave identically to chained `.then()` returns."
+    ],
+    "probes": [
+      "How does error propagation differ between a returned promise and a nested `.then()`?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-060",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If an unhandled rejection occurs inside an async function that throws an error, what type of event is emitted on the global scope, and how do try/catch blocks interact with it?",
+    "level": "Entry level",
+    "answerKey": "An `unhandledrejection` event is emitted globally. A `try/catch` block inside the async function catches the thrown error, preventing the rejection and stopping the global event.",
+    "essentialFacts": [
+      "Throwing inside an async function results in a rejected promise.",
+      "Try/catch blocks catch synchronous and awaited asynchronous errors inside the function.",
+      "Unhandled rejections trigger global window/process events."
+    ],
+    "acceptableAlternatives": [
+      "unhandledrejection event; try/catch intercepts errors locally."
+    ],
+    "partialCredit": [
+      "Identifies try/catch handles the error locally but forgets the global `unhandledrejection` event name."
+    ],
+    "misconceptions": [
+      "Thinking global unhandled rejection handlers catch errors already caught by local try/catch blocks."
+    ],
+    "probes": [
+      "What happens if you omit the `await` keyword before a throwing async call inside a try/catch block?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-061",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Two async functions concurrently read a shared variable `x = 0`, increment it, and write it back using `await`. Explain why the final value can be 1 instead of 2.",
+    "level": "Experienced",
+    "answerKey": "An interleaving race condition occurs. Both functions read `x = 0` during their initial execution before hitting an `await`. Both compute `0 + 1 = 1` and write back `1`, overwriting each other.",
+    "essentialFacts": [
+      "JavaScript is single-threaded, but `await` introduces suspension points where control yields.",
+      "Read-modify-write sequences across `await` boundaries are not atomic.",
+      "Concurrent overlapping executions cause lost updates."
+    ],
+    "acceptableAlternatives": [
+      "Race condition due to non-atomic read-modify-write operations across await points."
+    ],
+    "partialCredit": [
+      "Mentions a race condition occurs but fails to explain the exact interleaving of read vs write steps."
+    ],
+    "misconceptions": [
+      "Assuming async functions execute in true parallel OS threads with locks."
+    ],
+    "probes": [
+      "How would you use a mutex or atomic operation to prevent this race condition in JavaScript?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-062",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How do Web Workers communicate safely with the main thread using `SharedArrayBuffer` and `Atomics.wait()` without blocking the main browser UI thread?",
+    "level": "Experienced",
+    "answerKey": "They share raw memory via `SharedArrayBuffer`. `Atomics.wait()` can block worker threads safely, but calling `Atomics.wait()` on the main browser thread throws an error to prevent freezing the UI.",
+    "essentialFacts": [
+      "`SharedArrayBuffer` allows lock-free or locked memory sharing between threads.",
+      "`Atomics` methods provide thread-safe operations.",
+      "`Atomics.wait()` is explicitly forbidden on the main thread."
+    ],
+    "acceptableAlternatives": [
+      "SharedArrayBuffer enables memory sharing; Atomics.wait blocks workers but throws on the main thread."
+    ],
+    "partialCredit": [
+      "Explains SharedArrayBuffer sharing but is unaware of main thread restrictions on Atomics.wait."
+    ],
+    "misconceptions": [
+      "Thinking Atomics.wait() can be safely run on the main UI thread to pause execution."
+    ],
+    "probes": [
+      "What API should you use instead of `Atomics.wait()` if synchronization is needed on the main thread?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-063",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why does `Promise.all([p1, p2])` fail immediately when `p1` rejects, whereas `Promise.allSettled` continues? State how this impacts resource cleanup for pending promises.",
+    "level": "Experienced",
+    "answerKey": "`Promise.all` short-circuits on the first rejection, leaving other pending promises unobserved, which can lead to unhandled rejections if their errors surface later. `Promise.allSettled` waits for all promises to fulfill or reject.",
+    "essentialFacts": [
+      "`Promise.all` short-circuits upon any rejection.",
+      "`Promise.allSettled` maps every promise to a status object regardless of outcome.",
+      "Short-circuiting can orphan pending asynchronous operations without proper cleanup."
+    ],
+    "acceptableAlternatives": [
+      "Promise.all short-circuits on failure while allSettled waits for completion, affecting unhandled rejection tracking."
+    ],
+    "partialCredit": [
+      "Explains that Promise.all fails fast but omits the impact on pending promise resource management or unhandled rejections."
+    ],
+    "misconceptions": [
+      "Assuming `Promise.all` cancels or aborts the remaining pending promises when it rejects."
+    ],
+    "probes": [
+      "How does `AbortController` complement `Promise.all` when you need to cancel remaining tasks upon failure?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-064",
+    "track": "software",
+    "competency": "JavaScript concurrency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a table with 1,000,000 rows and a B-tree index on column email, explain why a query filtering by email = 'user@test.com' avoids a sequential scan, and state the expected lookup complexity.",
+    "level": "Internship",
+    "answerKey": "A B-tree index maintains sorted keys in a balanced tree structure. The database traverses from root to leaf in O(log N) steps, directly locating the physical disk page/tuple pointer rather than scanning all 1,000,000 rows.",
+    "essentialFacts": [
+      "B-tree maintains sorted hierarchical structure",
+      "Lookup time complexity is logarithmic O(log N)",
+      "Avoids linear scan of all table pages"
+    ],
+    "acceptableAlternatives": [
+      "Tree traversal navigates nodes directly to leaf pointers without checking every row."
+    ],
+    "partialCredit": [
+      "Mentions O(log N) or tree structure but misses leaf pointer resolution."
+    ],
+    "misconceptions": [
+      "Believing the index stores all table rows directly in sorted order.",
+      "Assuming B-trees require O(N) linear search within leaf nodes."
+    ],
+    "probes": [
+      "How many node jumps roughly would you expect for 1,000,000 rows in a B-tree page size of 8KB?"
+    ],
+    "sourceIds": [
+      "postgres",
+      "cs-curriculum"
+    ],
+    "id": "software-065",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a composite index on (status, created_at), explain why a query filtering only by created_at = '2023-01-01' cannot utilize this index effectively, and state what prefix rule applies.",
+    "level": "Internship",
+    "answerKey": "Composite B-tree indexes are ordered primarily by the leftmost column (status), then by created_at. Without filtering on the leading column, the database cannot navigate the tree hierarchically and must fall back to a sequential scan. This is the leftmost prefix rule.",
+    "essentialFacts": [
+      "Composite index sorts by leading column first",
+      "Leftmost prefix rule requires the first column in equality or range conditions",
+      "Leads to full table scan if leading column is omitted"
+    ],
+    "acceptableAlternatives": [
+      "The B-tree sort order starts with status; without it, index traversal paths are undefined."
+    ],
+    "partialCredit": [
+      "Identifies the leftmost column matters but fails to state why the tree cannot be traversed."
+    ],
+    "misconceptions": [
+      "Assuming a composite index acts as independent single-column indexes for any subset of columns."
+    ],
+    "probes": [
+      "How would you rewrite or add an index if queries frequently filter only by created_at?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-066",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how PostgreSQL performs an index-only scan without visiting the heap table pages, and describe what database mechanism verifies row visibility for concurrent transactions.",
+    "level": "Entry level",
+    "answerKey": "An index-only scan retrieves all requested columns directly from the index tuple. PostgreSQL uses the Visibility Map (VM) to check if all tuples on a heap page are known-visible to all transactions, avoiding heap checks.",
+    "essentialFacts": [
+      "Index contains all requested columns or tuple pointers",
+      "Visibility Map (VM) tracks page-level transaction visibility",
+      "Prevents unnecessary heap fetches when bits are set"
+    ],
+    "acceptableAlternatives": [
+      "VM bits indicate whether heap pages contain only visible tuples."
+    ],
+    "partialCredit": [
+      "Mentions index-only scan gets data from index, but omits the Visibility Map mechanism."
+    ],
+    "misconceptions": [
+      "Assuming the index stores MVCC transaction info directly inside B-tree leaf nodes."
+    ],
+    "probes": [
+      "What happens to an index-only scan if vacuum hasn't updated the Visibility Map yet?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-067",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "What is the exact internal difference between a UNIQUE index constraint and a PRIMARY KEY constraint in PostgreSQL regarding NULL values and physical implementation?",
+    "level": "Entry level",
+    "answerKey": "A PRIMARY KEY inherently implies NOT NULL and creates a unique B-tree index. A UNIQUE constraint allows multiple NULL values in PostgreSQL (since NULL != NULL), whereas PRIMARY KEY permits zero NULLs. Both use B-tree indexes physically.",
+    "essentialFacts": [
+      "Primary key enforces NOT NULL",
+      "Unique index allows multiple NULL values",
+      "Both are implemented via B-tree structures under the hood"
+    ],
+    "acceptableAlternatives": [
+      "Primary keys disallow nulls entirely while unique constraints permit nulls because SQL nulls are distinct."
+    ],
+    "partialCredit": [
+      "Notes that primary key cannot be null but misses unique constraint null handling."
+    ],
+    "misconceptions": [
+      "Believing a unique constraint creates a hash index instead of a B-tree index by default."
+    ],
+    "probes": [
+      "How does PostgreSQL handle inserting two rows with NULL into a unique-constrained column?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-068",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does adding an INCLUDE (column_name) clause to a PostgreSQL B-tree index allow index-only scans for queries selecting non-key columns without sorting them?",
+    "level": "Entry level",
+    "answerKey": "The INCLUDE clause stores non-key payload columns only in the leaf nodes of the B-tree index without incorporating them into the internal sorting structure, enabling index-only scans without sorting overhead.",
+    "essentialFacts": [
+      "Payload columns are stored in leaf nodes only",
+      "Not part of the B-tree sorting/navigation keys",
+      "Enables index-only scans for selecting additional columns"
+    ],
+    "acceptableAlternatives": [
+      "Columns in INCLUDE are appended to leaf pages without affecting tree search paths."
+    ],
+    "partialCredit": [
+      "Mentions storing extra columns in the index without explaining leaf-only storage vs tree keys."
+    ],
+    "misconceptions": [
+      "Thinking included columns are indexed and sorted just like leading key columns."
+    ],
+    "probes": [
+      "Why can't you use an INCLUDE column in the WHERE clause of your query efficiently?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-069",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Consider a table with 10 million rows where 99% have status = 'archived' and 1% have status = 'active'. Write a partial index definition for active rows and explain its storage benefit.",
+    "level": "Experienced",
+    "answerKey": "CREATE INDEX idx_active ON table_name (id) WHERE status = 'active'; The storage benefit is that the index only indexes 100,000 rows instead of 10 million, drastically reducing disk footprint, memory cache usage, and insert/update overhead.",
+    "essentialFacts": [
+      "Partial index includes WHERE predicate filter",
+      "Indexes only subset of matching rows (100k vs 10M)",
+      "Reduces index size, memory pressure, and maintenance cost"
+    ],
+    "acceptableAlternatives": [
+      "Index only stores pointers for rows satisfying the predicate expression."
+    ],
+    "partialCredit": [
+      "Provides correct SQL syntax for partial index but omits the quantification of storage savings."
+    ],
+    "misconceptions": [
+      "Assuming partial indexes speed up queries on the excluded 99% of rows."
+    ],
+    "probes": [
+      "What happens to query planning if a query does not include the exact WHERE predicate matching the partial index?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-070",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When a query joins two large tables on an unindexed foreign key, why does the query planner typically choose a Hash Join over a Nested Loop Join, and what memory structure is built?",
+    "level": "Experienced",
+    "answerKey": "Without an index, a nested loop requires O(N * M) comparisons, which is extremely slow. A Hash Join builds an in-memory hash table on the smaller relation (O(N)) and probes it with the larger relation (O(M)), achieving O(N + M) time complexity.",
+    "essentialFacts": [
+      "Nested loop without index is O(N * M)",
+      "Hash join builds in-memory hash table for one relation",
+      "Probes hash table with second relation in linear time O(N + M)"
+    ],
+    "acceptableAlternatives": [
+      "Hash join avoids nested loop quadratic scan by loading one table into memory hash buckets."
+    ],
+    "partialCredit": [
+      "Mentions hash join is faster for unindexed data without stating the O(N+M) complexity."
+    ],
+    "misconceptions": [
+      "Assuming hash joins require pre-existing indexes on both joined columns."
+    ],
+    "probes": [
+      "What happens if the hash table exceeds work_mem during execution?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-071",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In PostgreSQL, why do frequent UPDATE operations on indexed columns cause index bloat and dead tuples, and how does MVCC contribute to this structural overhead?",
+    "level": "Experienced",
+    "answerKey": "Under MVCC, an UPDATE is implemented as an INSERT of a new tuple version and a DELETE of the old. This adds a new index entry and leaves the old one orphaned, causing index bloat over time until vacuumed.",
+    "essentialFacts": [
+      "Updates in MVCC create new tuple versions and delete old ones",
+      "Indexes receive new keys and retain old dead entries",
+      "Leads to index bloat requiring VACUUM or REINDEX"
+    ],
+    "acceptableAlternatives": [
+      "Old index pointers remain marked dead until cleanup because updates duplicate index entries."
+    ],
+    "partialCredit": [
+      "Mentions updates create new index entries but misses MVCC tuple versioning mechanics."
+    ],
+    "misconceptions": [
+      "Assuming B-tree indexes update in-place without adding new node references."
+    ],
+    "probes": [
+      "How does fillfactor setting help mitigate index bloat on heavily updated tables?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-072",
+    "track": "software",
+    "competency": "SQL and indexing",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "If Transaction A reads a row, Transaction B updates and commits it, and Transaction A reads the same row again and sees the new values, what isolation anomaly occurred?",
+    "level": "Internship",
+    "answerKey": "Non-repeatable read. A non-repeatable read occurs when a transaction reads the same row twice and observes modified data. Another concurrent transaction must update and commit the changes between the two reads.",
+    "essentialFacts": [
+      "A non-repeatable read occurs when a transaction reads the same row twice and observes modified data.",
+      "Another concurrent transaction must update and commit the changes between the two reads."
+    ],
+    "acceptableAlternatives": [
+      "Fuzzy read"
+    ],
+    "partialCredit": [
+      "Identifies it as a read anomaly but confuses it with a dirty read."
+    ],
+    "misconceptions": [
+      "Believing that reading uncommitted data constitutes a non-repeatable read."
+    ],
+    "probes": [
+      "What specific isolation level in PostgreSQL prevents this anomaly?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-073",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In ACID, which property makes an uncommitted multi-statement transaction all-or-nothing when a crash interrupts it?",
+    "level": "Internship",
+    "answerKey": "Atomicity. Atomicity guarantees all-or-nothing execution for transaction blocks. Partial changes from aborted or crashed transactions are rolled back.",
+    "essentialFacts": [
+      "Atomicity guarantees all-or-nothing execution for transaction blocks.",
+      "Partial changes from aborted or crashed transactions are rolled back."
+    ],
+    "acceptableAlternatives": [
+      "Atomicity property"
+    ],
+    "partialCredit": [
+      "Confuses atomicity with durability or consistency."
+    ],
+    "misconceptions": [
+      "Thinking durability handles rollback during an active system crash."
+    ],
+    "probes": [
+      "Which database component logs these changes to enable rollbacks?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-074",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does PostgreSQL's Read Committed isolation level differ from Repeatable Read regarding the snapshot used when executing SQL statements within a single transaction?",
+    "level": "Entry level",
+    "answerKey": "Read Committed takes a new snapshot for each individual statement, whereas Repeatable Read uses a single snapshot established at the start of the first query in the transaction.",
+    "essentialFacts": [
+      "Read Committed evaluates statement-level snapshots.",
+      "Repeatable Read freezes the database view for the entire transaction lifecycle."
+    ],
+    "acceptableAlternatives": [
+      "Read Committed updates snapshots per query; Repeatable Read uses a transaction-wide snapshot."
+    ],
+    "partialCredit": [
+      "Understands that snapshots differ but reverses which level uses which scope."
+    ],
+    "misconceptions": [
+      "Assuming Read Committed provides transaction-wide consistency across multiple distinct SELECT statements."
+    ],
+    "probes": [
+      "Why does Repeatable Read prevent non-repeatable reads while Read Committed does not?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-075",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how write skew occurs when two concurrent transactions check overlapping constraints against a database state, commit successfully, and violate a global invariant.",
+    "level": "Entry level",
+    "answerKey": "Both transactions read overlapping data, make disjoint updates based on that read, and commit without conflicting on the exact same row, invalidating the application invariant.",
+    "essentialFacts": [
+      "Write skew happens under snapshot isolation when concurrent writes affect overlapping read dependencies.",
+      "Transactions modify different rows, so row-level lock managers do not detect a direct conflict."
+    ],
+    "acceptableAlternatives": [
+      "Transactions read the same snapshot and make independent updates that collectively violate a business rule upon commit."
+    ],
+    "partialCredit": [
+      "Explains that two transactions update different rows, but misses why the global constraint fails."
+    ],
+    "misconceptions": [
+      "Believing that Write Skew is prevented by default under standard Read Committed or Repeatable Read snapshot isolation."
+    ],
+    "probes": [
+      "How does explicit locking like SELECT ... FOR UPDATE prevent write skew?"
+    ],
+    "sourceIds": [
+      "postgres",
+      "cs-curriculum"
+    ],
+    "id": "software-076",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "How does a database engine detect a deadlock between two transactions, and what is the standard strategy for resolving the deadlock once identified?",
+    "level": "Entry level",
+    "answerKey": "The engine maintains a waits-for graph and runs a cycle detection algorithm. Upon finding a cycle, it aborts and rolls back one of the transactions to break the deadlock.",
+    "essentialFacts": [
+      "Waits-for graphs track resource dependencies between active transactions.",
+      "Deadlock resolution requires selecting a victim transaction to abort and roll back."
+    ],
+    "acceptableAlternatives": [
+      "Using a resource allocation graph to detect cycles, then rolling back a victim."
+    ],
+    "partialCredit": [
+      "Mentions lock timeouts but fails to explain the waits-for graph mechanism."
+    ],
+    "misconceptions": [
+      "Assuming deadlocks are resolved automatically by pausing both transactions until locks expire."
+    ],
+    "probes": [
+      "What criteria does an engine typically use to choose the victim transaction?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-077",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Compare how strict Two-Phase Locking (2PL) and Serializable Snapshot Isolation (SSI) prevent serialization anomalies, specifically regarding read-write conflicts and blocking.",
+    "level": "Experienced",
+    "answerKey": "2PL blocks concurrent readers and writers by acquiring pessimistic locks, whereas SSI uses optimistic concurrency control with MVCC, tracking dangerous structures (rw-antidependencies) and aborting one transaction if a cycle forms.",
+    "essentialFacts": [
+      "2PL prevents anomalies through pessimistic resource blocking.",
+      "SSI operates lock-free using MVCC snapshots and detects serialization graph cycles to abort conflicting transactions."
+    ],
+    "acceptableAlternatives": [
+      "2PL uses mutual exclusion locks which cause blocking; SSI tracks data dependencies and aborts transactions optimistically."
+    ],
+    "partialCredit": [
+      "Identifies that 2PL uses locking but incorrectly claims SSI also blocks readers."
+    ],
+    "misconceptions": [
+      "Thinking SSI requires acquiring exclusive write locks on all read rows."
+    ],
+    "probes": [
+      "What is the performance trade-off between pessimistic locking and SSI in high-contention workloads?"
+    ],
+    "sourceIds": [
+      "postgres",
+      "cs-curriculum"
+    ],
+    "id": "software-078",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In an MVCC database engine, how does the transaction cleanup process determine which dead tuple versions can be safely purged from data pages?",
+    "level": "Experienced",
+    "answerKey": "It evaluates the minimum active transaction ID (xmin horizon). Any tuple version whose xmax is older than this active horizon can no longer be seen by any running or future transaction and is purged.",
+    "essentialFacts": [
+      "Dead tuple purging relies on comparing tuple obsolescence markers against active transaction horizons.",
+      "Transactions with older snapshot horizons prevent immediate cleanup of newer dead tuples."
+    ],
+    "acceptableAlternatives": [
+      "Comparing tuple xmax against the global minimum transaction ID of any active snapshot."
+    ],
+    "partialCredit": [
+      "Mentions removing deleted rows without explaining the transaction ID snapshot horizon condition."
+    ],
+    "misconceptions": [
+      "Believing dead tuples are deleted immediately when an UPDATE or DELETE query completes."
+    ],
+    "probes": [
+      "What database maintenance utility performs this space reclamation in PostgreSQL?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-079",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a Two-Phase Commit (2PC) protocol, what operational vulnerability occurs if the coordinator crashes permanently after sending 'prepare' and receiving votes to commit?",
+    "level": "Experienced",
+    "answerKey": "Participants remain in a blocked, uncertain state holding locks indefinitely because they cannot independently decide whether to commit or abort without the coordinator's final outcome message.",
+    "essentialFacts": [
+      "2PC is a blocking protocol vulnerable to coordinator failure after the prepare phase.",
+      "Participant nodes hold resource locks and remain suspended until manual intervention or recovery."
+    ],
+    "acceptableAlternatives": [
+      "Participants are stuck in a blocked state holding locks waiting for the coordinator's final decision."
+    ],
+    "partialCredit": [
+      "States that participants timeout and abort automatically."
+    ],
+    "misconceptions": [
+      "Assuming participants can safely commit on their own if all votes were affirmative."
+    ],
+    "probes": [
+      "How do modern consensus protocols like Paxos or Raft mitigate this blocking limitation?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-080",
+    "track": "software",
+    "competency": "transactions and consistency",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "With a 16-bit virtual address space and a page size of 4 KB, how many bits are required for the page offset, and how many entries exist in the page table?",
+    "level": "Internship",
+    "answerKey": "4 KB equals 2^12 bytes, so the page offset requires 12 bits. The remaining virtual address bits for the page number are 16 - 12 = 4 bits. Thus, the page table contains 2^4 = 16 entries.",
+    "essentialFacts": [
+      "Page offset requires 12 bits since 4 KB = 4096 bytes (log2(4096) = 12).",
+      "Remaining bits for the page number are 16 - 12 = 4 bits.",
+      "Number of page table entries equals 2^(page number bits) = 16 entries."
+    ],
+    "acceptableAlternatives": [
+      "Calculating total address space (65,536 bytes) divided by page size (4,096 bytes) to yield 16 total pages and entries."
+    ],
+    "partialCredit": [
+      "Correctly identifies the page offset bit size (12 bits) but fails to calculate the total page table entries."
+    ],
+    "misconceptions": [
+      "Confusing page size with total address space or allocating all 16 bits to the page table entries."
+    ],
+    "probes": [
+      "How does changing the page size to 8 KB affect the number of page table entries?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-081",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "When a running process executes a blocking I/O system call, what exact state transition does the process scheduler perform, and which queue does the process move to?",
+    "level": "Internship",
+    "answerKey": "The process transitions from the 'Running' state to the 'Waiting' (or Blocked) state. It is removed from the CPU's ready queue and placed into the specific I/O device's wait queue until the operation completes.",
+    "essentialFacts": [
+      "Process state transitions from Running to Blocked/Waiting.",
+      "Process moves from the CPU ready queue to an I/O device wait queue.",
+      "Scheduler selects a new process from the ready queue to execute on the CPU."
+    ],
+    "acceptableAlternatives": [
+      "Describing the kernel updating the Process Control Block (PCB) state pointer from the run queue to a device driver wait queue."
+    ],
+    "partialCredit": [
+      "States the process stops running without naming the 'Blocked/Waiting' state or specifying the device queue."
+    ],
+    "misconceptions": [
+      "Believing the blocked process goes back to the ready queue immediately or gets terminated."
+    ],
+    "probes": [
+      "What happens to the process state and its queue placement once the I/O operation finishes?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-082",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a TLB lookup time of 2 ns, main memory access time of 100 ns, and a 90% TLB hit rate, what is the effective memory access time without page faults?",
+    "level": "Entry level",
+    "answerKey": "EAT = (hit_rate * (t_tlb + t_mem)) + (miss_rate * (t_tlb + 2 * t_mem)). With 0.9 hit rate: 0.9 * (2 + 100) + 0.1 * (2 + 200) = 91.8 + 20.2 = 112 ns.",
+    "essentialFacts": [
+      "TLB hit case takes TLB access plus main memory access (2 + 100 = 102 ns).",
+      "TLB miss case takes TLB access, main memory access for page table, and main memory access for data (2 + 100 + 100 = 202 ns).",
+      "Weighted average calculation using 0.9 hit rate and 0.1 miss rate yields 112 ns."
+    ],
+    "acceptableAlternatives": [
+      "Using the simplified formula 0.9 * (102) + 0.1 * (202) = 112 ns."
+    ],
+    "partialCredit": [
+      "Calculates the hit time contribution correctly (91.8 ns) but omits the extra main memory lookup on a TLB miss."
+    ],
+    "misconceptions": [
+      "Assuming a TLB miss does not require accessing main memory to read the page table entry."
+    ],
+    "probes": [
+      "How does the EAT change if hardware supports concurrent TLB and memory access on hits?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-083",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Consider reference string 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5 with 3 page frames. Using FIFO replacement, how many page faults occur?",
+    "level": "Entry level",
+    "answerKey": "Tracing FIFO with 3 frames: 1(F), 2(F), 3(F), 4(F, evicts 1), 1(F, evicts 2), 2(F, evicts 3), 5(F, evicts 4), 1(H), 2(H), 3(F, evicts 5), 4(F, evicts 1), 5(F, evicts 2). Total page faults equal 10.",
+    "essentialFacts": [
+      "Initial 3 unique references cause 3 compulsory page faults.",
+      "FIFO algorithm evicts the oldest loaded page in the frame set.",
+      "Total page faults across the entire reference string equal 10."
+    ],
+    "acceptableAlternatives": [
+      "Providing a step-by-step frame state trace showing state updates per reference resulting in 10 faults."
+    ],
+    "partialCredit": [
+      "Correctly identifies the first 4 page faults but makes an error in eviction order for subsequent accesses."
+    ],
+    "misconceptions": [
+      "Treating FIFO like LRU and evicting the least recently used page instead of the oldest loaded page."
+    ],
+    "probes": [
+      "Does this specific reference string exhibit Belady's anomaly if frame count is increased to 4?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-084",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain the structural difference between internal and external memory fragmentation, and state which allocation strategy (fixed partition or variable partition) suffers from each type.",
+    "level": "Entry level",
+    "answerKey": "Internal fragmentation is unused space inside an allocated memory block (caused by fixed partitions/paging). External fragmentation is unused free space scattered between allocated blocks (caused by variable partitions/segmentation).",
+    "essentialFacts": [
+      "Internal fragmentation is wasted space within a partition; caused by fixed partitions or paging.",
+      "External fragmentation is wasted space between partitions; caused by variable partitions or segmentation.",
+      "Both represent memory inefficiency but occur in different structural locations relative to allocation blocks."
+    ],
+    "acceptableAlternatives": [
+      "Explaining paging as generating internal fragmentation on final pages, and dynamic contiguous allocation as generating external fragmentation."
+    ],
+    "partialCredit": [
+      "Defines one type of fragmentation correctly but confuses the allocation strategy that causes it."
+    ],
+    "misconceptions": [
+      "Believing paging completely eliminates all forms of memory fragmentation."
+    ],
+    "probes": [
+      "How does compaction help resolve external fragmentation in variable partition schemes?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-085",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Define OS thrashing, explain its primary system cause using CPU utilization, and describe how the working set model mitigates it.",
+    "level": "Experienced",
+    "answerKey": "Thrashing occurs when a system spends more time servicing page faults than executing instructions, causing CPU utilization to plummet. It is caused by overcommitting physical memory across too many processes. The working set model mitigates this by tracking active pages over time and ensuring a process has its required frames before running.",
+    "essentialFacts": [
+      "Thrashing is excessive paging that reduces CPU utilization to near zero.",
+      "Primary cause is memory overcommitment where total working sets exceed physical memory size.",
+      "Working set model prevents thrashing by allocating sufficient frames based on recent process reference windows before scheduling."
+    ],
+    "acceptableAlternatives": [
+      "Mentioning Page-Fault Frequency (PFF) control algorithms as an alternative to the working set window model."
+    ],
+    "partialCredit": [
+      "Explains thrashing as a high page fault rate without linking it to CPU utilization collapse or the working set mechanism."
+    ],
+    "misconceptions": [
+      "Believing thrashing is a hardware memory failure rather than an OS resource scheduling overcommitment."
+    ],
+    "probes": [
+      "What action does the OS scheduler take if the sum of all active working sets exceeds total available RAM?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-086",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "State the four necessary Coffman conditions for a deadlock to occur in an operating system, and explain which single condition is typically targeted by resource ordering prevention strategies.",
+    "level": "Experienced",
+    "answerKey": "The four Coffman conditions are mutual exclusion, hold and wait, no preemption, and circular wait. Resource ordering prevention strategies target the circular wait condition by enforcing a strict global numbering order for resource acquisition.",
+    "essentialFacts": [
+      "Lists all four conditions: mutual exclusion, hold and wait, no preemption, and circular wait.",
+      "Identifies circular wait as the specific condition broken by resource ordering.",
+      "Explains that a strict acquisition order prevents cycles in resource allocation graphs."
+    ],
+    "acceptableAlternatives": [
+      "Describing the conditions using equivalent concurrency terminology such as non-shareable resources and resource graphs."
+    ],
+    "partialCredit": [
+      "Lists 2 or 3 Coffman conditions correctly without identifying which condition resource ordering breaks."
+    ],
+    "misconceptions": [
+      "Assuming breaking mutual exclusion is the standard and easiest way to prevent deadlocks for general resources."
+    ],
+    "probes": [
+      "Why is eliminating the 'hold and wait' condition generally considered inefficient for resource utilization?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-087",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Explain how Copy-on-Write (COW) optimizes the Unix fork() system call by sharing physical page frames, and describe the exact kernel trap sequence when a process attempts to modify a shared page.",
+    "level": "Experienced",
+    "answerKey": "COW shares physical pages between parent and child with read-only permissions. When a process writes to a page, a protection fault occurs. The kernel catches this trap, allocates a new physical frame, copies the data, updates the page table entry to write-enabled, and resumes execution.",
+    "essentialFacts": [
+      "Parent and child initially share physical memory pages marked as read-only.",
+      "A write attempt triggers a hardware protection/page fault trap.",
+      "Kernel allocates a new frame, copies the data, and updates page table mappings with write permissions."
+    ],
+    "acceptableAlternatives": [
+      "Describing physical frame reference counts that decrement when unshared and drop to zero upon process exit."
+    ],
+    "partialCredit": [
+      "States that pages are shared initially but omits the description of the page fault trap and duplicate-on-write sequence."
+    ],
+    "misconceptions": [
+      "Assuming fork() always duplicates all virtual memory pages immediately unless explicitly flagged otherwise."
+    ],
+    "probes": [
+      "How does the kernel handle COW when multiple child processes share the same parent page frames?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-088",
+    "track": "software",
+    "competency": "operating systems and memory",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a cluster with a 2-second heartbeat interval, what is the minimum detection time for a node failure using a 3-miss threshold?",
+    "level": "Internship",
+    "answerKey": "6 seconds. The heartbeat interval is 2 seconds, and missing 3 consecutive heartbeats means 3 * 2 = 6 seconds.",
+    "essentialFacts": [
+      "Heartbeat interval multiplied by miss threshold defines detection time",
+      "Minimum detection time is 6 seconds"
+    ],
+    "acceptableAlternatives": [
+      "6s",
+      "Six seconds"
+    ],
+    "partialCredit": [
+      "Calculating 2 * 3 without stating units",
+      "Mentioning threshold but wrong math"
+    ],
+    "misconceptions": [
+      "Detection happens immediately on the first missed heartbeat",
+      "Detection time is independent of the heartbeat interval"
+    ],
+    "probes": [
+      "How would network jitter affect this threshold?",
+      "What happens if you decrease the interval to 500ms?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-089",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a distributed data store with a replication factor of 5, what is the minimum write quorum size required to ensure strong consistency under a strict quorum intersection?",
+    "level": "Internship",
+    "answerKey": "3. For strict quorum intersection where R + W > N, with N=5, if R=3 and W=3, then 3 + 3 = 6 > 5, guaranteeing at least one overlapping node.",
+    "essentialFacts": [
+      "Strict quorum requires R + W > N",
+      "With N=5, minimum write quorum W=3 given symmetric R=3"
+    ],
+    "acceptableAlternatives": [
+      "3 nodes",
+      "Three"
+    ],
+    "partialCredit": [
+      "Stating N/2 + 1 without applying it",
+      "Stating quorum formula incorrectly as R + W >= N"
+    ],
+    "misconceptions": [
+      "Quorum requires writing to all replicas",
+      "Read and write quorums do not need to overlap"
+    ],
+    "probes": [
+      "How does this change if you use sloppy quorums?",
+      "What is the read quorum size needed?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-090",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a 5-node Raft cluster, a network partition splits the nodes into groups of 3 and 2. Which partition elects a new leader, and why?",
+    "level": "Entry level",
+    "answerKey": "The partition with 3 nodes elects a leader because it holds a strict majority (> 5/2), allowing it to achieve quorum for leader election.",
+    "essentialFacts": [
+      "Majority partition contains 3 nodes",
+      "Raft leader election requires a strict majority of cluster nodes"
+    ],
+    "acceptableAlternatives": [
+      "The 3-node partition",
+      "The majority partition"
+    ],
+    "partialCredit": [
+      "Identifying the correct group without explaining quorum",
+      "Saying majority wins without numbers"
+    ],
+    "misconceptions": [
+      "Both partitions elect a leader",
+      "The 2-node partition can elect a leader if it has the original leader"
+    ],
+    "probes": [
+      "What happens to client writes sent to the minority partition?",
+      "How does Raft handle stale reads from the minority partition?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-091",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Why must payment processing APIs in distributed systems use client-generated idempotency keys, and how does the server prevent double-charging when a network timeout occurs?",
+    "level": "Entry level",
+    "answerKey": "Client-generated idempotency keys uniquely identify a request. When a timeout occurs and the client retries, the server checks its store for the key; if found, it returns the cached result instead of executing the charge again.",
+    "essentialFacts": [
+      "Client-generated keys uniquely identify requests across retries",
+      "Server checks the key store and returns cached responses for duplicates"
+    ],
+    "acceptableAlternatives": [
+      "Using unique request IDs and checking a datastore before processing"
+    ],
+    "partialCredit": [
+      "Mentioning retries without explaining key lookup",
+      "Stating server generates the key"
+    ],
+    "misconceptions": [
+      "Transport layer TCP retries guarantee application-level idempotency",
+      "Database auto-increment IDs prevent duplicate charges"
+    ],
+    "probes": [
+      "How long should the server retain idempotency keys?",
+      "What concurrency issue arises if two identical requests arrive simultaneously?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-092",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In consistent hashing with a ring space of 2^32, when a new node is added, what fraction of keys are remapped on average?",
+    "level": "Entry level",
+    "answerKey": "1/N (or 1/(N+1) where N is the original number of nodes). Only keys residing between the new node and its predecessor are reassigned.",
+    "essentialFacts": [
+      "Only keys between the new node and its predecessor are remapped",
+      "Average fraction of remapped keys is 1/N"
+    ],
+    "acceptableAlternatives": [
+      "1/N",
+      "One over N"
+    ],
+    "partialCredit": [
+      "Stating all keys are remapped",
+      "Stating 50% regardless of node count"
+    ],
+    "misconceptions": [
+      "Adding a node requires rehashing all keys like traditional modulo hashing",
+      "Virtual nodes do not affect key distribution"
+    ],
+    "probes": [
+      "How do virtual nodes improve load balancing in consistent hashing?",
+      "What happens to keys when a node fails?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-093",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In the Two-Phase Commit protocol, explain the exact failure state when the coordinator crashes permanently immediately after dispatching commit votes, and why participant nodes remain blocked.",
+    "level": "Experienced",
+    "answerKey": "Participants that voted 'yes' enter an uncertain state holding locks and waiting for the commit/abort decision. Because the coordinator crashed before broadcasting the final outcome, participants cannot unilaterally commit or abort safely, leading to indefinite blocking.",
+    "essentialFacts": [
+      "Participants holding locks enter a blocked uncertain state",
+      "Permanent coordinator failure prevents resolving pending transactions without external intervention"
+    ],
+    "acceptableAlternatives": [
+      "Nodes are blocked holding locks because the coordinator died before sending the final decision"
+    ],
+    "partialCredit": [
+      "Stating nodes abort automatically",
+      "Stating nodes commit automatically"
+    ],
+    "misconceptions": [
+      "Participants can unilaterally decide to commit after a timeout",
+      "2PC is a non-blocking protocol"
+    ],
+    "probes": [
+      "How do modern consensus protocols like Paxos avoid this blocking vulnerability?",
+      "What is the role of termination protocols in mitigating 2PC blocking?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-094",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "According to the CAP theorem, why must a distributed data store sacrifice availability during a network partition if it guarantees linearizable consistency?",
+    "level": "Experienced",
+    "answerKey": "To ensure linearizability (consistency), nodes on opposite sides of a partition cannot communicate to agree on writes. Accepting writes on both sides violates single-copy consistency, forcing the system to reject writes and sacrifice availability.",
+    "essentialFacts": [
+      "Partition creates isolated subnets unable to communicate",
+      "Accepting divergent updates violates linearizability, forcing unavailability on at least one side"
+    ],
+    "acceptableAlternatives": [
+      "Consistency requires agreeing on state; partitions prevent communication, forcing availability loss to maintain correctness"
+    ],
+    "partialCredit": [
+      "Stating CAP means choosing two out of three",
+      "Explaining partitions without mentioning consistency guarantees"
+    ],
+    "misconceptions": [
+      "You can choose Consistency and Availability during a network partition",
+      "CAP theorem applies to single-node databases"
+    ],
+    "probes": [
+      "How do AP systems like Cassandra handle partition recovery and conflict resolution?",
+      "Does eventual consistency satisfy linearizability?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-095",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given two vector clocks V1 = [A:2, B:1] and V2 = [A:1, B:2], determine their causal relationship and explain how a distributed key-value store resolves this divergence.",
+    "level": "Experienced",
+    "answerKey": "They are concurrent (V1 not <= V2 and V2 not <= V1). The store retains both sibling versions and requires application-level conflict resolution or client-side merging.",
+    "essentialFacts": [
+      "Clocks are concurrent because neither dominates the other",
+      "Store exposes both versions as siblings for client-side resolution"
+    ],
+    "acceptableAlternatives": [
+      "Concurrent / conflicting; the system returns both values to the client for reconciliation"
+    ],
+    "partialCredit": [
+      "Stating one happened before the other",
+      "Stating one overwrites the other arbitrarily"
+    ],
+    "misconceptions": [
+      "Vector clocks automatically merge concurrent writes",
+      "Higher sum of counters determines the latest write"
+    ],
+    "probes": [
+      "What happens to metadata size as the number of cluster nodes grows large?",
+      "How does Last-Write-Wins (LWW) differ from vector clocks in handling conflicts?"
+    ],
+    "sourceIds": [
+      "cs-curriculum"
+    ],
+    "id": "software-096",
+    "track": "software",
+    "competency": "distributed services and reliability",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A Python function `def add_item(val, items=[]): items.append(val); return items` is called twice: `add_item(1)` then `add_item(2)`. What does the second call return, and why does this happen across function invocations?",
+    "level": "Internship",
+    "answerKey": "The second call returns `[1, 2]`. This happens because default argument expressions are evaluated once at function definition time, meaning subsequent calls share the exact same mutable list object in memory.",
+    "essentialFacts": [
+      "Default arguments are evaluated once when the function is defined.",
+      "Subsequent calls mutate and share the same mutable list object."
+    ],
+    "acceptableAlternatives": [
+      "It returns `[1, 2]` because the default list is bound at function creation time and persists across calls."
+    ],
+    "partialCredit": [
+      "Identifies that the result is `[1, 2]` but cannot explain default argument binding.",
+      "Recognizes that the list is shared but confuses definition time with import time."
+    ],
+    "misconceptions": [
+      "Default arguments are re-initialized to an empty list on every function call.",
+      "Lists passed as default arguments are immutable."
+    ],
+    "probes": [
+      "How would you refactor this function to ensure each call starts with a fresh empty list?",
+      "What happens if you use `None` as the default value instead?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-097",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In JavaScript, execution prints `console.log('A')`, schedules a `setTimeout` for 0ms printing 'B', and resolves a Promise printing 'C'. State the exact printed order and explain which queue processes 'C' first.",
+    "level": "Internship",
+    "answerKey": "The exact printed order is A, C, then B. Promise callbacks are placed on the microtask queue, which executes immediately after the current call stack clears, ahead of macrotask queue items like `setTimeout` timers.",
+    "essentialFacts": [
+      "Output order is A, C, B.",
+      "Microtasks (Promises) execute before macrotasks (setTimeout)."
+    ],
+    "acceptableAlternatives": [
+      "Prints A, C, B because promise handlers are microtasks."
+    ],
+    "partialCredit": [
+      "Correctly identifies the order A, C, B without explaining the microtask queue."
+    ],
+    "misconceptions": [
+      "A `setTimeout` with 0ms executes synchronously before promises.",
+      "Promises and timeouts run in the same execution queue."
+    ],
+    "probes": [
+      "Where does `queueMicrotask()` place its callback relative to resolved promises?",
+      "What happens if a microtask schedules another microtask indefinitely?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-098",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Under PostgreSQL Read Committed isolation, Transaction A reads a row, then Transaction B updates and commits it. If Transaction A reads the same row again, what values does it see, and why?",
+    "level": "Entry level",
+    "answerKey": "Transaction A sees the updated values. PostgreSQL Read Committed uses statement-level snapshots, meaning each new SQL statement within the transaction acquires a fresh snapshot of committed data.",
+    "essentialFacts": [
+      "Transaction A sees the updated values.",
+      "Read Committed isolation uses statement-level snapshots."
+    ],
+    "acceptableAlternatives": [
+      "It sees the new values because Read Committed refreshes snapshots per statement."
+    ],
+    "partialCredit": [
+      "Knows the values change but attributes it to dirty reads instead of statement snapshots."
+    ],
+    "misconceptions": [
+      "Read Committed maintains a single consistent snapshot for the entire transaction lifetime.",
+      "Transaction A cannot see changes until it commits its own transaction."
+    ],
+    "probes": [
+      "How would Repeatable Read isolation change the outcome for Transaction A?",
+      "What anomaly does Read Committed prevent that Read Uncommitted allows?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-099",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "An async function throws an error without a try/catch block inside a `.then()` chain. Why does a standard try/catch block surrounding the caller fail to catch this unhandled rejection?",
+    "level": "Entry level",
+    "answerKey": "Asynchronous errors inside promise chains reject the returned promise asynchronously rather than throwing synchronously up the caller's call stack, bypassing synchronous try/catch blocks.",
+    "essentialFacts": [
+      "Asynchronous rejections return a rejected promise rather than throwing synchronously.",
+      "Caller's try/catch only catches synchronous exceptions on the current call stack."
+    ],
+    "acceptableAlternatives": [
+      "The error rejects the promise asynchronously outside the synchronous call stack caught by try/catch."
+    ],
+    "partialCredit": [
+      "Recognizes that promises handle errors differently but fails to explain call stack separation."
+    ],
+    "misconceptions": [
+      "Try/catch blocks automatically catch any error thrown inside any asynchronous callback.",
+      "Async functions convert all rejections into synchronous runtime exceptions."
+    ],
+    "probes": [
+      "How do you properly catch errors in a promise chain?",
+      "What event is emitted on the global scope if an unhandled rejection goes uncaught?"
+    ],
+    "sourceIds": [
+      "mdn"
+    ],
+    "id": "software-100",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Inside a nested Python function, assigning to a variable name without `nonlocal` shadows the outer scope. What exception occurs if you read that variable before assignment, and how do you debug it?",
+    "level": "Experienced",
+    "answerKey": "An `UnboundLocalError` occurs because assigning to a variable makes Python treat it as local to that scope for the entire block. Debug by adding the `nonlocal` or `global` keyword.",
+    "essentialFacts": [
+      "Raises UnboundLocalError when read before assignment.",
+      "Assignment treats the variable as local; fix by adding nonlocal/global."
+    ],
+    "acceptableAlternatives": [
+      "UnboundLocalError is raised; fix it by declaring the variable nonlocal."
+    ],
+    "partialCredit": [
+      "Identifies the variable scope shadowing issue but names the wrong exception."
+    ],
+    "misconceptions": [
+      "Python automatically mutates outer scope variables on assignment without declarations.",
+      "Reading an unassigned variable raises a NameError in local scopes."
+    ],
+    "probes": [
+      "How does lexical scoping determine whether a variable is local or nonlocal?",
+      "Why does Python require explicit scoping keywords for mutation?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-101",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "In a PostgreSQL Serializable transaction, concurrent writes can trigger a serialization failure (SQLSTATE 40001). Why must the application catch this error and retry the entire transaction rather than continuing?",
+    "level": "Experienced",
+    "answerKey": "Serializable transactions use SSI to detect serialization anomalies like write-skew. When a conflict occurs, the transaction state is aborted and invalid, requiring a full retry from the beginning to ensure correctness.",
+    "essentialFacts": [
+      "Serialization failure aborts the transaction state.",
+      "Applications must catch the error and restart the transaction from scratch."
+    ],
+    "acceptableAlternatives": [
+      "The transaction is aborted due to a conflict, and state cannot be safely salvaged without a full restart."
+    ],
+    "partialCredit": [
+      "Understands that a retry is needed but cannot explain SSI conflict detection."
+    ],
+    "misconceptions": [
+      "You can resume a failed serializable transaction from the point of error.",
+      "Serialization failures are caused by syntax errors."
+    ],
+    "probes": [
+      "What database anomaly does Serializable Snapshot Isolation prevent that Repeatable Read allows?",
+      "How does the application determine if an error is retryable?"
+    ],
+    "sourceIds": [
+      "postgres"
+    ],
+    "id": "software-102",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "A Node.js server runs a heavy synchronous loop for 5 seconds inside an API route. How does this impact concurrent incoming HTTP requests, and why does asynchronous scheduling fail to fix it?",
+    "level": "Experienced",
+    "answerKey": "It blocks the single-threaded event loop, freezing all concurrent requests and delaying queued callbacks. Asynchronous scheduling does not make CPU-bound synchronous work run in parallel.",
+    "essentialFacts": [
+      "Blocks the single-threaded event loop and delays all concurrent requests.",
+      "Asynchronous scheduling does not make CPU-bound work parallel."
+    ],
+    "acceptableAlternatives": [
+      "All other requests hang because the main thread is busy; async callbacks cannot run on a blocked thread."
+    ],
+    "partialCredit": [
+      "Knows the server hangs but attributes it to networking issues rather than event loop blocking."
+    ],
+    "misconceptions": [
+      "Async/await makes heavy CPU calculations run in background threads automatically.",
+      "Node.js spawns a new thread per HTTP request."
+    ],
+    "probes": [
+      "How would you offload this CPU-bound work to prevent blocking the event loop?",
+      "What is the role of worker threads in Node.js for debugging performance bottlenecks?"
+    ],
+    "sourceIds": [
+      "mdn",
+      "cs-curriculum"
+    ],
+    "id": "software-103",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  },
+  {
+    "prompt": "Given a tuple `t = ([1, 2], 3)`, executing `t[0].append(4)` succeeds while `t[0] = [1, 2, 4]` raises a `TypeError`. Explain this debugging behavior regarding tuple reference immutability.",
+    "level": "Internship",
+    "answerKey": "Tuples are immutable regarding their container references (cannot reassign indices like `t[0]`), but contain mutable objects (lists) whose internal state can be modified in place.",
+    "essentialFacts": [
+      "Tuple immutability prevents reassigning container references (`t[0] = ...`).",
+      "Inner mutable objects like lists can still be mutated in place."
+    ],
+    "acceptableAlternatives": [
+      "Reassigning `t[0]` fails because tuple elements are fixed, but the list itself is mutable."
+    ],
+    "partialCredit": [
+      "Understands that the list changes but confuses container assignment with object mutation."
+    ],
+    "misconceptions": [
+      "Tuples make all nested objects recursively immutable.",
+      "Tuple elements cannot be accessed or referenced after creation."
+    ],
+    "probes": [
+      "How do you make the contents of a tuple entirely immutable in Python?",
+      "What error is raised when attempting to reassign a tuple element?"
+    ],
+    "sourceIds": [
+      "python"
+    ],
+    "id": "software-104",
+    "track": "software",
+    "competency": "testing and debugging",
+    "category": "Technical",
+    "review": {
+      "status": "ai-reviewed",
+      "method": "separate author and critic calls; not human expert verified",
+      "model": "gemini-3.5-flash-lite",
+      "date": "2026-10-25"
+    },
+    "version": 1
+  }
+]

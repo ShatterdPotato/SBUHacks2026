@@ -1,3 +1,4 @@
+import { rubricFixture } from './fixtures/grading.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { handleApi } from '../lib/service.mjs';
@@ -11,8 +12,8 @@ const env={AI_PROVIDER:'gemini',GEMINI_API_KEY:'test',GEMINI_DATA_POLICY:'unpaid
 const question={prompt:'An order costs $8.65 and the customer gives you $20. What change is due?',focus:[]};
 const body={question,answer:'I would give the customer $10.35 in change, checking the amount carefully.',role:'Retail cashier / customer service',history:[],duration:30,recorded:true,cloudConsent:true,providerConsent:'gemini',demoDataOnly:true,privacyMode:'fictional',nonSensitiveConsent:true};
 const req=b=>new Request('https://cadence.test/api/interview-turn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
-const response=value=>Response.json({status:'completed',steps:[{type:'model_output',content:[{type:'text',text:JSON.stringify(value)}]}]});
-const feedback={content:60,comprehension:95,summary:'Check the arithmetic.',strengths:['You described a check.'],improvements:['Recalculate change.'],evidence:['$10.35','invented quote'],visual:['invented observation']};
+const response=value=>{if(value.followup)value={...value,nextQuestion:{prompt:value.followup,category:'Technical',focus:[],anchorQuote:''}};return Response.json({status:'completed',steps:[{type:'model_output',content:[{type:'text',text:JSON.stringify(value)}]}]});};
+const feedback={content:60,comprehension:95,summary:'Check the arithmetic.',strengths:['You described a check.'],improvements:['Recalculate change.'],evidence:['$10.35','invented quote'],visual:['invented observation'],rubric:rubricFixture('$10.35'),checks:[]};
 test('cashier role overrides an ML resume for profiles and every technical question',()=>{
     const profile=genericProfile('Python PyTorch NLP Transformer model evaluation, circuits','McDonald’s cashier');
     assert.equal(profile.roleFamily,'Retail cashier / customer service');assert.ok(!profile.skills.includes('PyTorch'));
@@ -54,19 +55,19 @@ test('free Gemini follow-up receives bounded transcript history and checks only 
     assert.equal(data.analysis.knowledge.checks.length,1);assert.equal(data.analysis.knowledge.checks[0].status,'contradicted');
     assert.deepEqual(data.analysis.evidence,['$10.35']);assert.deepEqual(data.analysis.visual,[]);
     assert.equal(data.analysis.knowledge.references[0].id,'change');assert.match(JSON.stringify(sent),/11\.35/);
-    assert.match(data.analysis.summary,/factual error/);
-    assert.match(data.followup,/subtraction/);
+    assert.match(data.analysis.summary,/factual error/i);
+    assert.match(data.followup,/check that calculation/);
     assert.equal(sent.store,false);assert.ok(!JSON.stringify(sent).includes('MUST NEVER BE FORWARDED'));
 });
 test('unreferenced AI claims stay unverified and do not create a knowledge score',async()=>{
     const b={...body,question:{prompt:'Tell me about a fictional achievement.',focus:[]},answer:'I invented a new principle that increases every number by infinite percent.'};
-    const r=await handleApi(req(b),env,async()=>response({feedback,followup:'How did you verify that result?',checks:[{quote:'infinite percent',status:'supported',explanation:'claimed fact',referenceId:'invented'},{quote:'infinite percent',status:'unverified',explanation:'No supplied reference verifies this.',referenceId:''}]}));
+    const r=await handleApi(req(b),env,async()=>response({feedback:{...feedback,rubric:rubricFixture('infinite percent')},followup:'How did you verify that result?',checks:[{quote:'infinite percent',status:'supported',explanation:'claimed fact',referenceId:'invented'},{quote:'infinite percent',status:'unverified',explanation:'No supplied reference verifies this.',referenceId:''}]}));
     const d=await r.json();assert.equal(d.analysis.scores.comprehension,null);assert.equal(d.analysis.knowledge.checks.length,1);
 });
 test('individual-answer feedback also overrides incorrect AI arithmetic praise',async()=>{
     const request=new Request('https://cadence.test/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,mode:'live'})});
     const result=await handleApi(request,env,async()=>response({...feedback,summary:'The change was calculated correctly.'}));
-    const data=await result.json();assert.equal(data.scores.comprehension,0);assert.match(data.summary,/factual error/);
+    const data=await result.json();assert.equal(data.scores.comprehension,0);assert.match(data.summary,/factual error/i);
 });
 test('continuous recording moments use their global session offsets',()=>{
     const transcript='First I checked the order because accuracy matters. Then I counted change and confirmed the total with the customer.';
