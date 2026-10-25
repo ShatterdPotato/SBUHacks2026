@@ -1,0 +1,19 @@
+# Conversational interview verification — October 24, 2026
+
+The user requested an immediate push/checkpoint before their usage ran out. Source branch: codex/conversational-role-first-interviews. No hosted publication is claimed.
+
+- 64 automated tests PASS, including role priority, repeated/paraphrased scenario filtering, mixed-session counts after category exhaustion, consent/contact/history limits, deterministic arithmetic overriding AI prose, reference/quote filtering, refinement retention and absolute session clip offsets.
+- pnpm exec tsc --noEmit PASS. pnpm build PASS after removing temporary QA routes/audio. Worker chunk-size warnings remain; compilation succeeded.
+- Actual Vinext-origin browser regression used two distinct fictional Windows synthetic speech clips and an animated canvas. No physical camera/microphone was accessed. Two turns advanced automatically in one continuous recording. Their final transcripts matched the scripted 49- and 53-word answers; durations 22.12 and 23.424 seconds, offsets 0 and 36.48 seconds. This is a controlled fixture result, not a real-speech accuracy claim.
+- Both strong and improvement excerpts appeared. Real exports at 0–6.94 seconds and 47.26–55.08 seconds decoded with audible audio: 6.9/7.8 seconds, RMS 0.094/0.099. Original ranges remain approximate.
+- Live unpaid Gemini generated three generic cashier sessions with role-appropriate service/register questions. Some situations were paraphrased across sessions; browser filtering now recognizes recurring cashier scenario types and fills from fresh curated questions. Repetition can recur after the finite bank is exhausted; in-memory history resets on reload.
+- Live Gemini conversational feedback and an adaptive follow-up passed with fictional text. Wrong change of $10.35 for $20 minus $8.65 was overridden deterministically to knowledge 0, with the visible calculation $11.35 and a factual-error summary. No key, billing or data-policy setting changed.
+- Browser text conversation exercised spoken questions, interruption, a follow-up, skips, early finish and report rendering. Controlled media exercised local transcription, refinement, continuous offsets and exports. Temporary test-harness hot reloads produced closed-AudioContext cleanup warnings; the saved fixture guards cleanup. Physical devices, real-person landmark quality and accents/noisy speech remain unverified.
+
+Evidence: conversation-verification-2026-10-24.json. Reusable harness: web/tests/fixtures/conversation-harness.tsx; synthetic WAV builder: build-conversation-audio.ps1. Copy the harness temporarily into app/qa-conversation/page.tsx on the actual development server, and remove that route and public/qa-fixtures audio before any production build. No test route or audio is included in production.
+
+Limits: turn-based local ASR/provider latency rather than duplex streaming voice; English only; a small reference pack (cash calculations, McDonald's US allergen guidance, Python mutability, scikit-learn data leakage), no live web search or proof of personal achievements; free Gemini permits only explicitly consented fictional/non-sensitive answer transcripts. Personal resumes remain local. Ordinary movement is not penalized; eye contact, feelings and hiring fitness are not inferred.
+
+Sites connector still returns project not found for appgprj_6adcd46ff0dc8191943fd596d01bba52. The public-facing URL retains its earlier deployed source. Preserve the project and audience; deploy only through an authorized account. No replacement Site or credential transfer was attempted.
+
+Manual handoff: Codex continuation -> Sameer / aiden.sol. Implementation and verification are saved in Git. No mailbox message or teammate receipt is claimed. Start with TEAM_CONTEXT.md and docs/HANDOFF.md. Local testing: cd web; pnpm dev; http://127.0.0.1:5173/. Local key is in ignored .dev.vars; never read/print/commit it.

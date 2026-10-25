@@ -97,3 +97,12 @@ and the actual downloaded JSON passed validation. All 44 tests, TypeScript, and
 production build were rerun successfully. See
 [continuation evidence](qa/CONTINUATION_VERIFICATION_2026-10-24.md) and
 [the detailed manual audit](qa/RESUME_BROWSER_AUDIT_2026-10-24.md).
+
+## Conversational acceptance check (2026-10-24)
+
+1. Upload a resume with ML skills and target a McDonald's cashier role. Generate several sessions; practical service/register topics should dominate, with no unrelated ML technical questions.
+2. Keep the default conversational format. For camera practice explicitly consent and start once. Questions speak using a local English system voice when available; recognition excludes interviewer playback. The recording remains continuous across turns. Use headphones.
+3. Speak, then pause for the configured interval. Check captions, automatic advancement, one follow-up per substantive answer, interrupt, pause/resume and manual completion. Without cloud-answer opt-in, follow-ups use local templates.
+4. To test free Gemini, opt into fictional/non-sensitive transcripts in the studio and use invented practice situations only. An incorrect change amount should be contradicted against a visible calculation. Unsupported personal stories should have unavailable knowledge, not a verified score.
+5. Finish and replay both excerpt categories. Later answers must seek to later times in the same video. Export one of each and check audible audio. Download the full interview once. Correct a transcript in the report and recheck locally; delivery stays based on original evidence.
+6. Synthetic regression source is tests/fixtures/conversation-harness.tsx, copied temporarily into app/qa-conversation/page.tsx on the actual Vinext server. Generate synthetic WAVs with tests/fixtures/build-conversation-audio.ps1. Never deploy the temporary route or public QA audio. This does not verify physical hardware or real-person landmarks.

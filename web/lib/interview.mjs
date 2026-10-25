@@ -1,4 +1,7 @@
 /** Provider-independent interview logic. Never persists personal data. */
+import { roleRule } from './role-context.mjs';
+import { roleQuestions } from './role-questions.mjs';
+import { shuffled, freshQuestions } from './question-variety.mjs';
 export class InputError extends Error {
     constructor(message, status = 400) { super(message); this.status = status; }
 }
@@ -48,16 +51,25 @@ export function setupInput(body) {
         if (!body.cloudConsent)
             throw new InputError('PDF analysis requires cloud consent. Paste text to use the local rubric.');
     }
-    return { role, context, type, count, level, resume, cloudConsent: body.cloudConsent === true };
+    const variation = body.variation ?? crypto.randomUUID();
+    if (typeof variation !== 'string' || !/^[a-zA-Z0-9-]{8,80}$/.test(variation)) throw new InputError('Invalid interview variation.');
+    return { role, context, type, count, level, resume, variation, cloudConsent: body.cloudConsent === true };
 }
-export function retrieveQuestions(setup) {
-    const query = `${setup.role} ${setup.context}`.toLowerCase();
+/** @param {any} setup @param {{previous?:string[],random?:()=>number}} options */
+export function retrieveQuestions(setup, { previous = [], random = Math.random } = {}) {
+    const family = roleRule(setup.role).family;
+    const query = (family === 'General interview' && setup.role === 'General interview' ? `${setup.role} ${setup.context}` : setup.role).toLowerCase();
     const ranked = BANK.map((q, i) => ({ ...q, id: `bank-${i + 1}`, source: 'curated', relevance: q.tags.reduce((n, tag) => n + (new RegExp(`\\b${tag}\\b`, 'i').test(query) ? (tag.includes(" ") ? 3 : tag === "engineer" ? .25 : 1) : 0), 0) }));
-    const pool = ranked.filter(q => setup.type === 'Mixed' || q.category === setup.type).sort((a, b) => b.relevance - a.relevance);
+    const relevant = ranked.filter(q => q.category === 'Behavioral' || (['AI/ML engineering','Data science'].includes(family) ? q.tags.some(tag=>['machine learning','ml','ai','model','data'].includes(tag)) : q.relevance > 0 || (q.tags.length === 0 && !roleRule(setup.role).topics)));
+    const eligible = [...roleQuestions(setup.role), ...relevant].filter(q => setup.type === 'Mixed' || q.category === setup.type);
+    const unseen = freshQuestions(shuffled(eligible, random), previous);
+    // Mixed sessions may exhaust one category before the other. Keep seen
+    // fallback questions at the end so the requested category counts survive.
+    const pool = [...unseen, ...shuffled(eligible, random).filter(q => !unseen.some(v => v.id === q.id))];
     const chosen = setup.type === 'Mixed'
-        ? [ranked[0], ...pool.filter(q => q.id !== ranked[0].id && q.category === 'Technical').slice(0, 2), ...pool.filter(q => q.id !== ranked[0].id && q.category === 'Behavioral')]
+        ? [...pool.filter(q=>q.category==='Behavioral').slice(0,Math.ceil(setup.count/2)), ...pool.filter(q=>q.category==='Technical').slice(0,Math.floor(setup.count/2))]
         : pool;
-    return chosen.slice(0, setup.count).map(({ relevance, tags, ...q }) => q);
+    return shuffled(chosen.slice(0, setup.count), random).map(({ relevance, tags, roles, ...q }) => q);
 }
 export function transcriptWords(answer) {
     return typeof answer === 'string' ? answer.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) ?? [] : [];

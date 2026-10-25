@@ -48,12 +48,13 @@ test('two timestamp-free recordings retain both whole-answer categories', () => 
 test('invalid ASR timestamps are rejected rather than fabricating alignment', () => {
     assert.deepEqual(timedWords([{text:'hello',timestamp:[0,1]},{text:'bad',timestamp:[2,null]},{text:'bad',timestamp:[3,2]},{text:'late',timestamp:[10,12]}],5),[{text:'hello',start:0,end:1}]);
 });
-test('measured shoulder movement and long interior pauses affect the delivery breakdown', () => {
+test('ordinary movement has no penalty while long interior pauses affect cadence', () => {
     const steady = Array.from({length:12},(_,i)=>({at:i,facing:true,shouldersVisible:true,bodyShift:.02}));
     const shifting = steady.map(v=>({...v,bodyShift:.4}));
     const a=recordedDelivery({transcript,duration,words,audio,vision:steady});
     const b=recordedDelivery({transcript,duration,words,audio,vision:shifting});
-    assert.equal(a.components.length,6);assert.ok(a.score>b.score);
+    assert.equal(a.components.length,5);assert.equal(a.score,b.score);
+    assert.ok(b.notes.some(n=>n.includes('no movement penalty')));
     const gaps=audio.map(s=>({...s,rms:s.at>=4&&s.at<=9?0:.04}));
     const c=recordedDelivery({transcript,duration,words,audio:gaps,vision:steady});
     assert.ok(c.score<a.score); assert.ok(c.components.find(c=>c.name==='Pause cadence').evidence.startsWith('1 '));

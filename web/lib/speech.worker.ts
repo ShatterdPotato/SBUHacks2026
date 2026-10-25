@@ -6,7 +6,7 @@ const createSpeech = pipeline as unknown as (task: string, model: string, option
 let transcriber: Promise<AutomaticSpeechRecognitionPipeline> | undefined;
 self.onmessage = async ({ data }) => {
     try {
-        transcriber ??= createSpeech('automatic-speech-recognition', 'Xenova/whisper-tiny.en', {
+        transcriber ??= createSpeech('automatic-speech-recognition', 'Xenova/whisper-base.en', {
             device: 'wasm', dtype: 'q8', progress_callback: (p: { status: string; progress?: number }) => {
                 if (p.status === 'progress') self.postMessage({ type: 'progress', progress: Math.round(p.progress ?? 0) });
             }

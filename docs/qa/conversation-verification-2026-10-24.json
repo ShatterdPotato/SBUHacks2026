@@ -1,0 +1,346 @@
+{
+  "date": "2026-10-24",
+  "origin": "http://127.0.0.1:5173",
+  "source": "Synthetic Windows English speech and animated canvas. No physical camera/microphone.",
+  "takes": [
+    {
+      "question": {
+        "id": "qa1",
+        "prompt": "Tell me about a fictional example of helping someone.",
+        "category": "Behavioral",
+        "focus": [],
+        "source": "curated"
+      },
+      "transcript": "First I would listen to the customer without interrupting. Then I would repeat the order to confirm what they expected. If the order was wrong, I would ask my supervisor to help correct it. Finally I would check the replacement and confirm that the customer received the right items.",
+      "words": 49,
+      "duration": 22.12,
+      "recordingOffset": 0,
+      "audioSamples": 213,
+      "visionSamples": 42,
+      "delivery": {
+        "score": 99,
+        "components": [
+          {
+            "name": "Speaking pace",
+            "score": 97.2,
+            "weight": 44,
+            "evidence": "174 words/minute including pauses"
+          },
+          {
+            "name": "Fillers and repeated words",
+            "score": 100,
+            "weight": 22,
+            "evidence": "0 filler phrases; 0 possible word repetitions. ASR may omit or misrecognize disfluencies; this does not diagnose stuttering."
+          },
+          {
+            "name": "Pause cadence",
+            "score": 100,
+            "weight": 33,
+            "evidence": "0 interior low-volume gaps longer than 3.5 seconds; noise can affect detection"
+          }
+        ],
+        "metrics": {
+          "words": 49,
+          "fillers": 0,
+          "wpm": 174,
+          "confidence": 99,
+          "repetitions": 0
+        },
+        "notes": [
+          "Delivery estimate from observable recording cues, not emotional confidence or hiring fitness. Ordinary gestures and body movement are not penalized. With word timestamps, pace covers the first through last recognized word, excluding automatic end-of-turn waiting.",
+          "Visual coverage: 0/42 usable head-position samples; 0/42 usable framing samples. Visual scoring needs at least eight samples and 70% detection coverage.",
+          "Head direction unavailable: insufficient samples or detection coverage.",
+          "Body framing unavailable: insufficient samples or detection coverage.",
+          "Body movement unavailable: fewer than five usable motion intervals."
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "qa2",
+        "prompt": "How would you check your work?",
+        "category": "Technical",
+        "focus": [],
+        "source": "curated"
+      },
+      "transcript": "I would check the total on the register before taking payment. Next I would count the money the customer gave me, calculate the change, and count it back carefully. If the drawer did not match the expected amount, I would tell my supervisor and follow the store procedure instead of hiding the mistake.",
+      "words": 53,
+      "duration": 23.424000000000007,
+      "recordingOffset": 36.48,
+      "audioSamples": 226,
+      "visionSamples": 47,
+      "delivery": {
+        "score": 98,
+        "components": [
+          {
+            "name": "Speaking pace",
+            "score": 96.5,
+            "weight": 44,
+            "evidence": "175 words/minute including pauses"
+          },
+          {
+            "name": "Fillers and repeated words",
+            "score": 100,
+            "weight": 22,
+            "evidence": "0 filler phrases; 0 possible word repetitions. ASR may omit or misrecognize disfluencies; this does not diagnose stuttering."
+          },
+          {
+            "name": "Pause cadence",
+            "score": 100,
+            "weight": 33,
+            "evidence": "0 interior low-volume gaps longer than 3.5 seconds; noise can affect detection"
+          }
+        ],
+        "metrics": {
+          "words": 53,
+          "fillers": 0,
+          "wpm": 175,
+          "confidence": 98,
+          "repetitions": 0
+        },
+        "notes": [
+          "Delivery estimate from observable recording cues, not emotional confidence or hiring fitness. Ordinary gestures and body movement are not penalized. With word timestamps, pace covers the first through last recognized word, excluding automatic end-of-turn waiting.",
+          "Visual coverage: 0/47 usable head-position samples; 0/47 usable framing samples. Visual scoring needs at least eight samples and 70% detection coverage.",
+          "Head direction unavailable: insufficient samples or detection coverage.",
+          "Body framing unavailable: insufficient samples or detection coverage.",
+          "Body movement unavailable: fewer than five usable motion intervals."
+        ]
+      }
+    }
+  ],
+  "moments": {
+    "best": [
+      {
+        "id": "0-0",
+        "answerIndex": 0,
+        "start": 0,
+        "end": 6.94,
+        "transcript": "First I would listen to the customer without interrupting. Then I would repeat the order to confirm what they expected.",
+        "score": 73,
+        "reason": "Local content heuristic, transcript structure and available delivery cues. This excerpt estimate does not verify other claims.",
+        "mime": "video/webm;codecs=vp8,opus"
+      },
+      {
+        "id": "0-1",
+        "answerIndex": 0,
+        "start": 7.180000000000001,
+        "end": 17.32,
+        "transcript": "If the order was wrong, I would ask my supervisor to help correct it. Finally I would check the replacement and confirm that the customer received the right items.",
+        "score": 73,
+        "reason": "Local content heuristic, transcript structure and available delivery cues. This excerpt estimate does not verify other claims.",
+        "mime": "video/webm;codecs=vp8,opus"
+      }
+    ],
+    "worst": [
+      {
+        "id": "1-1",
+        "answerIndex": 1,
+        "start": 47.25999999999999,
+        "end": 55.07999999999999,
+        "transcript": "If the drawer did not match the expected amount, I would tell my supervisor and follow the store procedure instead of hiding the mistake.",
+        "score": 65,
+        "reason": "Local content heuristic, transcript structure and available delivery cues. This excerpt estimate does not verify other claims.",
+        "mime": "video/webm;codecs=vp8,opus"
+      },
+      {
+        "id": "1-0",
+        "answerIndex": 1,
+        "start": 36.48,
+        "end": 46.9,
+        "transcript": "I would check the total on the register before taking payment. Next I would count the money the customer gave me, calculate the change, and count it back carefully.",
+        "score": 70,
+        "reason": "Local content heuristic, transcript structure and available delivery cues. This excerpt estimate does not verify other claims.",
+        "mime": "video/webm;codecs=vp8,opus"
+      }
+    ]
+  },
+  "exports": [
+    {
+      "start": 0,
+      "end": 6.94,
+      "expectedDuration": 6.94,
+      "audioDuration": 6.9,
+      "rms": 0.0940837108040728,
+      "bytes": 253063
+    },
+    {
+      "start": 47.25999999999999,
+      "end": 55.07999999999999,
+      "expectedDuration": 7.82,
+      "audioDuration": 7.8,
+      "rms": 0.09906527298527218,
+      "bytes": 275945
+    }
+  ],
+  "liveGemini": {
+    "generated": [
+      {
+        "mode": "live",
+        "provider": "gemini",
+        "questions": [
+          {
+            "prompt": "During a busy Saturday afternoon rush, a customer approaches your register with a return without a receipt, while another customer is waiting in line to check out. How do you handle both situations efficiently?",
+            "category": "Behavioral",
+            "focus": [
+              "Customer service",
+              "Time management",
+              "Conflict resolution"
+            ],
+            "id": "ai-1",
+            "source": "generated"
+          },
+          {
+            "prompt": "Walk me through the steps you take when you realize your register drawer is short by five dollars at the end of your shift.",
+            "category": "Technical",
+            "focus": [
+              "Cash handling",
+              "Accuracy",
+              "Procedure"
+            ],
+            "id": "ai-2",
+            "source": "generated"
+          },
+          {
+            "prompt": "Describe a time when you had to work closely with a coworker or team member during a stressful shift to keep operations running smoothly. What did you do to support each other?",
+            "category": "Behavioral",
+            "focus": [
+              "Teamwork",
+              "Reliability",
+              "Communication"
+            ],
+            "id": "ai-3",
+            "source": "generated"
+          }
+        ]
+      },
+      {
+        "mode": "live",
+        "provider": "gemini",
+        "questions": [
+          {
+            "prompt": "A customer comes to your register upset because an item they want is ringing up at a higher price than the shelf tag. How do you handle this situation?",
+            "category": "Behavioral",
+            "focus": [
+              "Customer service",
+              "Handling complaints",
+              "De-escalation"
+            ],
+            "id": "ai-1",
+            "source": "generated"
+          },
+          {
+            "prompt": "Imagine the store is extremely busy with a long line of customers waiting. You realize you are running low on $5 bills in your register drawer. What steps do you take to resolve this safely and efficiently?",
+            "category": "Technical",
+            "focus": [
+              "Cash handling",
+              "Practical register scenarios",
+              "Reliability"
+            ],
+            "id": "ai-2",
+            "source": "generated"
+          },
+          {
+            "prompt": "Tell me about a time when you had to work closely with a coworker during a fast-paced shift to accomplish a shared goal. How did you communicate and support each other?",
+            "category": "Behavioral",
+            "focus": [
+              "Teamwork",
+              "Communication",
+              "Fast-paced environment"
+            ],
+            "id": "ai-3",
+            "source": "generated"
+          }
+        ]
+      },
+      {
+        "mode": "live",
+        "provider": "gemini",
+        "questions": [
+          {
+            "prompt": "Imagine a customer approaches your register with a long line behind them, but the item they want to purchase doesn't have a visible price tag. How would you handle this situation quickly and politely while maintaining accuracy?",
+            "category": "Technical",
+            "focus": [
+              "Cash handling",
+              "Customer service",
+              "Efficiency"
+            ],
+            "id": "ai-1",
+            "source": "generated"
+          },
+          {
+            "prompt": "Tell me about a time when you had to deal with a stressful situation or a difficult interaction with someone. How did you stay calm and work toward a positive outcome?",
+            "category": "Behavioral",
+            "focus": [
+              "Customer service",
+              "Conflict resolution",
+              "Composure"
+            ],
+            "id": "ai-2",
+            "source": "generated"
+          },
+          {
+            "prompt": "During a busy shift, your register drawer is running low on certain coin denominations, and a coworker is also swamped with customers. What steps do you take to manage your drawer and support your team safely?",
+            "category": "Technical",
+            "focus": [
+              "Teamwork",
+              "Cash handling",
+              "Escalation"
+            ],
+            "id": "ai-3",
+            "source": "generated"
+          }
+        ]
+      }
+    ],
+    "turn": {
+      "analysis": {
+        "mode": "live",
+        "scores": {
+          "confidence": null,
+          "content": 60,
+          "comprehension": 0
+        },
+        "metrics": {
+          "words": 22,
+          "fillers": 0,
+          "wpm": null,
+          "confidence": null
+        },
+        "summary": "Reference review found a factual error: 20.00 minus 8.65 equals 11.35.",
+        "strengths": [
+          "Mentioned counting the change back to the customer, which is a great cash-handling practice."
+        ],
+        "improvements": [
+          "20.00 minus 8.65 equals 11.35.",
+          "Ensure accuracy in cash and change calculations."
+        ],
+        "evidence": [
+          "In this fictional practice scenario I would return $10.35 in change"
+        ],
+        "visual": [],
+        "limitation": "Practice rubric uses length, structure, and keyword overlap. It cannot establish correctness or genuine comprehension. Confidence is a pace/filler proxy, not a psychological assessment. Knowledge is scored only for claims checked against supplied references; unsupported personal stories are not certified. Knowledge is scored only for claims checked against supplied references; unsupported personal stories are not certified.",
+        "knowledge": {
+          "references": [
+            {
+              "id": "change",
+              "title": "Computed change (integer cents)",
+              "text": "20.00 minus 8.65 equals 11.35.",
+              "url": "",
+              "expected": 11.35
+            }
+          ],
+          "checks": [
+            {
+              "quote": "$10.35",
+              "status": "contradicted",
+              "explanation": "20.00 minus 8.65 equals 11.35.",
+              "referenceId": "change"
+            }
+          ],
+          "coverage": "Limited reference checks, reviewed by AI and potentially wrong. Claims outside this pack and personal stories are unverified. No live web search."
+        }
+      },
+      "followup": "Could you walk me through the subtraction and how you would count that change back to the customer?"
+    }
+  }
+}

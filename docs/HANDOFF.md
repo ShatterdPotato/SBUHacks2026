@@ -1,5 +1,18 @@
 # Cadence: continuation handoff
 
+## Latest continuation: conversational interviews (2026-10-24)
+
+Current work: codex/conversational-role-first-interviews. User requested less repetition, target-role priority (cashier versus ML resume), factual review, better transcription/video cues, and continuous conversational recording. The default ConversationStudio implements spoken questions, automatic turn changes, pause/resume/interrupt/skip/finish, one optional follow-up per topic, text conversation, and a 20-minute recording cap. Individual-answer mode remains available.
+
+Free Gemini is retained. Optional conversational AI accepts explicitly consented fictional, non-sensitive transcripts only; real resumes remain local. /api/interview-turn returns adaptive follow-ups plus reference-based feedback. Knowledge is unavailable for unverified claims; personal achievements cannot be proved. The reference pack covers integer-cent change calculations, US McDonald's allergen information, Python sequence mutability and scikit-learn leakage guidance. No live search or universal fact-checking is claimed.
+
+Whisper Base English replaces Tiny. Full-answer refinement cannot erase a substantial live-caption span. Video measurements have stricter detection/coverage requirements and smoothing; ordinary movement is no longer penalized. Reports allow local transcript corrections. Multiple excerpt ranges seek into the same continuous video, with one full-interview download.
+
+All 64 tests, TypeScript and production build pass. The user requested an immediate push/checkpoint. Read docs/qa/CONVERSATION_2026-10-24.md for final checks and limitations. Synthetic sources never access physical devices. Real-person speech/landmark quality remains a separate user test. The local server uses the securely configured ignored .dev.vars; do not read or print the key. Earlier notes below saying no local key are historical.
+
+Publication remains blocked: the existing Sites connector still returned project not found in this continuation. Preserve project ID, audience and deployed source. Do not create another Site to bypass the access issue.
+
+
 Updated October 24, 2026, America/New_York. Read this before continuing. The human
 requested an immediate GitHub checkpoint because their usage was nearly exhausted.
 Do not restart the project, discard teammate work, or resurrect XTrain.

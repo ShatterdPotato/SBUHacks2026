@@ -14,13 +14,15 @@ export function timedWords(chunks, duration, offset = 0) {
 
 // Observable practice estimates only. Missing channels never become zero scores.
 export function recordedDelivery({ transcript, duration, words = [], audio = [], vision = [] }) {
-    const metrics = deliveryMetrics(transcript, duration, true);
     const validWords = words.filter(w => w.start >= 0 && w.end > w.start && w.end <= duration + .1);
+    const speechStart = validWords.length >= 5 ? validWords[0].start : 0;
+    const speechEnd = validWords.length >= 5 ? validWords.at(-1).end : duration;
+    const metrics = deliveryMetrics(transcript, Math.max(0,speechEnd-speechStart), true);
     const components = [];
     if (metrics.wpm !== null) components.push({ name: 'Speaking pace', score: clamp(100 - Math.max(0, Math.abs(metrics.wpm - 140) - 30) * .7), weight: .2, evidence: `${metrics.wpm} words/minute including pauses` });
     const repeats = (transcript.match(/\b([\p{L}]+)[\s,]+\1\b/giu) ?? []).length;
     if (metrics.words >= 15 && validWords.length >= 5) components.push({ name: 'Fillers and repeated words', score: clamp(100 - (metrics.fillers + repeats) / metrics.words * 220), weight: .1, evidence: `${metrics.fillers} filler phrases; ${repeats} possible word repetitions. ASR may omit or misrecognize disfluencies; this does not diagnose stuttering.` });
-    const levels = audio.filter(s => Number.isFinite(s.at) && Number.isFinite(s.rms) && s.at >= 0 && s.at <= duration);
+    const levels = audio.filter(s => Number.isFinite(s.at) && Number.isFinite(s.rms) && s.at >= speechStart && s.at <= speechEnd);
     if (levels.length >= 20 && duration >= 5) {
         let longPauses = 0, silentStart = null;
         for (const sample of levels) {
@@ -31,18 +33,19 @@ export function recordedDelivery({ transcript, duration, words = [], audio = [],
     }
     const face = vision.filter(v => typeof v.facing === 'boolean');
     const body = vision.filter(v => typeof v.shouldersVisible === 'boolean');
-    if (face.length >= 5) components.push({ name: 'Camera-facing head position', score: Math.round(average(face.map(v => v.facing ? 100 : 0))), weight: .25, evidence: `${face.filter(v => v.facing).length}/${face.length} detected samples roughly camera-facing; not a measure of eye contact` });
-    if (body.length >= 5) components.push({ name: 'Upper-body framing', score: Math.round(average(body.map(v => v.shouldersVisible ? 100 : 0))), weight: .2, evidence: `${body.filter(v => v.shouldersVisible).length}/${body.length} detected samples with both shoulders in frame; camera setup affects this` });
+    if (face.length >= 8 && face.length / vision.length >= .7) components.push({ name: 'Camera-facing head position', score: Math.round(average(face.map(v => v.facing ? 100 : 0))), weight: .15, evidence: `${face.filter(v => v.facing).length}/${face.length} usable samples roughly camera-facing; smoothed landmark geometry, not a measure of eye contact` });
+    if (body.length >= 8 && body.length / vision.length >= .7) components.push({ name: 'Upper-body framing', score: Math.round(average(body.map(v => v.shouldersVisible ? 100 : 0))), weight: .1, evidence: `${body.filter(v => v.shouldersVisible).length}/${body.length} usable samples with both shoulders in frame; camera setup affects this` });
     const movement = vision.filter(v => Number.isFinite(v.bodyShift) && v.bodyShift >= 0);
-    if (movement.length >= 5) components.push({ name: 'Upper-body movement', score: Math.round(average(movement.map(v => v.bodyShift <= .25 ? 100 : 50))), weight: .1, evidence: `${movement.filter(v => v.bodyShift > .25).length}/${movement.length} intervals with a large shoulder-center shift; gestures are not classified as good or bad, and camera movement affects this estimate` });
     const usable = duration >= 5 && metrics.words >= 15 && components.length >= 2;
     const weight = components.reduce((sum, c) => sum + c.weight, 0);
     const score = usable ? Math.round(components.reduce((sum, c) => sum + c.score * c.weight, 0) / weight) : null;
     return { score, components: usable ? components.map(c => ({ ...c, weight: Math.round(c.weight / weight * 100) })) : [],
         metrics: { ...metrics, confidence: score, repetitions: repeats },
-        notes: ['Delivery estimate from observable recording cues, not emotional confidence or hiring fitness.',
-            ...(face.length < 5 ? ['Head direction unavailable: fewer than five usable face samples.'] : []),
-            ...(body.length < 5 ? ['Body framing unavailable: fewer than five usable pose samples.'] : []),
+        notes: ['Delivery estimate from observable recording cues, not emotional confidence or hiring fitness. Ordinary gestures and body movement are not penalized. With word timestamps, pace covers the first through last recognized word, excluding automatic end-of-turn waiting.',
+            `Visual coverage: ${face.length}/${vision.length} usable head-position samples; ${body.length}/${vision.length} usable framing samples. Visual scoring needs at least eight samples and 70% detection coverage.`,
+            ...(movement.length >= 5 ? [`${movement.filter(v => v.bodyShift > .25).length} large shoulder-center shifts across ${movement.length} measured intervals. Camera movement can cause this; no movement penalty.`] : []),
+            ...(face.length < 8 || face.length/vision.length < .7 ? ['Head direction unavailable: insufficient samples or detection coverage.'] : []),
+            ...(body.length < 8 || body.length/vision.length < .7 ? ['Body framing unavailable: insufficient samples or detection coverage.'] : []),
             ...(movement.length < 5 ? ['Body movement unavailable: fewer than five usable motion intervals.'] : [])] };
 }
 
@@ -72,19 +75,23 @@ export function answerMoments(take, answerIndex) {
             audio: (take.audioEvidence ?? []).filter(s => s.at >= start && s.at <= end).map(s => ({ ...s, at: s.at - start })),
             vision: (take.visionEvidence ?? []).filter(s => s.at >= start && s.at <= end).map(s => ({ ...s, at: s.at - start })) });
         const focus = (take.question.focus ?? []).filter(f => transcript.toLowerCase().includes(f.toLowerCase())).length;
-        const specificity = Math.min(100, 45 + (/[0-9]|\b(built|tested|measured|result|because)\b/i.test(transcript) ? 25 : 0) + Math.min(30, focus * 10));
-        const score = Math.round((delivery.score ?? specificity) * .65 + specificity * .35);
-        return { id: `${answerIndex}-${segmentIndex}`, answerIndex, start, end, transcript, score,
-            reason: delivery.score === null ? 'Transcript specificity and question-keyword heuristic; delivery evidence unavailable.' : 'Local delivery cues plus transcript specificity/keyword heuristic; not an AI correctness judgment.',
+        const specificity = Math.min(100, 45 + (/\b(tested|measured|verified|checked|because)\b/i.test(transcript) ? 25 : 0) + Math.min(30, focus * 10));
+        const checks=(take.analysis.knowledge?.checks??[]).filter(c=>c.quote&&transcript.includes(c.quote));
+        const contradicted=checks.some(c=>c.status==='contradicted');
+        const content=take.analysis.scores.content??specificity;
+        const score = Math.round(Math.max(0,(delivery.score ?? specificity) * .5 + specificity * .2 + content * .3 - (contradicted?30:0)));
+        return { id: `${answerIndex}-${segmentIndex}`, answerIndex, start:start+(take.recordingOffset??0), end:end+(take.recordingOffset??0), transcript, score,
+            reason: `${take.analysis.mode==='live'?'Provisional AI content feedback':'Local content heuristic'}, transcript structure and available delivery cues.${contradicted?' Contains a claim contradicted by the reference check.':''} This excerpt estimate does not verify other claims.`,
             url: take.url, mime: take.mime };
     });
 }
 export function selectMoments(answers, limit = 3) {
     const candidates = answers.flatMap(answerMoments).sort((a, b) => b.score - a.score || a.answerIndex - b.answerIndex || a.start - b.start);
+    if(candidates.length>1&&candidates[0].score===candidates.at(-1).score)for(const c of candidates)c.reason+=' These excerpts are tied; no clear strength difference was measured.';
     if (candidates.length < 2) {
         // Whole-answer fallback still offers both categories when two recordings exist.
         const whole = answers.map((a, answerIndex) => ({ a, answerIndex, score: overallScore(a.analysis.scores) })).filter(x => x.a.hasRecording && x.a.url && x.score !== null)
-            .map(x => ({ id: `whole-${x.answerIndex}`, answerIndex: x.answerIndex, start: 0, end: x.a.duration, transcript: x.a.transcript, score: x.score,
+            .map(x => ({ id: `whole-${x.answerIndex}`, answerIndex: x.answerIndex, start: x.a.recordingOffset??0, end: (x.a.recordingOffset??0)+x.a.duration, transcript: x.a.transcript, score: x.score,
                 reason: 'Whole answer: finer speech timestamps unavailable.', url: x.a.url, mime: x.a.mime })).sort((a, b) => b.score - a.score);
         if (whole.length >= 2) return { best: [whole[0]], worst: [whole.at(-1)] };
         if (whole.length === 1 && candidates.length === 0) return { best: whole, worst: [] };

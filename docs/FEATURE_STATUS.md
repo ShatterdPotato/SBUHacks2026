@@ -1,5 +1,12 @@
 # Feature inventory
 
+## Conversational continuation (2026-10-24)
+
+Implemented: default spoken back-and-forth studio with continuous optional recording; energy-based turn detection, manual completion, pause/resume, interruption, skips and early finish; one optional follow-up per topic; Gemini adaptive follow-ups for consented fictional/non-sensitive transcripts; larger local English ASR with guarded refinement; role-first practical question bank and in-session repeat suppression; reference-limited knowledge checks with explicit unverified claims; stricter visual evidence coverage and no gesture penalty; global clip ranges and local transcript corrections.
+
+Limits: turn-based latency rather than a duplex streaming voice API; English only; physical device/real-person accuracy still unverified; finite banks can repeat after alternatives are exhausted; recent-question memory resets on page reload; reference coverage is deliberately small, no live web search; real personal answers cannot use unpaid Gemini. Sites publication still requires access to the original project.
+
+
 Status as of October 24, 2026. Read HANDOFF.md before continuing.
 The recording-first rows describe current source; publication is pending access
 to the existing Site's owner/editor account. The old hosted build is unchanged.
