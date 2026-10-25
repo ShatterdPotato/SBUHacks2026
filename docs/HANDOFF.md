@@ -23,6 +23,22 @@ with consent, retry, cancellation and correction reset. Physical camera accuracy
 and live provider voice/chat remain separate verification work. No key was read
 or changed. Hosted/source publication records follow once tools confirm them.
 
+Publication confirmed: implementation `f1b3f30` is pushed in
+[draft PR #15](https://github.com/ShatterdPotato/SBUHacks2026/pull/15), targeting
+`codex/gearwell-frontend` to preserve the unmerged PR #14. No main-branch merge.
+The matching application source was synchronized to the original Sites repository
+as `668ebf96ae5ad55f95eaf6eee9541ab2afc52052`. Saved version **7**:
+`appgprj_6adcd46ff0dc8191943fd596d01bba52~appgver_12cdc9eaf0dc81919f3e91421eabee4a`.
+Deployment `appgdep_6addcebf47a881918a40662d25717570` returned **succeeded** at
+https://cadence-interview-studio-aiden.daintyridge32.chatgpt.site,
+environment revision 3. Public audience and existing secrets were preserved.
+
+Manual handoff: montasir -> aiden.sol. Owned changes are the gaze worker/evidence,
+results chat/API, voice/idle/landing refinements and current QA/context documents.
+No teammate message or delivery receipt is claimed. Next action: review PR #15
+against the Gearwell branch, then validate real-camera gaze/calibration before
+considering any Confidence weighting. Model detection coverage is not accuracy.
+
 ## Torch handoff — next agent starts here
 
 The human requested a transition to another Codex agent after the completed
